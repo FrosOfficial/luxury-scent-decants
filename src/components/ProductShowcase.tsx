@@ -33,12 +33,7 @@ const EMPTY_FILTERS: Filters = {
 
 const ALL_SIZES: Size[] = ['2ml', '3ml', '5ml', '10ml', '15ml', '30ml'];
 
-const BROWSE_CATEGORIES = [
-  { label: 'All Products', key: 'all' },
-  { label: 'Luxury Perfumes', key: 'luxury' },
-  { label: 'Perfume Bottles', key: 'bottles' },
-  { label: 'Fragrance Decants', key: 'decants' },
-];
+
 
 // ─── Checkbox item ────────────────────────────────────────────────────────────
 function CheckItem({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
@@ -113,7 +108,6 @@ export default function ProductShowcase() {
   const [sortBy, setSortBy] = useState<SortKey>('recommended');
   const [sortOpen, setSortOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('all');
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
   // Load products from local API on mount
@@ -183,27 +177,7 @@ export default function ProductShowcase() {
 
   const SidebarContent = () => (
     <aside className="w-full">
-      {/* Browse by */}
-      <div className="mb-6">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold/70 mb-3">Browse by</p>
-        <ul className="space-y-1">
-          {BROWSE_CATEGORIES.map(cat => (
-            <li key={cat.key}>
-              <button
-                onClick={() => setActiveCategory(cat.key)}
-                className={`text-sm w-full text-left py-1 transition-colors ${
-                  activeCategory === cat.key ? 'text-brand-gold font-semibold' : 'text-brand-cream/50 hover:text-brand-cream'
-                }`}
-              >
-                {activeCategory === cat.key && <span className="mr-1.5 text-brand-gold">›</span>}
-                {cat.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="border-t border-brand-gold/10 pt-4 space-y-0">
+      <div className="space-y-0">
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold/70 mb-3">Filters</p>
 
         <SidebarSection title="Brand" defaultOpen>
