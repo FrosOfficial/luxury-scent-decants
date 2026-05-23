@@ -36,6 +36,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [localUser, setLocalUser] = useState<LocalUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const verifyingRef = React.useRef(false);
+  const checkedRef = React.useRef(false);
+
   const fetchLocalProfile = async (): Promise<LocalUser | null> => {
     try {
       const response = await api.get('/me');
@@ -53,48 +56,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const syncLocalProfile = async (): Promise<LocalUser | null> => {
-    try {
-      // Calling /me triggers SupabaseAuthMiddleware which automatically syncs the user if not exists
-      const response = await api.get('/me');
-      setLocalUser(response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error('Failed to sync user with local backend:', error);
-      if (error.response?.status === 401) {
-        setLocalUser(null);
-        setSupabaseUser(null);
-        await supabase.auth.signOut();
-      }
-      return null;
-    }
-  };
+  const syncLocalProfile = fetchLocalProfile;
 
   useEffect(() => {
-    // 1. Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setSupabaseUser(session.user);
-        // Fetch local user details
-        fetchLocalProfile().finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
+    let isMounted = true;
 
-    // 2. Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session) {
+    const handleAuth = async (session: any) => {
+      if (!isMounted) return;
+
+      if (session?.user) {
         setSupabaseUser(session.user);
-        await syncLocalProfile();
+        
+        // Prevent duplicate concurrent /me checks
+        if (!checkedRef.current && !verifyingRef.current) {
+          verifyingRef.current = true;
+          setLoading(true);
+          const profile = await fetchLocalProfile();
+          if (isMounted) {
+            verifyingRef.current = false;
+            if (profile) {
+              checkedRef.current = true;
+            }
+            setLoading(false);
+          }
+        } else if (checkedRef.current) {
+          setLoading(false);
+        }
       } else {
         setSupabaseUser(null);
         setLocalUser(null);
+        checkedRef.current = false;
+        verifyingRef.current = false;
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
+    };
+
+    // 1. Initial check on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      handleAuth(session);
+    });
+
+    // 2. Auth listener for subsequent changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        handleAuth(session);
+      }
     });
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);
