@@ -43,9 +43,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return response.data;
     } catch (error: any) {
       console.error('Failed to fetch local user profile:', error);
-      // If unauthorized, clear localUser
+      // If unauthorized, clear localUser and Supabase session
       if (error.response?.status === 401) {
         setLocalUser(null);
+        setSupabaseUser(null);
+        await supabase.auth.signOut();
       }
       return null;
     }
@@ -57,8 +59,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await api.get('/me');
       setLocalUser(response.data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to sync user with local backend:', error);
+      if (error.response?.status === 401) {
+        setLocalUser(null);
+        setSupabaseUser(null);
+        await supabase.auth.signOut();
+      }
       return null;
     }
   };
