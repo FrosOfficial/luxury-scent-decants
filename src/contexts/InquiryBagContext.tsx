@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import api from '../lib/api';
+import { useAuth } from './AuthContext';
 
 export interface BagItem {
   product: {
@@ -51,6 +52,7 @@ const InquiryBagContext = createContext<InquiryBagContextType | undefined>(undef
 
 export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<BagItem[]>([]);
+  const { supabaseUser } = useAuth();
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -111,6 +113,19 @@ export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const clearBag = () => {
     saveItems([]);
   };
+
+  // Clear bag automatically upon logging out (transition from logged-in to logged-out)
+  useEffect(() => {
+    const wasLoggedIn = localStorage.getItem('lsd_user_logged_in') === 'true';
+    if (supabaseUser) {
+      localStorage.setItem('lsd_user_logged_in', 'true');
+    } else {
+      localStorage.removeItem('lsd_user_logged_in');
+      if (wasLoggedIn) {
+        clearBag();
+      }
+    }
+  }, [supabaseUser]);
 
   const totalItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
