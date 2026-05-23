@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { products } from '../data/products';
 
-type Page = 'home' | 'shop' | 'contact';
+type Page = 'home' | 'shop' | 'faq';
 interface HeroProps { onNavigate: (page: Page) => void; }
 
 // ─── LV bottle data (Images5 official press shots) ────────────────────────

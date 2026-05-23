@@ -4,7 +4,7 @@ import { ShoppingBag, User, Menu, X, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useInquiryBag } from '../contexts/InquiryBagContext';
 
-type Page = 'home' | 'shop' | 'contact' | 'profile' | 'checkout';
+type Page = 'home' | 'shop' | 'faq' | 'profile' | 'checkout';
 
 interface NavbarProps {
   currentPage: Page;
@@ -13,10 +13,10 @@ interface NavbarProps {
   onOpenBag: () => void;
 }
 
-const navLinks: { id: 'home' | 'shop' | 'contact'; label: string }[] = [
+const navLinks: { id: 'home' | 'shop' | 'faq'; label: string }[] = [
   { id: 'home', label: 'HOME' },
   { id: 'shop', label: 'SHOP' },
-  { id: 'contact', label: 'CONTACT' },
+  { id: 'faq', label: 'FAQ' },
 ];
 
 export default function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag }: NavbarProps) {
