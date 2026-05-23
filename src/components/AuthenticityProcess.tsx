@@ -1,8 +1,104 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Sparkles, AlertCircle, Play, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Sparkles, AlertCircle } from 'lucide-react';
+
+declare global {
+  interface Window {
+    FB?: any;
+    fbAsyncInit?: () => void;
+  }
+}
+
+const videoList = [
+  {
+    id: 'fb-video-0',
+    reelUrl: 'https://www.facebook.com/reel/4438367186422327/',
+    iframeUrl: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4438367186422327%2F&show_text=false&width=267&t=0',
+    title: 'LV Ombre Nomade packaging'
+  },
+  {
+    id: 'fb-video-1',
+    reelUrl: 'https://www.facebook.com/reel/1561286295439086/',
+    iframeUrl: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1561286295439086%2F&show_text=false&width=267&t=0',
+    title: 'Premium Glass Atomizers'
+  },
+  {
+    id: 'fb-video-2',
+    reelUrl: 'https://www.facebook.com/reel/1490751416034494/',
+    iframeUrl: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1490751416034494%2F&show_text=false&width=267&t=0',
+    title: 'Aesthetic Decanting Ritual'
+  }
+];
 
 export default function AuthenticityProcess() {
-  const facebookVideoUrl = "https://www.facebook.com/profile.php?id=61576288857544";
+  const [useFallback, setUseFallback] = useState(false);
+  const playersRef = useRef<{ [key: string]: any }>({});
+  const timerRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Start a 3.5s timeout. If XFBML hasn't parsed successfully in this time,
+    // we use standard bulletproof iframes as a fallback.
+    timerRef.current = setTimeout(() => {
+      console.log('FB SDK load timeout, falling back to static iframes.');
+      setUseFallback(true);
+    }, 3500);
+
+    // Set up global SDK callback
+    window.fbAsyncInit = function() {
+      if (!window.FB) return;
+      
+      window.FB.init({
+        xfbml: true,
+        version: 'v18.0'
+      });
+
+      // Listen for players to become ready
+      window.FB.Event.subscribe('xfbml.ready', function(msg: any) {
+        if (msg.type === 'video') {
+          console.log('FB Player Ready:', msg.id);
+          playersRef.current[msg.id] = msg.instance;
+          
+          // Once at least one FB player is ready, disable the fallback
+          setUseFallback(false);
+          if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+          }
+
+          // Subscribe to finishedPlaying event
+          msg.instance.subscribe('finishedPlaying', () => {
+            console.log('Video finished:', msg.id);
+            const currentIndex = parseInt(msg.id.replace('fb-video-', ''));
+            const nextIndex = (currentIndex + 1) % videoList.length;
+            const nextPlayer = playersRef.current[`fb-video-${nextIndex}`];
+            if (nextPlayer) {
+              console.log('Autoplay next:', `fb-video-${nextIndex}`);
+              nextPlayer.play();
+            }
+          });
+        }
+      });
+    };
+
+    // Inject Facebook SDK if not already present
+    if (!document.getElementById('facebook-jssdk')) {
+      const js = document.createElement('script');
+      js.id = 'facebook-jssdk';
+      js.src = 'https://connect.facebook.net/en_US/sdk.js';
+      js.async = true;
+      js.defer = true;
+      document.body.appendChild(js);
+    } else if (window.FB) {
+      // If already present, parse the page for fb-video elements and clear timer if already loaded
+      window.FB.XFBML.parse();
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <section className="py-24 bg-gradient-to-b from-[#011611] to-brand-emerald-dark px-4 relative overflow-hidden">
@@ -10,161 +106,158 @@ export default function AuthenticityProcess() {
       <div className="absolute top-1/2 left-0 -translate-y-1/2 w-80 h-80 bg-brand-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-emerald-light/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* ── Left Column: Text & Guarantees (7 Cols) ───────────────────── */}
-          <div className="lg:col-span-7 space-y-8 text-left">
-            <div className="space-y-4">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-gold/20 bg-brand-gold/5 text-brand-gold text-xs font-bold tracking-widest uppercase font-sans"
-              >
-                <ShieldCheck size={14} />
-                <span>100% Purity Guaranteed</span>
-              </motion.div>
-              
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl md:text-5xl xl:text-6xl font-serif text-brand-cream leading-tight tracking-wide"
-              >
-                Our Decanting <br/>
-                <span className="text-brand-gold">Craft & Precision</span>
-              </motion.h2>
-            </div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-brand-cream/70 text-sm md:text-base font-light leading-relaxed max-w-2xl font-sans"
-            >
-              Every decant is a ritual of absolute precision. We handle your favorite designer and niche fragrances with medical-grade hygiene, ensuring that what reaches your doorstep is identical to the original perfume house bottle.
-            </motion.p>
-
-            {/* Quality Checklist */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-brand-gold/10">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="space-y-2"
-              >
-                <div className="flex items-center gap-2.5 text-brand-gold">
-                  <Sparkles size={16} />
-                  <h4 className="text-xs font-bold tracking-widest uppercase">Sterile Workspace</h4>
-                </div>
-                <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  Hand-decanted using clinical syringes under strict sanitary guidelines. No exposure to air or contamination.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="space-y-2"
-              >
-                <div className="flex items-center gap-2.5 text-brand-gold">
-                  <ShieldCheck size={16} />
-                  <h4 className="text-xs font-bold tracking-widest uppercase">100% Authentic</h4>
-                </div>
-                <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  Direct transfer from authentic designer perfume bottles. Never diluted, never altered, strictly raw juice.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="space-y-2"
-              >
-                <div className="flex items-center gap-2.5 text-brand-gold">
-                  <AlertCircle size={16} />
-                  <h4 className="text-xs font-bold tracking-widest uppercase">Premium Glass</h4>
-                </div>
-                <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  We use heavy, high-grade glass atomizers with premium spray nozzles that deliver a fine, luxurious mist.
-                </p>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* ── Right Column: Video/Post Preview (5 Cols) ─────────────────── */}
+      <div className="max-w-7xl mx-auto relative z-10 space-y-16">
+        
+        {/* ── Top Header Section ─────────────────────────────────────── */}
+        <div className="text-center max-w-3xl mx-auto space-y-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-5 relative"
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-gold/20 bg-brand-gold/5 text-brand-gold text-xs font-bold tracking-widest uppercase font-sans mx-auto"
           >
-            {/* Visual Glassmorphic Border Frame */}
-            <div className="absolute inset-0 bg-brand-gold/10 rounded-3xl blur-[1px] pointer-events-none border border-brand-gold/20 scale-102" />
-            
-            <div className="relative rounded-3xl overflow-hidden bg-brand-emerald border border-brand-gold/20 shadow-2xl group flex flex-col">
-              {/* Card Banner / Poster */}
-              <div className="relative aspect-[3/4] w-full overflow-hidden bg-black/40">
-                {/* Background image previewing the packaging process */}
-                <img 
-                  src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&q=80&w=800"
-                  alt="Packaging Decant Video Poster"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80"
-                />
-                {/* Dark Vignette Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                
-                {/* Center Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <a 
-                    href={facebookVideoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-16 h-16 rounded-full border border-brand-gold/40 bg-brand-emerald-dark/80 text-brand-gold flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 hover:border-brand-gold hover:shadow-brand-gold/30 hover:bg-brand-emerald-dark"
-                  >
-                    <Play size={24} className="fill-brand-gold ml-1 animate-pulse" />
-                  </a>
-                </div>
-
-                {/* Bottom Overlay Info */}
-                <div className="absolute bottom-6 left-6 right-6 text-left">
-                  <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-brand-gold mb-1 block font-sans">
-                    Behind The Scenes
-                  </span>
-                  <h3 className="font-serif text-lg text-brand-cream leading-tight">
-                    Bleu de Chanel & LV Ombre Nomade packaging for a valued client.
-                  </h3>
-                </div>
-              </div>
-
-              {/* Card Footer Call to Action */}
-              <div className="p-5 bg-brand-emerald-dark/80 backdrop-blur-md flex items-center justify-between gap-4 border-t border-brand-gold/15">
-                <div className="text-left">
-                  <p className="text-xs text-brand-cream/60 font-sans">Watch live packaging on</p>
-                  <p className="text-xs font-bold text-brand-gold uppercase tracking-widest mt-0.5">Facebook Video</p>
-                </div>
-                <a 
-                  href={facebookVideoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-brand-gold text-brand-emerald-dark font-sans font-bold text-[10px] tracking-widest uppercase rounded-lg hover:bg-brand-gold-light transition-all flex items-center gap-1.5 shadow-md"
-                >
-                  <span>Watch Video</span>
-                  <ExternalLink size={10} />
-                </a>
-              </div>
-            </div>
+            <ShieldCheck size={14} />
+            <span>100% Purity Guaranteed</span>
           </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-serif text-brand-cream leading-tight tracking-wide"
+          >
+            Our Decanting <span className="text-brand-gold">Craft & Precision</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-brand-cream/70 text-sm md:text-base font-light leading-relaxed max-w-2xl mx-auto font-sans"
+          >
+            Every decant is a ritual of absolute precision. We handle your favorite designer and niche fragrances with medical-grade hygiene, ensuring that what reaches your doorstep is identical to the original perfume house bottle.
+          </motion.p>
+        </div>
+
+        {/* ── Main Content Grid ──────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* Left Column: 3 Guarantees (Stacked) (4/12 Cols) */}
+          <div className="lg:col-span-4 space-y-6">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ x: 6, borderColor: 'rgba(212, 175, 55, 0.4)' }}
+              className="p-5 rounded-2xl bg-brand-emerald-dark/40 border border-brand-gold/15 backdrop-blur-md transition-all duration-300 flex gap-4 text-left group"
+            >
+              <div className="text-brand-gold p-3 rounded-xl bg-brand-gold/5 border border-brand-gold/10 h-fit transition-colors group-hover:bg-brand-gold/10">
+                <Sparkles size={20} />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Sterile Workspace</h4>
+                <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
+                  Hand-decanted using clinical syringes under strict sanitary guidelines. No exposure to air or contamination.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              whileHover={{ x: 6, borderColor: 'rgba(212, 175, 55, 0.4)' }}
+              className="p-5 rounded-2xl bg-brand-emerald-dark/40 border border-brand-gold/15 backdrop-blur-md transition-all duration-300 flex gap-4 text-left group"
+            >
+              <div className="text-brand-gold p-3 rounded-xl bg-brand-gold/5 border border-brand-gold/10 h-fit transition-colors group-hover:bg-brand-gold/10">
+                <ShieldCheck size={20} />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">100% Authentic</h4>
+                <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
+                  Direct transfer from authentic designer perfume bottles. Never diluted, never altered, strictly raw juice.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              whileHover={{ x: 6, borderColor: 'rgba(212, 175, 55, 0.4)' }}
+              className="p-5 rounded-2xl bg-brand-emerald-dark/40 border border-brand-gold/15 backdrop-blur-md transition-all duration-300 flex gap-4 text-left group"
+            >
+              <div className="text-brand-gold p-3 rounded-xl bg-brand-gold/5 border border-brand-gold/10 h-fit transition-colors group-hover:bg-brand-gold/10">
+                <AlertCircle size={20} />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Premium Glass</h4>
+                <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
+                  We use heavy, high-grade glass atomizers with premium spray nozzles that deliver a fine, luxurious mist.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Column: 3-Video Collage (8/12 Cols) */}
+          <div className="lg:col-span-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-center justify-items-center">
+              {videoList.map((video, index) => (
+                <motion.div
+                  key={video.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="flex flex-col items-center gap-4 p-3.5 rounded-2xl bg-brand-emerald-dark/60 border border-brand-gold/15 shadow-2xl group hover:border-brand-gold/30 transition-all duration-300 w-full max-w-[295px]"
+                >
+                  {/* Outer border container */}
+                  <div className="w-[267px] h-[476px] rounded-xl overflow-hidden bg-black/40 relative shadow-inner flex items-center justify-center">
+                    {useFallback ? (
+                      <iframe
+                        src={video.iframeUrl}
+                        width="267"
+                        height="476"
+                        style={{ border: 'none', overflow: 'hidden' }}
+                        scrolling="no"
+                        frameBorder="0"
+                        allowFullScreen={true}
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        id={video.id}
+                        className="fb-video"
+                        data-href={video.reelUrl}
+                        data-width="267"
+                        data-height="476"
+                        data-show-text="false"
+                        data-autoplay="false"
+                        data-allowfullscreen="true"
+                      />
+                    )}
+                  </div>
+                  
+                  {/* Bottom Video Metadata */}
+                  <div className="text-center space-y-0.5">
+                    <span className="text-[9px] uppercase font-bold tracking-[0.25em] text-brand-gold block">
+                      Authenticity Reel 0{index + 1}
+                    </span>
+                    <h4 className="text-xs font-medium text-brand-cream/80 font-sans tracking-wide">
+                      {video.title}
+                    </h4>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
 
         </div>
       </div>
