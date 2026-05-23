@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProductShowcase from './components/ProductShowcase';
 import BrandStory from './components/BrandStory';
+import AuthenticityProcess from './components/AuthenticityProcess';
 import FAQ from './components/FAQ';
 import UserProfile from './components/UserProfile';
 import InquiryForm from './components/InquiryForm';
@@ -65,6 +66,7 @@ function App() {
               <motion.main key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <Hero onNavigate={setCurrentPage} />
                 <BrandStory />
+                <AuthenticityProcess />
                 <footer className="py-8 text-center text-brand-cream/30 text-sm border-t border-brand-gold/10">
                   <p>© {new Date().getFullYear()} Luxury Scent Decants. All rights reserved.</p>
                 </footer>
