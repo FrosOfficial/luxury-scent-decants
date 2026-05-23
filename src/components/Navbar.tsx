@@ -44,7 +44,7 @@ export default function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag 
           >
             <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-gold/30 shadow-[0_0_12px_rgba(212,175,55,0.4)] group-hover:border-brand-gold group-hover:shadow-[0_0_20px_rgba(212,175,55,0.6)] transition-all duration-300 shrink-0">
               <img 
-                src="/Images/logo.jpg" 
+                src="/Images/logo.webp" 
                 alt="Luxury Scent Decants Logo" 
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
               />
