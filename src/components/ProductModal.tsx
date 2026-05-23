@@ -140,8 +140,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
                 <div key={idx} className="relative h-6 bg-brand-emerald rounded-full overflow-hidden flex items-center px-3 border border-brand-gold/5">
                   <motion.div 
                     initial={{ width: 0 }}
-                    whileInView={{ width: `${accord.percentage}%` }}
-                    viewport={{ once: true }}
+                    animate={{ width: `${accord.percentage}%` }}
                     transition={{ duration: 1, delay: idx * 0.1, ease: "easeOut" }}
                     className="absolute left-0 top-0 bottom-0 bg-brand-gold/30"
                   />
