@@ -499,7 +499,7 @@ export default function ProductShowcase() {
               <div className="p-6 overflow-y-auto max-h-[70vh] flex flex-col items-center gap-5">
                 <div className="relative rounded-xl overflow-hidden border border-brand-gold/20 bg-brand-emerald-dark shadow-inner max-w-sm w-full">
                   <img 
-                    src="/Images/size-reference.jpg" 
+                    src="/Images/size-reference.webp" 
                     alt="Decant bottle size reference" 
                     className="w-full h-auto object-contain"
                   />
