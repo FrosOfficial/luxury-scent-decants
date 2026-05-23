@@ -28,7 +28,25 @@ function App() {
 
   return (
     <>
-      <Toaster position="top-center" />
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+          duration: 2000,
+          style: {
+            background: '#021c13',
+            color: '#fdfbf7',
+            border: '1px solid rgba(212, 175, 55, 0.25)',
+            fontSize: '13px',
+            fontFamily: 'sans-serif',
+          },
+          success: {
+            iconTheme: {
+              primary: '#d4af37',
+              secondary: '#021c13',
+            },
+          },
+        }}
+      />
       <AnimatePresence>
         {loading && <Preloader onComplete={() => setLoading(false)} />}
       </AnimatePresence>
