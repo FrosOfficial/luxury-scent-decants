@@ -65,7 +65,7 @@ export const products: Product[] = [
       { size: '15ml', price: 648 },
       { size: '30ml', price: 1248 }
     ],
-    image: '/Images/afnan-9-pm-night-out.png',
+    image: '/Images/afnan-9-pm-night-out.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Warm Spicy', percentage: 95 },
@@ -133,7 +133,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1053 },
       { size: '30ml', price: 2028 }
     ],
-    image: '/Images/ariana-grande-cloud.png',
+    image: '/Images/ariana-grande-cloud.webp',
     mainAccords: [
       { name: 'Sweet', percentage: 100 },
       { name: 'Lactonic', percentage: 78 },
@@ -167,7 +167,7 @@ export const products: Product[] = [
       { size: '15ml', price: 810 },
       { size: '30ml', price: 1560 }
     ],
-    image: '/Images/armaf-club-de-nuit-intense-man.png',
+    image: '/Images/armaf-club-de-nuit-intense-man.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Fruity', percentage: 83 },
@@ -201,7 +201,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1053 },
       { size: '30ml', price: 2028 }
     ],
-    image: '/Images/armaf-club-de-nuit-untold.png',
+    image: '/Images/armaf-club-de-nuit-untold.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Amber', percentage: 98 },
@@ -235,7 +235,7 @@ export const products: Product[] = [
       { size: '15ml', price: 648 },
       { size: '30ml', price: 1248 }
     ],
-    image: '/Images/armaf-club-de-nuit-urban-elixir.png',
+    image: '/Images/armaf-club-de-nuit-urban-elixir.webp',
     mainAccords: [
       { name: 'Amber', percentage: 100 },
       { name: 'Aromatic', percentage: 90 },
@@ -269,7 +269,7 @@ export const products: Product[] = [
       { size: '15ml', price: 810 },
       { size: '30ml', price: 1560 }
     ],
-    image: '/Images/bujairami-hectic.png',
+    image: '/Images/bujairami-hectic.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 80 },
@@ -303,7 +303,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1728 },
       { size: '30ml', price: 3328 }
     ],
-    image: '/Images/bvlgari-omnia-coral.png',
+    image: '/Images/bvlgari-omnia-coral.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Woody', percentage: 96 },
@@ -337,7 +337,7 @@ export const products: Product[] = [
       { size: '15ml', price: 405 },
       { size: '30ml', price: 780 }
     ],
-    image: '/Images/calvin-klein-ck-be.png',
+    image: '/Images/calvin-klein-ck-be.webp',
     mainAccords: [
       { name: 'Green', percentage: 100 },
       { name: 'Aromatic', percentage: 86 },
@@ -371,7 +371,7 @@ export const products: Product[] = [
       { size: '15ml', price: 405 },
       { size: '30ml', price: 780 }
     ],
-    image: '/Images/calvin-klein-ck-one.png',
+    image: '/Images/calvin-klein-ck-one.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Green', percentage: 85 },
@@ -405,7 +405,7 @@ export const products: Product[] = [
       { size: '15ml', price: 405 },
       { size: '30ml', price: 780 }
     ],
-    image: '/Images/calvin-klein-ck-one-shock-for-him.png',
+    image: '/Images/calvin-klein-ck-one-shock-for-him.webp',
     mainAccords: [
       { name: 'Tobacco', percentage: 100 },
       { name: 'Warm Spicy', percentage: 92 },
@@ -439,7 +439,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/carolina-herrera-good-girl-blush.png',
+    image: '/Images/carolina-herrera-good-girl-blush.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Vanilla', percentage: 92 },
@@ -473,7 +473,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1323 },
       { size: '30ml', price: 2548 }
     ],
-    image: '/Images/chanel-bleu-de-chanel.png',
+    image: '/Images/chanel-bleu-de-chanel.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Woody', percentage: 90 },
@@ -507,7 +507,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2025 },
       { size: '30ml', price: 3900 }
     ],
-    image: '/Images/chanel-chance-eau-tendre.png',
+    image: '/Images/chanel-chance-eau-tendre.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Fruity', percentage: 91 },
@@ -541,7 +541,7 @@ export const products: Product[] = [
       { size: '15ml', price: 743 },
       { size: '30ml', price: 1430 }
     ],
-    image: '/Images/clinique-clinique-happy.png',
+    image: '/Images/clinique-clinique-happy.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Green', percentage: 65 },
@@ -575,7 +575,7 @@ export const products: Product[] = [
       { size: '15ml', price: 743 },
       { size: '30ml', price: 1430 }
     ],
-    image: '/Images/clinique-clinique-happy-heart-2012.png',
+    image: '/Images/clinique-clinique-happy-heart-2012.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Citrus', percentage: 85 },
@@ -609,7 +609,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1053 },
       { size: '30ml', price: 2028 }
     ],
-    image: '/Images/coach-coach-floral.png',
+    image: '/Images/coach-coach-floral.webp',
     mainAccords: [
       { name: 'White Floral', percentage: 100 },
       { name: 'Sweet', percentage: 94 },
@@ -643,7 +643,7 @@ export const products: Product[] = [
       { size: '15ml', price: 3618 },
       { size: '30ml', price: 6968 }
     ],
-    image: '/Images/creed-aventus.png',
+    image: '/Images/creed-aventus.webp',
     mainAccords: [
       { name: 'Fruity', percentage: 100 },
       { name: 'Sweet', percentage: 78 },
@@ -677,7 +677,7 @@ export const products: Product[] = [
       { size: '15ml', price: 3618 },
       { size: '30ml', price: 6968 }
     ],
-    image: '/Images/creed-aventus-cologne.png',
+    image: '/Images/creed-aventus-cologne.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Woody', percentage: 96 },
@@ -711,7 +711,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2403 },
       { size: '30ml', price: 4628 }
     ],
-    image: '/Images/dannam-white-rice.png',
+    image: '/Images/dannam-white-rice.webp',
     mainAccords: [
       { name: 'Powdery', percentage: 100 },
       { name: 'Musky', percentage: 95 },
@@ -745,7 +745,7 @@ export const products: Product[] = [
       { size: '15ml', price: 540 },
       { size: '30ml', price: 1040 }
     ],
-    image: '/Images/davidoff-cool-water.png',
+    image: '/Images/davidoff-cool-water.webp',
     mainAccords: [
       { name: 'Fresh', percentage: 100 },
       { name: 'Floral', percentage: 99 },
@@ -779,7 +779,7 @@ export const products: Product[] = [
       { size: '15ml', price: 675 },
       { size: '30ml', price: 1300 }
     ],
-    image: '/Images/davidoff-cool-water-intense.png',
+    image: '/Images/davidoff-cool-water-intense.webp',
     mainAccords: [
       { name: 'Amber', percentage: 100 },
       { name: 'Citrus', percentage: 95 },
@@ -813,7 +813,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1728 },
       { size: '30ml', price: 3328 }
     ],
-    image: '/Images/dior-sauvage-men.png',
+    image: '/Images/dior-sauvage-men.webp',
     mainAccords: [
       { name: 'Fresh Spicy', percentage: 100 },
       { name: 'Citrus', percentage: 89 },
@@ -847,7 +847,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1593 },
       { size: '30ml', price: 3068 }
     ],
-    image: '/Images/diptyque-fleur-de-peau-eau-de-parfum.png',
+    image: '/Images/diptyque-fleur-de-peau-eau-de-parfum.webp',
     mainAccords: [
       { name: 'Musky', percentage: 100 },
       { name: 'Powdery', percentage: 95 },
@@ -881,7 +881,7 @@ export const products: Product[] = [
       { size: '15ml', price: 297 },
       { size: '30ml', price: 572 }
     ],
-    image: '/Images/elizabeth-arden-green-tea.png',
+    image: '/Images/elizabeth-arden-green-tea.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Green', percentage: 94 },
@@ -915,7 +915,7 @@ export const products: Product[] = [
       { size: '15ml', price: 540 },
       { size: '30ml', price: 1040 }
     ],
-    image: '/Images/french-avenue-liquid-brun.png',
+    image: '/Images/french-avenue-liquid-brun.webp',
     mainAccords: [
       { name: 'Sweet', percentage: 100 },
       { name: 'Warm Spicy', percentage: 99 },
@@ -949,7 +949,7 @@ export const products: Product[] = [
       { size: '15ml', price: 540 },
       { size: '30ml', price: 1040 }
     ],
-    image: '/Images/french-avenue-vulcan-feu.png',
+    image: '/Images/french-avenue-vulcan-feu.webp',
     mainAccords: [
       { name: 'Tropical', percentage: 100 },
       { name: 'Fruity', percentage: 99 },
@@ -983,7 +983,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1350 },
       { size: '30ml', price: 2600 }
     ],
-    image: '/Images/giorgio-armani-emporio-armani-stronger-with-you-intensely.png',
+    image: '/Images/giorgio-armani-emporio-armani-stronger-with-you-intensely.webp',
     mainAccords: [
       { name: 'Vanilla', percentage: 100 },
       { name: 'Sweet', percentage: 95 },
@@ -1017,7 +1017,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/gucci-flora-gorgeous-orchid.png',
+    image: '/Images/gucci-flora-gorgeous-orchid.webp',
     mainAccords: [
       { name: 'Vanilla', percentage: 100 },
       { name: 'Ozonic', percentage: 78 },
@@ -1051,7 +1051,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/jo-malone-blackberry-bay.png',
+    image: '/Images/jo-malone-blackberry-bay.webp',
     mainAccords: [
       { name: 'Fruity', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 90 },
@@ -1085,7 +1085,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/jo-malone-english-pear-freesia.png',
+    image: '/Images/jo-malone-english-pear-freesia.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Fruity', percentage: 93 },
@@ -1119,7 +1119,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/jo-malone-mimosa-cardamom.png',
+    image: '/Images/jo-malone-mimosa-cardamom.webp',
     mainAccords: [
       { name: 'Yellow Floral', percentage: 100 },
       { name: 'Warm Spicy', percentage: 94 },
@@ -1153,7 +1153,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/jo-malone-nectarine-blossom-honey.png',
+    image: '/Images/jo-malone-nectarine-blossom-honey.webp',
     mainAccords: [
       { name: 'Fruity', percentage: 100 },
       { name: 'Sweet', percentage: 80 },
@@ -1187,7 +1187,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1890 },
       { size: '30ml', price: 3640 }
     ],
-    image: '/Images/jo-malone-sunlit-cherimoya.png',
+    image: '/Images/jo-malone-sunlit-cherimoya.webp',
     mainAccords: [
       { name: 'Fruity', percentage: 100 },
       { name: 'Sweet', percentage: 82 },
@@ -1221,7 +1221,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1890 },
       { size: '30ml', price: 3640 }
     ],
-    image: '/Images/jo-malone-taif-rose.png',
+    image: '/Images/jo-malone-taif-rose.webp',
     mainAccords: [
       { name: 'Rose', percentage: 100 },
       { name: 'Amber', percentage: 88 },
@@ -1255,7 +1255,7 @@ export const products: Product[] = [
       { size: '15ml', price: 743 },
       { size: '30ml', price: 1430 }
     ],
-    image: '/Images/kenzo-leau-kenzo-pour-femme.png',
+    image: '/Images/kenzo-leau-kenzo-pour-femme.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Aquatic', percentage: 85 },
@@ -1289,7 +1289,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1755 },
       { size: '30ml', price: 3380 }
     ],
-    image: '/Images/lancome-idole.png',
+    image: '/Images/lancome-idole.webp',
     mainAccords: [
       { name: 'Rose', percentage: 100 },
       { name: 'Musky', percentage: 87 },
@@ -1323,7 +1323,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1863 },
       { size: '30ml', price: 3588 }
     ],
-    image: '/Images/lancme-la-vie-est-belle.png',
+    image: '/Images/lancme-la-vie-est-belle.webp',
     mainAccords: [
       { name: 'Sweet', percentage: 100 },
       { name: 'Vanilla', percentage: 90 },
@@ -1357,7 +1357,7 @@ export const products: Product[] = [
       { size: '15ml', price: 648 },
       { size: '30ml', price: 1248 }
     ],
-    image: '/Images/lanvin-eclat-darpge.png',
+    image: '/Images/lanvin-eclat-darpge.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Fresh', percentage: 78 },
@@ -1391,7 +1391,7 @@ export const products: Product[] = [
       { size: '15ml', price: 513 },
       { size: '30ml', price: 988 }
     ],
-    image: '/Images/lattafa-perfumes-khamrah.png',
+    image: '/Images/lattafa-perfumes-khamrah.webp',
     mainAccords: [
       { name: 'Sweet', percentage: 100 },
       { name: 'Warm Spicy', percentage: 90 },
@@ -1425,7 +1425,7 @@ export const products: Product[] = [
       { size: '15ml', price: 5400 },
       { size: '30ml', price: 10400 }
     ],
-    image: '/Images/le-labo-gaiac-10-tokyo.png',
+    image: '/Images/le-labo-gaiac-10-tokyo.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Musky', percentage: 82 },
@@ -1459,7 +1459,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2943 },
       { size: '30ml', price: 5668 }
     ],
-    image: '/Images/le-labo-santal-33.png',
+    image: '/Images/le-labo-santal-33.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Powdery', percentage: 70 },
@@ -1493,7 +1493,7 @@ export const products: Product[] = [
       { size: '15ml', price: 3375 },
       { size: '30ml', price: 6500 }
     ],
-    image: '/Images/louis-vuitton-imagination.png',
+    image: '/Images/louis-vuitton-imagination.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 74 },
@@ -1527,7 +1527,7 @@ export const products: Product[] = [
       { size: '15ml', price: 4725 },
       { size: '30ml', price: 9100 }
     ],
-    image: '/Images/louis-vuitton-ombre-nomade.png',
+    image: '/Images/louis-vuitton-ombre-nomade.webp',
     mainAccords: [
       { name: 'Amber', percentage: 100 },
       { name: 'Warm Spicy', percentage: 90 },
@@ -1561,7 +1561,7 @@ export const products: Product[] = [
       { size: '15ml', price: 6075 },
       { size: '30ml', price: 11700 }
     ],
-    image: '/Images/louis-vuitton-symphony.png',
+    image: '/Images/louis-vuitton-symphony.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 74 },
@@ -1595,7 +1595,7 @@ export const products: Product[] = [
       { size: '15ml', price: 513 },
       { size: '30ml', price: 988 }
     ],
-    image: '/Images/maison-alhambra-delilah-blanc.png',
+    image: '/Images/maison-alhambra-delilah-blanc.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Musky', percentage: 85 },
@@ -1629,7 +1629,7 @@ export const products: Product[] = [
       { size: '15ml', price: 3078 },
       { size: '30ml', price: 5928 }
     ],
-    image: '/Images/maison-francis-kurkdjian-baccarat-rouge-540.png',
+    image: '/Images/maison-francis-kurkdjian-baccarat-rouge-540.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Amber', percentage: 98 },
@@ -1663,7 +1663,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1417.5 },
       { size: '30ml', price: 2730 }
     ],
-    image: '/Images/maison-martin-margiela-by-the-fireplace.png',
+    image: '/Images/maison-martin-margiela-by-the-fireplace.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Vanilla', percentage: 86 },
@@ -1697,7 +1697,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1053 },
       { size: '30ml', price: 2028 }
     ],
-    image: '/Images/mancera-instant-crush.png',
+    image: '/Images/mancera-instant-crush.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Warm Spicy', percentage: 98 },
@@ -1731,7 +1731,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1147.5 },
       { size: '30ml', price: 2210 }
     ],
-    image: '/Images/marc-jacobs-daisy-eau-so-fresh.png',
+    image: '/Images/marc-jacobs-daisy-eau-so-fresh.webp',
     mainAccords: [
       { name: 'Fruity', percentage: 100 },
       { name: 'Sweet', percentage: 78 },
@@ -1765,7 +1765,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1728 },
       { size: '30ml', price: 3328 }
     ],
-    image: '/Images/miss-dior-blooming-bouquet.png',
+    image: '/Images/miss-dior-blooming-bouquet.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Rose', percentage: 90 },
@@ -1799,7 +1799,7 @@ export const products: Product[] = [
       { size: '15ml', price: 648 },
       { size: '30ml', price: 1248 }
     ],
-    image: '/Images/montblanc-explorer.png',
+    image: '/Images/montblanc-explorer.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Citrus', percentage: 98 },
@@ -1833,7 +1833,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1012.5 },
       { size: '30ml', price: 1950 }
     ],
-    image: '/Images/moschino-toy-2-pearl.png',
+    image: '/Images/moschino-toy-2-pearl.webp',
     mainAccords: [
       { name: 'Aromatic', percentage: 100 },
       { name: 'Citrus', percentage: 90 },
@@ -1867,7 +1867,7 @@ export const products: Product[] = [
       { size: '15ml', price: 338 },
       { size: '30ml', price: 650 }
     ],
-    image: '/Images/nautica-voyage.png',
+    image: '/Images/nautica-voyage.webp',
     mainAccords: [
       { name: 'Green', percentage: 100 },
       { name: 'Fruity', percentage: 78 },
@@ -1901,7 +1901,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2403 },
       { size: '30ml', price: 4628 }
     ],
-    image: '/Images/nishane-hacivat-x.png',
+    image: '/Images/nishane-hacivat-x.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Citrus', percentage: 95 },
@@ -1935,7 +1935,7 @@ export const products: Product[] = [
       { size: '15ml', price: 3348 },
       { size: '30ml', price: 6448 }
     ],
-    image: '/Images/parfums-de-marly-valaya.png',
+    image: '/Images/parfums-de-marly-valaya.webp',
     mainAccords: [
       { name: 'Musky', percentage: 100 },
       { name: 'Citrus', percentage: 90 },
@@ -1969,7 +1969,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2133 },
       { size: '30ml', price: 4108 }
     ],
-    image: '/Images/penhaligons-bluebell.png',
+    image: '/Images/penhaligons-bluebell.webp',
     mainAccords: [
       { name: 'Green', percentage: 100 },
       { name: 'Floral', percentage: 90 },
@@ -2003,7 +2003,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2025 },
       { size: '30ml', price: 3900 }
     ],
-    image: '/Images/prada-paradoxe-intense.png',
+    image: '/Images/prada-paradoxe-intense.webp',
     mainAccords: [
       { name: 'White Floral', percentage: 100 },
       { name: 'Vanilla', percentage: 90 },
@@ -2037,7 +2037,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1012.5 },
       { size: '30ml', price: 1950 }
     ],
-    image: '/Images/rabanne-1-million.png',
+    image: '/Images/rabanne-1-million.webp',
     mainAccords: [
       { name: 'Warm Spicy', percentage: 100 },
       { name: 'Cinnamon', percentage: 89 },
@@ -2071,7 +2071,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1323 },
       { size: '30ml', price: 2548 }
     ],
-    image: '/Images/ralph-lauren-polo-67.png',
+    image: '/Images/ralph-lauren-polo-67.webp',
     mainAccords: [
       { name: 'Aromatic', percentage: 100 },
       { name: 'Citrus', percentage: 96 },
@@ -2105,7 +2105,7 @@ export const products: Product[] = [
       { size: '15ml', price: 513 },
       { size: '30ml', price: 988 }
     ],
-    image: '/Images/rasasi-hawas-ice.png',
+    image: '/Images/rasasi-hawas-ice.webp',
     mainAccords: [
       { name: 'Fruity', percentage: 100 },
       { name: 'Citrus', percentage: 95 },
@@ -2139,7 +2139,7 @@ export const products: Product[] = [
       { size: '15ml', price: 473 },
       { size: '30ml', price: 910 }
     ],
-    image: '/Images/sol-de-janeiro-cheirosa-68.png',
+    image: '/Images/sol-de-janeiro-cheirosa-68.webp',
     mainAccords: [
       { name: 'Tropical', percentage: 100 },
       { name: 'Fruity', percentage: 99 },
@@ -2173,7 +2173,7 @@ export const products: Product[] = [
       { size: '15ml', price: 2403 },
       { size: '30ml', price: 4628 }
     ],
-    image: '/Images/sospiro-vibrato.png',
+    image: '/Images/sospiro-vibrato.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 85 },
@@ -2207,7 +2207,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1485 },
       { size: '30ml', price: 2860 }
     ],
-    image: '/Images/valentino-donna-born-in-roma.png',
+    image: '/Images/valentino-donna-born-in-roma.webp',
     mainAccords: [
       { name: 'Woody', percentage: 100 },
       { name: 'Vanilla', percentage: 97 },
@@ -2241,7 +2241,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1822 },
       { size: '30ml', price: 3510 }
     ],
-    image: '/Images/valentino-uomo-born-in-roma-intense.png',
+    image: '/Images/valentino-uomo-born-in-roma-intense.webp',
     mainAccords: [
       { name: 'Lavender', percentage: 100 },
       { name: 'Vanilla', percentage: 98 },
@@ -2275,7 +2275,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1053 },
       { size: '30ml', price: 2028 }
     ],
-    image: '/Images/versace-bright-crystal.png',
+    image: '/Images/versace-bright-crystal.webp',
     mainAccords: [
       { name: 'Floral', percentage: 100 },
       { name: 'Citrus', percentage: 80 },
@@ -2309,7 +2309,7 @@ export const products: Product[] = [
       { size: '15ml', price: 783 },
       { size: '30ml', price: 1508 }
     ],
-    image: '/Images/versace-dylan-blue.png',
+    image: '/Images/versace-dylan-blue.webp',
     mainAccords: [
       { name: 'Amber', percentage: 100 },
       { name: 'Citrus', percentage: 95 },
@@ -2343,7 +2343,7 @@ export const products: Product[] = [
       { size: '15ml', price: 918 },
       { size: '30ml', price: 1768 }
     ],
-    image: '/Images/versace-eros.png',
+    image: '/Images/versace-eros.webp',
     mainAccords: [
       { name: 'Vanilla', percentage: 100 },
       { name: 'Aromatic', percentage: 92 },
@@ -2377,7 +2377,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1053 },
       { size: '30ml', price: 2028 }
     ],
-    image: '/Images/versace-eros-energy.png',
+    image: '/Images/versace-eros-energy.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Aromatic', percentage: 60 },
@@ -2411,7 +2411,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1080 },
       { size: '30ml', price: 2080 }
     ],
-    image: '/Images/versace-eros-flame.png',
+    image: '/Images/versace-eros-flame.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 82 },
@@ -2445,7 +2445,7 @@ export const products: Product[] = [
       { size: '15ml', price: 675 },
       { size: '30ml', price: 1300 }
     ],
-    image: '/Images/versace-versace-man-eau-fraiche.png',
+    image: '/Images/versace-versace-man-eau-fraiche.webp',
     mainAccords: [
       { name: 'Citrus', percentage: 100 },
       { name: 'Aromatic', percentage: 85 },
@@ -2479,7 +2479,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1822 },
       { size: '30ml', price: 3510 }
     ],
-    image: '/Images/yves-saint-laurent-black-opium.png',
+    image: '/Images/yves-saint-laurent-black-opium.webp',
     mainAccords: [
       { name: 'Vanilla', percentage: 100 },
       { name: 'Coffee', percentage: 92 },
@@ -2513,7 +2513,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1620 },
       { size: '30ml', price: 3120 }
     ],
-    image: '/Images/yves-saint-laurent-libre.png',
+    image: '/Images/yves-saint-laurent-libre.webp',
     mainAccords: [
       { name: 'White Floral', percentage: 100 },
       { name: 'Citrus', percentage: 90 },
@@ -2548,7 +2548,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1998 },
       { size: '30ml', price: 3848 }
     ],
-    image: '/Images/yves-saint-laurent-myslf-le-parfum.png',
+    image: '/Images/yves-saint-laurent-myslf-le-parfum.webp',
     mainAccords: [
       { name: 'White Floral', percentage: 100 },
       { name: 'Vanilla', percentage: 90 },
@@ -2582,7 +2582,7 @@ export const products: Product[] = [
       { size: '15ml', price: 1822 },
       { size: '30ml', price: 3510 }
     ],
-    image: '/Images/yves-saint-laurent-y-eau-de-parfum.png',
+    image: '/Images/yves-saint-laurent-y-eau-de-parfum.webp',
     mainAccords: [
       { name: 'Aromatic', percentage: 100 },
       { name: 'Fresh Spicy', percentage: 99 },
@@ -2616,7 +2616,7 @@ export const products: Product[] = [
       { size: '15ml', price: 877.5 },
       { size: '30ml', price: 1690 }
     ],
-    image: '/Images/zara-elegantly-tokyo.png',
+    image: '/Images/zara-elegantly-tokyo.webp',
     mainAccords: [
       { name: 'White Floral', percentage: 100 },
       { name: 'Oud', percentage: 52 },
@@ -2650,7 +2650,7 @@ export const products: Product[] = [
       { size: '15ml', price: 675 },
       { size: '30ml', price: 1300 }
     ],
-    image: '/Images/zara-golden-decade.png',
+    image: '/Images/zara-golden-decade.webp',
     mainAccords: [
       { name: 'White Floral', percentage: 100 },
       { name: 'Vanilla', percentage: 88 },
@@ -2684,7 +2684,7 @@ export const products: Product[] = [
       { size: '15ml', price: 608 },
       { size: '30ml', price: 1170 }
     ],
-    image: '/Images/zara-red-temptation-for-her.png',
+    image: '/Images/zara-red-temptation-for-her.webp',
     mainAccords: [
       { name: 'Amber', percentage: 100 },
       { name: 'Mossy', percentage: 90 },
