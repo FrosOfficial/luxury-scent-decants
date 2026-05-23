@@ -12,6 +12,7 @@ import UserProfile from './components/UserProfile';
 import InquiryForm from './components/InquiryForm';
 import AuthModal from './components/AuthModal';
 import InquiryBag from './components/InquiryBag';
+import Footer from './components/Footer';
 
 type Page = 'home' | 'shop' | 'faq' | 'profile' | 'checkout';
 
@@ -67,18 +68,14 @@ function App() {
                 <Hero onNavigate={setCurrentPage} />
                 <BrandStory />
                 <AuthenticityProcess />
-                <footer className="py-8 text-center text-brand-cream/30 text-sm border-t border-brand-gold/10">
-                  <p>© {new Date().getFullYear()} Luxury Scent Decants. All rights reserved.</p>
-                </footer>
+                <Footer />
               </motion.main>
             )}
 
             {currentPage === 'shop' && (
               <motion.main key="shop" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <ProductShowcase />
-                <footer className="py-8 text-center text-brand-cream/30 text-sm border-t border-brand-gold/10">
-                  <p>© {new Date().getFullYear()} Luxury Scent Decants. All rights reserved.</p>
-                </footer>
+                <Footer />
               </motion.main>
             )}
 
@@ -87,9 +84,7 @@ function App() {
                 <div className="pt-16 min-h-screen flex flex-col justify-center">
                   <FAQ />
                 </div>
-                <footer className="py-8 text-center text-brand-cream/30 text-sm border-t border-brand-gold/10">
-                  <p>© {new Date().getFullYear()} Luxury Scent Decants. All rights reserved.</p>
-                </footer>
+                <Footer />
               </motion.main>
             )}
 
@@ -98,9 +93,7 @@ function App() {
                 <div className="pt-24 pb-16 min-h-screen">
                   <UserProfile />
                 </div>
-                <footer className="py-8 text-center text-brand-cream/30 text-sm border-t border-brand-gold/10">
-                  <p>© {new Date().getFullYear()} Luxury Scent Decants. All rights reserved.</p>
-                </footer>
+                <Footer />
               </motion.main>
             )}
 
@@ -109,9 +102,7 @@ function App() {
                 <div className="pt-24 pb-16 min-h-screen">
                   <InquiryForm onBack={() => setCurrentPage('shop')} onClose={() => setCurrentPage('shop')} />
                 </div>
-                <footer className="py-8 text-center text-brand-cream/30 text-sm border-t border-brand-gold/10">
-                  <p>© {new Date().getFullYear()} Luxury Scent Decants. All rights reserved.</p>
-                </footer>
+                <Footer />
               </motion.main>
             )}
           </AnimatePresence>
