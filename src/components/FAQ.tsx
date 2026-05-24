@@ -19,7 +19,7 @@ const faqData: FAQItem[] = [
   {
     id: 2,
     question: "What is a \"Fresh Decant\"?",
-    answer: "A FRESH DECANT is a luxury fragrance transferred directly from the original manufacturer's bottle into our sterile, premium travel-sized glass atomizers. Each decant is hand-decanted immediately upon your order to ensure the scent remains perfectly fresh and unaltered.",
+    answer: "A FRESH DECANT is the original luxury perfume poured straight into a clean, premium travel size glass bottle. We bottle it by hand using sterile syringes right when you order so the scent stays 100% fresh and untouched.",
     icon: Sparkles
   },
   {

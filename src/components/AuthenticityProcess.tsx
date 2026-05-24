@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Sparkles, AlertCircle } from 'lucide-react';
+import { ShieldCheck, AlertCircle, Droplet } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -156,12 +156,12 @@ export default function AuthenticityProcess() {
               className="p-5 rounded-2xl bg-brand-emerald-dark/40 border border-brand-gold/15 backdrop-blur-md transition-all duration-300 flex gap-4 text-left group"
             >
               <div className="text-brand-gold p-3 rounded-xl bg-brand-gold/5 border border-brand-gold/10 h-fit transition-colors group-hover:bg-brand-gold/10">
-                <Sparkles size={20} />
+                <Droplet size={20} />
               </div>
               <div className="space-y-1">
-                <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Sterile Workspace</h4>
+                <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Clean Workspace</h4>
                 <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  We decant every single bottle using sterile syringes under super clean conditions. No air exposure and no dirt, just pure, untouched perfume.
+                  Decanted with sterile syringes in a super clean space. No air or dirt gets in. Just pure untouched perfume.
                 </p>
               </div>
             </motion.div>
