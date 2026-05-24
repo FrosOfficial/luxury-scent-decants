@@ -14,19 +14,19 @@ const videoList = [
     id: 'fb-video-0',
     reelUrl: 'https://www.facebook.com/reel/4438367186422327/',
     iframeUrl: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4438367186422327%2F&show_text=false&width=267&t=0',
-    title: 'LV Ombre Nomade packaging'
+    title: 'Nautica Voyage'
   },
   {
     id: 'fb-video-1',
     reelUrl: 'https://www.facebook.com/reel/1561286295439086/',
     iframeUrl: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1561286295439086%2F&show_text=false&width=267&t=0',
-    title: 'Premium Glass Atomizers'
+    title: 'Louis Vuitton Imagination'
   },
   {
     id: 'fb-video-2',
     reelUrl: 'https://www.facebook.com/reel/1490751416034494/',
     iframeUrl: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1490751416034494%2F&show_text=false&width=267&t=0',
-    title: 'Aesthetic Decanting Ritual'
+    title: 'Creed Aventus and Creed Cologne'
   }
 ];
 
