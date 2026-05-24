@@ -88,7 +88,7 @@ export const products: Product[] = [
     id: '2',
     name: "9AM DIVE",
     brand: "Afnan",
-    scentProfile: 'Aquatic',
+    scentProfile: 'Fruity',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 76 },
@@ -120,7 +120,7 @@ export const products: Product[] = [
     id: '3',
     name: "Cloud",
     brand: "Ariana Grande",
-    scentProfile: 'Gourmand',
+    scentProfile: 'Sweet',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 156 },
@@ -152,7 +152,7 @@ export const products: Product[] = [
     id: '4',
     name: "Club de Nuit Intense Man",
     brand: "Armaf",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Masculine',
     volumes: [
       { size: '2ml', price: 120 },
@@ -216,7 +216,7 @@ export const products: Product[] = [
     id: '6',
     name: "Club De Nuit Urban Elixir",
     brand: "Armaf",
-    scentProfile: 'Woody',
+    scentProfile: 'Amber',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 96 },
@@ -248,7 +248,7 @@ export const products: Product[] = [
     id: '7',
     name: "Hectic",
     brand: "Bujairami",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 120 },
@@ -280,7 +280,7 @@ export const products: Product[] = [
     id: '8',
     name: "Omnia Coral",
     brand: "Bvlgari",
-    scentProfile: 'Woody',
+    scentProfile: 'Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 256 },
@@ -312,7 +312,7 @@ export const products: Product[] = [
     id: '9',
     name: "CK be",
     brand: "Calvin Klein",
-    scentProfile: 'Woody',
+    scentProfile: 'Green',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 60 },
@@ -344,7 +344,7 @@ export const products: Product[] = [
     id: '10',
     name: "CK One",
     brand: "Calvin Klein",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 60 },
@@ -376,7 +376,7 @@ export const products: Product[] = [
     id: '11',
     name: "CK One Shock For Him",
     brand: "Calvin Klein",
-    scentProfile: 'Spicy',
+    scentProfile: 'Tobacco',
     demographic: 'Masculine',
     volumes: [
       { size: '2ml', price: 60 },
@@ -440,7 +440,7 @@ export const products: Product[] = [
     id: '13',
     name: "Bleu de Chanel",
     brand: "Chanel",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 196 },
@@ -504,7 +504,7 @@ export const products: Product[] = [
     id: '15',
     name: "Clinique Happy",
     brand: "Clinique",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 110 },
@@ -536,7 +536,7 @@ export const products: Product[] = [
     id: '16',
     name: "Clinique Happy Heart 2012",
     brand: "Clinique",
-    scentProfile: 'Woody',
+    scentProfile: 'Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 110 },
@@ -568,7 +568,7 @@ export const products: Product[] = [
     id: '17',
     name: "Coach Floral",
     brand: "Coach",
-    scentProfile: 'Floral',
+    scentProfile: 'White Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 156 },
@@ -600,7 +600,7 @@ export const products: Product[] = [
     id: '18',
     name: "Aventus",
     brand: "Creed",
-    scentProfile: 'Woody',
+    scentProfile: 'Fruity',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 536 },
@@ -632,7 +632,7 @@ export const products: Product[] = [
     id: '19',
     name: "Aventus Cologne",
     brand: "Creed",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 536 },
@@ -664,7 +664,7 @@ export const products: Product[] = [
     id: '20',
     name: "White Rice",
     brand: "d'Annam",
-    scentProfile: 'Gourmand',
+    scentProfile: 'Powdery',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 356 },
@@ -696,7 +696,7 @@ export const products: Product[] = [
     id: '21',
     name: "Cool Water",
     brand: "Davidoff",
-    scentProfile: 'Floral',
+    scentProfile: 'Fresh',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 80 },
@@ -728,7 +728,7 @@ export const products: Product[] = [
     id: '22',
     name: "COOL WATER INTENSE",
     brand: "Davidoff",
-    scentProfile: 'Citrus',
+    scentProfile: 'Amber',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 100 },
@@ -760,7 +760,7 @@ export const products: Product[] = [
     id: '23',
     name: "SAUVAGE MEN",
     brand: "Dior",
-    scentProfile: 'Citrus',
+    scentProfile: 'Fresh Spicy',
     demographic: 'Masculine',
     volumes: [
       { size: '2ml', price: 256 },
@@ -792,7 +792,7 @@ export const products: Product[] = [
     id: '24',
     name: "Fleur de Peau Eau de Parfum",
     brand: "Diptyque",
-    scentProfile: 'Floral',
+    scentProfile: 'Musky',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 236 },
@@ -856,7 +856,7 @@ export const products: Product[] = [
     id: '26',
     name: "Liquid Brun",
     brand: "French Avenue",
-    scentProfile: 'Floral',
+    scentProfile: 'Sweet',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 80 },
@@ -888,7 +888,7 @@ export const products: Product[] = [
     id: '27',
     name: "Vulcan Feu",
     brand: "French Avenue",
-    scentProfile: 'Woody',
+    scentProfile: 'Tropical',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 80 },
@@ -920,7 +920,7 @@ export const products: Product[] = [
     id: '28',
     name: "Emporio Armani Stronger With You Intensely",
     brand: "Giorgio Armani",
-    scentProfile: 'Spicy',
+    scentProfile: 'Vanilla',
     demographic: 'Masculine',
     volumes: [
       { size: '2ml', price: 200 },
@@ -952,7 +952,7 @@ export const products: Product[] = [
     id: '29',
     name: "Flora Gorgeous Orchid",
     brand: "Gucci",
-    scentProfile: 'Floral',
+    scentProfile: 'Vanilla',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 220 },
@@ -984,7 +984,7 @@ export const products: Product[] = [
     id: '30',
     name: "BLACKBERRY & BAY",
     brand: "Jo Malone",
-    scentProfile: 'Woody',
+    scentProfile: 'Fruity',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 220 },
@@ -1048,7 +1048,7 @@ export const products: Product[] = [
     id: '32',
     name: "Mimosa & Cardamom",
     brand: "Jo Malone",
-    scentProfile: 'Floral',
+    scentProfile: 'Yellow Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 220 },
@@ -1080,7 +1080,7 @@ export const products: Product[] = [
     id: '33',
     name: "Nectarine Blossom & Honey",
     brand: "Jo Malone",
-    scentProfile: 'Floral',
+    scentProfile: 'Fruity',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 220 },
@@ -1112,7 +1112,7 @@ export const products: Product[] = [
     id: '34',
     name: "SUNLIT CHERIMOYA",
     brand: "Jo Malone",
-    scentProfile: 'Aquatic',
+    scentProfile: 'Fruity',
     demographic: 'Feminine',
     volumes: [
       { size: '2ml', price: 280 },
@@ -1144,7 +1144,7 @@ export const products: Product[] = [
     id: '35',
     name: "Taif Rose",
     brand: "Jo Malone",
-    scentProfile: 'Floral',
+    scentProfile: 'Rose',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 280 },
@@ -1208,7 +1208,7 @@ export const products: Product[] = [
     id: '37',
     name: "Idole",
     brand: "Lancome",
-    scentProfile: 'Floral',
+    scentProfile: 'Rose',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 260 },
@@ -1240,7 +1240,7 @@ export const products: Product[] = [
     id: '38',
     name: "La Vie Est Belle",
     brand: "Lancôme",
-    scentProfile: 'Woody',
+    scentProfile: 'Sweet',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 276 },
@@ -1304,7 +1304,7 @@ export const products: Product[] = [
     id: '40',
     name: "Khamrah",
     brand: "Lattafa Perfumes",
-    scentProfile: 'Spicy',
+    scentProfile: 'Sweet',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 76 },
@@ -1432,7 +1432,7 @@ export const products: Product[] = [
     id: '44',
     name: "Ombre Nomade",
     brand: "Louis Vuitton",
-    scentProfile: 'Woody',
+    scentProfile: 'Amber',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 700 },
@@ -1464,7 +1464,7 @@ export const products: Product[] = [
     id: '45',
     name: "Symphony",
     brand: "Louis Vuitton",
-    scentProfile: 'Floral',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 900 },
@@ -1496,7 +1496,7 @@ export const products: Product[] = [
     id: '46',
     name: "Delilah Blanc",
     brand: "Maison Alhambra",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 76 },
@@ -1624,7 +1624,7 @@ export const products: Product[] = [
     id: '50',
     name: "Daisy Eau So Fresh",
     brand: "Marc Jacobs",
-    scentProfile: 'Floral',
+    scentProfile: 'Fruity',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 170 },
@@ -1720,7 +1720,7 @@ export const products: Product[] = [
     id: '53',
     name: "Toy 2 Pearl",
     brand: "Moschino",
-    scentProfile: 'Woody',
+    scentProfile: 'Aromatic',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 150 },
@@ -1752,7 +1752,7 @@ export const products: Product[] = [
     id: '54',
     name: "Voyage",
     brand: "Nautica",
-    scentProfile: 'Floral',
+    scentProfile: 'Green',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 50 },
@@ -1816,7 +1816,7 @@ export const products: Product[] = [
     id: '56',
     name: "Valaya",
     brand: "Parfums de Marly",
-    scentProfile: 'Woody',
+    scentProfile: 'Musky',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 496 },
@@ -1848,7 +1848,7 @@ export const products: Product[] = [
     id: '57',
     name: "Bluebell",
     brand: "Penhaligon's",
-    scentProfile: 'Woody',
+    scentProfile: 'Green',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 316 },
@@ -1880,7 +1880,7 @@ export const products: Product[] = [
     id: '58',
     name: "Paradoxe Intense",
     brand: "Prada",
-    scentProfile: 'Spicy',
+    scentProfile: 'White Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 300 },
@@ -1912,7 +1912,7 @@ export const products: Product[] = [
     id: '59',
     name: "1 Million",
     brand: "Rabanne",
-    scentProfile: 'Woody',
+    scentProfile: 'Warm Spicy',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 150 },
@@ -1944,7 +1944,7 @@ export const products: Product[] = [
     id: '60',
     name: "POLO 67",
     brand: "Ralph Lauren",
-    scentProfile: 'Woody',
+    scentProfile: 'Aromatic',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 196 },
@@ -1976,7 +1976,7 @@ export const products: Product[] = [
     id: '61',
     name: "Hawas Ice",
     brand: "Rasasi",
-    scentProfile: 'Citrus',
+    scentProfile: 'Fruity',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 76 },
@@ -2008,7 +2008,7 @@ export const products: Product[] = [
     id: '62',
     name: "Cheirosa '68",
     brand: "Sol de Janeiro",
-    scentProfile: 'Floral',
+    scentProfile: 'Tropical',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 70 },
@@ -2040,7 +2040,7 @@ export const products: Product[] = [
     id: '63',
     name: "Vibrato",
     brand: "Sospiro",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 356 },
@@ -2104,7 +2104,7 @@ export const products: Product[] = [
     id: '65',
     name: "Uomo Born In Roma Intense",
     brand: "Valentino",
-    scentProfile: 'Woody',
+    scentProfile: 'Lavender',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 270 },
@@ -2136,7 +2136,7 @@ export const products: Product[] = [
     id: '66',
     name: "Bright Crystal",
     brand: "Versace",
-    scentProfile: 'Woody',
+    scentProfile: 'Floral',
     demographic: 'Feminine',
     volumes: [
       { size: '2ml', price: 156 },
@@ -2168,7 +2168,7 @@ export const products: Product[] = [
     id: '67',
     name: "DYLAN BLUE",
     brand: "Versace",
-    scentProfile: 'Woody',
+    scentProfile: 'Amber',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 116 },
@@ -2200,7 +2200,7 @@ export const products: Product[] = [
     id: '68',
     name: "Eros",
     brand: "Versace",
-    scentProfile: 'Spicy',
+    scentProfile: 'Vanilla',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 136 },
@@ -2232,7 +2232,7 @@ export const products: Product[] = [
     id: '69',
     name: "Eros Energy",
     brand: "Versace",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 156 },
@@ -2264,7 +2264,7 @@ export const products: Product[] = [
     id: '70',
     name: "Eros Flame",
     brand: "Versace",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 160 },
@@ -2296,7 +2296,7 @@ export const products: Product[] = [
     id: '71',
     name: "Versace Man Eau Fraiche",
     brand: "Versace",
-    scentProfile: 'Woody',
+    scentProfile: 'Citrus',
     demographic: 'Masculine',
     volumes: [
       { size: '2ml', price: 100 },
@@ -2328,7 +2328,7 @@ export const products: Product[] = [
     id: '72',
     name: "Black Opium",
     brand: "Yves Saint Laurent",
-    scentProfile: 'Floral',
+    scentProfile: 'Vanilla',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 270 },
@@ -2360,7 +2360,7 @@ export const products: Product[] = [
     id: '73',
     name: "LIBRE",
     brand: "Yves Saint Laurent",
-    scentProfile: 'Floral',
+    scentProfile: 'White Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 240 },
@@ -2392,7 +2392,7 @@ export const products: Product[] = [
     id: '74',
     name: "MYSLF Le Parfum",
     brand: "Yves Saint Laurent",
-    scentProfile: 'Woody',
+    scentProfile: 'White Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 296 },
@@ -2425,7 +2425,7 @@ export const products: Product[] = [
     id: '75',
     name: "Y Eau de Parfum",
     brand: "Yves Saint Laurent",
-    scentProfile: 'Woody',
+    scentProfile: 'Aromatic',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 270 },
@@ -2457,7 +2457,7 @@ export const products: Product[] = [
     id: '76',
     name: "Elegantly Tokyo",
     brand: "Zara",
-    scentProfile: 'Woody',
+    scentProfile: 'White Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 130 },
@@ -2489,7 +2489,7 @@ export const products: Product[] = [
     id: '77',
     name: "Golden Decade",
     brand: "Zara",
-    scentProfile: 'Floral',
+    scentProfile: 'White Floral',
     demographic: 'Unisex',
     volumes: [
       { size: '2ml', price: 100 },
@@ -2521,7 +2521,7 @@ export const products: Product[] = [
     id: '78',
     name: "Red Temptation For Her",
     brand: "Zara",
-    scentProfile: 'Woody',
+    scentProfile: 'Amber',
     demographic: 'Feminine',
     volumes: [
       { size: '2ml', price: 90 },
