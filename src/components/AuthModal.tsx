@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
@@ -93,6 +93,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
 
             {/* Close Button */}
             <button
+              type="button"
               onClick={onClose}
               className="absolute top-4 right-4 p-1.5 rounded-full border border-brand-gold/10 text-brand-cream/60 hover:text-brand-gold hover:border-brand-gold/30 transition-all duration-200"
             >
@@ -101,8 +102,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
 
             {/* Title / Logo */}
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-brand-gold/20 bg-brand-emerald-dark mb-3 text-brand-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-                <Sparkles size={20} className="animate-pulse" />
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-brand-gold/20 bg-brand-emerald-dark mb-3 overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.25)]">
+                <img 
+                  src="/Images/logo.webp" 
+                  alt="Luxury Scent Decants Logo" 
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h2 className="font-serif text-2xl text-brand-cream tracking-wide">
                 Luxury Scent <span className="text-brand-gold">Decants</span>
