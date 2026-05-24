@@ -184,6 +184,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
                     className="w-full pl-10 pr-4 py-3 bg-brand-emerald-dark/60 border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/60 transition-all font-sans"
                   />
                 </div>
+                {tab === 'signup' && (
+                  <p className="text-[10px] text-brand-gold/70 mt-1.5 pl-1 leading-relaxed font-sans font-light">
+                    * Please use your working gmail as a confirmation code will be sent.
+                  </p>
+                )}
               </div>
 
               <div>
