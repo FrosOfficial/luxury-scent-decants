@@ -161,7 +161,7 @@ export default function AuthenticityProcess() {
               <div className="space-y-1">
                 <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Sterile Workspace</h4>
                 <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  Hand-decanted using clinical syringes under strict sanitary guidelines. No exposure to air or contamination.
+                  We decant every single bottle using sterile syringes under super clean conditions. No air exposure, no dirt—just pure, untouched perfume.
                 </p>
               </div>
             </motion.div>
@@ -180,7 +180,7 @@ export default function AuthenticityProcess() {
               <div className="space-y-1">
                 <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">100% Authentic</h4>
                 <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  Direct transfer from authentic designer perfume bottles. Never diluted, never altered, strictly raw juice.
+                  Straight from the original bottle to yours. We never dilute or alter anything. You're getting 100% raw, authentic fragrance, always.
                 </p>
               </div>
             </motion.div>
@@ -199,7 +199,7 @@ export default function AuthenticityProcess() {
               <div className="space-y-1">
                 <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Premium Glass</h4>
                 <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  We use heavy, high-grade glass atomizers with premium spray nozzles that deliver a fine, luxurious mist.
+                  No cheap plastic here. We only use thick, premium glass bottles with high-quality sprayers that give you a perfect, satisfying mist.
                 </p>
               </div>
             </motion.div>
