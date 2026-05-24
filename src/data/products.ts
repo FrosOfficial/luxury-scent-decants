@@ -1,7 +1,5 @@
 export type ScentProfile = 'Woody' | 'Floral' | 'Citrus' | 'Aquatic' | 'Spicy' | 'Gourmand';
-export type Occasion = 'Summer Fresh' | 'Winter Warmth' | 'Date Night' | 'Corporate Office' | 'Everyday';
 export type Demographic = 'Masculine' | 'Feminine' | 'Unisex';
-export type Concentration = 'EDT' | 'EDP' | 'Extrait de Parfum';
   
 export interface VolumePricing {
   id?: string;
@@ -19,9 +17,7 @@ export interface Product {
   name: string;
   brand: string;
   scentProfile: ScentProfile;
-  occasion: Occasion;
   demographic: Demographic;
-  concentration: Concentration;
   volumes: VolumePricing[];
   image: string;
   mainAccords: MainAccord[];
@@ -54,9 +50,7 @@ export const products: Product[] = [
     name: "9 PM Night Out",
     brand: "Afnan",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 96 },
       { size: '3ml', price: 144 },
@@ -88,9 +82,7 @@ export const products: Product[] = [
     name: "9AM DIVE",
     brand: "Afnan",
     scentProfile: 'Aquatic',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 76 },
       { size: '3ml', price: 114 },
@@ -122,9 +114,7 @@ export const products: Product[] = [
     name: "Cloud",
     brand: "Ariana Grande",
     scentProfile: 'Gourmand',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 156 },
       { size: '3ml', price: 234 },
@@ -156,9 +146,7 @@ export const products: Product[] = [
     name: "Club de Nuit Intense Man",
     brand: "Armaf",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Masculine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 120 },
       { size: '3ml', price: 180 },
@@ -190,9 +178,7 @@ export const products: Product[] = [
     name: "Club de Nuit Untold",
     brand: "Armaf",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 156 },
       { size: '3ml', price: 234 },
@@ -224,9 +210,7 @@ export const products: Product[] = [
     name: "Club De Nuit Urban Elixir",
     brand: "Armaf",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 96 },
       { size: '3ml', price: 144 },
@@ -258,9 +242,7 @@ export const products: Product[] = [
     name: "Hectic",
     brand: "Bujairami",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 120 },
       { size: '3ml', price: 180 },
@@ -292,9 +274,7 @@ export const products: Product[] = [
     name: "Omnia Coral",
     brand: "Bvlgari",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 256 },
       { size: '3ml', price: 384 },
@@ -326,9 +306,7 @@ export const products: Product[] = [
     name: "CK be",
     brand: "Calvin Klein",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 60 },
       { size: '3ml', price: 90 },
@@ -360,9 +338,7 @@ export const products: Product[] = [
     name: "CK One",
     brand: "Calvin Klein",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 60 },
       { size: '3ml', price: 90 },
@@ -394,9 +370,7 @@ export const products: Product[] = [
     name: "CK One Shock For Him",
     brand: "Calvin Klein",
     scentProfile: 'Spicy',
-    occasion: 'Winter Warmth' as Occasion,
     demographic: 'Masculine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 60 },
       { size: '3ml', price: 90 },
@@ -428,9 +402,7 @@ export const products: Product[] = [
     name: "Good Girl Blush",
     brand: "Carolina Herrera",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Feminine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -462,9 +434,7 @@ export const products: Product[] = [
     name: "Bleu de Chanel",
     brand: "Chanel",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 196 },
       { size: '3ml', price: 294 },
@@ -496,9 +466,7 @@ export const products: Product[] = [
     name: "Chance Eau Tendre",
     brand: "Chanel",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 300 },
       { size: '3ml', price: 450 },
@@ -530,9 +498,7 @@ export const products: Product[] = [
     name: "Clinique Happy",
     brand: "Clinique",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 110 },
       { size: '3ml', price: 165 },
@@ -564,9 +530,7 @@ export const products: Product[] = [
     name: "Clinique Happy Heart 2012",
     brand: "Clinique",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 110 },
       { size: '3ml', price: 165 },
@@ -598,9 +562,7 @@ export const products: Product[] = [
     name: "Coach Floral",
     brand: "Coach",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 156 },
       { size: '3ml', price: 234 },
@@ -632,9 +594,7 @@ export const products: Product[] = [
     name: "Aventus",
     brand: "Creed",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 536 },
       { size: '3ml', price: 804 },
@@ -666,9 +626,7 @@ export const products: Product[] = [
     name: "Aventus Cologne",
     brand: "Creed",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 536 },
       { size: '3ml', price: 804 },
@@ -700,9 +658,7 @@ export const products: Product[] = [
     name: "White Rice",
     brand: "d'Annam",
     scentProfile: 'Gourmand',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 356 },
       { size: '3ml', price: 534 },
@@ -734,9 +690,7 @@ export const products: Product[] = [
     name: "Cool Water",
     brand: "Davidoff",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 80 },
       { size: '3ml', price: 120 },
@@ -768,9 +722,7 @@ export const products: Product[] = [
     name: "COOL WATER INTENSE",
     brand: "Davidoff",
     scentProfile: 'Citrus',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 100 },
       { size: '3ml', price: 150 },
@@ -802,9 +754,7 @@ export const products: Product[] = [
     name: "SAUVAGE MEN",
     brand: "Dior",
     scentProfile: 'Citrus',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Masculine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 256 },
       { size: '3ml', price: 384 },
@@ -836,9 +786,7 @@ export const products: Product[] = [
     name: "Fleur de Peau Eau de Parfum",
     brand: "Diptyque",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 236 },
       { size: '3ml', price: 354 },
@@ -870,9 +818,7 @@ export const products: Product[] = [
     name: "Green Tea",
     brand: "Elizabeth Arden",
     scentProfile: 'Citrus',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 44 },
       { size: '3ml', price: 66 },
@@ -904,9 +850,7 @@ export const products: Product[] = [
     name: "Liquid Brun",
     brand: "French Avenue",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 80 },
       { size: '3ml', price: 120 },
@@ -938,9 +882,7 @@ export const products: Product[] = [
     name: "Vulcan Feu",
     brand: "French Avenue",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 80 },
       { size: '3ml', price: 120 },
@@ -972,9 +914,7 @@ export const products: Product[] = [
     name: "Emporio Armani Stronger With You Intensely",
     brand: "Giorgio Armani",
     scentProfile: 'Spicy',
-    occasion: 'Winter Warmth' as Occasion,
     demographic: 'Masculine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 200 },
       { size: '3ml', price: 300 },
@@ -1006,9 +946,7 @@ export const products: Product[] = [
     name: "Flora Gorgeous Orchid",
     brand: "Gucci",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -1040,9 +978,7 @@ export const products: Product[] = [
     name: "BLACKBERRY & BAY",
     brand: "Jo Malone",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -1074,9 +1010,7 @@ export const products: Product[] = [
     name: "English Pear & Freesia",
     brand: "Jo Malone",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -1108,9 +1042,7 @@ export const products: Product[] = [
     name: "Mimosa & Cardamom",
     brand: "Jo Malone",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -1142,9 +1074,7 @@ export const products: Product[] = [
     name: "Nectarine Blossom & Honey",
     brand: "Jo Malone",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -1176,9 +1106,7 @@ export const products: Product[] = [
     name: "SUNLIT CHERIMOYA",
     brand: "Jo Malone",
     scentProfile: 'Aquatic',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Feminine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 280 },
       { size: '3ml', price: 420 },
@@ -1210,9 +1138,7 @@ export const products: Product[] = [
     name: "Taif Rose",
     brand: "Jo Malone",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 280 },
       { size: '3ml', price: 420 },
@@ -1244,9 +1170,7 @@ export const products: Product[] = [
     name: "L'Eau Kenzo Pour Femme",
     brand: "Kenzo",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Feminine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 110 },
       { size: '3ml', price: 165 },
@@ -1278,9 +1202,7 @@ export const products: Product[] = [
     name: "Idole",
     brand: "Lancome",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 260 },
       { size: '3ml', price: 390 },
@@ -1312,9 +1234,7 @@ export const products: Product[] = [
     name: "La Vie Est Belle",
     brand: "Lancôme",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 276 },
       { size: '3ml', price: 414 },
@@ -1346,9 +1266,7 @@ export const products: Product[] = [
     name: "Eclat d'Arpège",
     brand: "Lanvin",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 96 },
       { size: '3ml', price: 144 },
@@ -1380,9 +1298,7 @@ export const products: Product[] = [
     name: "Khamrah",
     brand: "Lattafa Perfumes",
     scentProfile: 'Spicy',
-    occasion: 'Winter Warmth' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 76 },
       { size: '3ml', price: 114 },
@@ -1414,9 +1330,7 @@ export const products: Product[] = [
     name: "Gaiac 10 Tokyo",
     brand: "Le Labo",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 800 },
       { size: '3ml', price: 1200 },
@@ -1448,9 +1362,7 @@ export const products: Product[] = [
     name: "SANTAL 33",
     brand: "Le Labo",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 436 },
       { size: '3ml', price: 654 },
@@ -1482,9 +1394,7 @@ export const products: Product[] = [
     name: "Imagination",
     brand: "Louis Vuitton",
     scentProfile: 'Citrus',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 500 },
       { size: '3ml', price: 750 },
@@ -1516,9 +1426,7 @@ export const products: Product[] = [
     name: "Ombre Nomade",
     brand: "Louis Vuitton",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 700 },
       { size: '3ml', price: 1050 },
@@ -1550,9 +1458,7 @@ export const products: Product[] = [
     name: "Symphony",
     brand: "Louis Vuitton",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 900 },
       { size: '3ml', price: 1350 },
@@ -1584,9 +1490,7 @@ export const products: Product[] = [
     name: "Delilah Blanc",
     brand: "Maison Alhambra",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 76 },
       { size: '3ml', price: 114 },
@@ -1618,9 +1522,7 @@ export const products: Product[] = [
     name: "Baccarat Rouge 540",
     brand: "Maison Francis Kurkdjian",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 456 },
       { size: '3ml', price: 684 },
@@ -1652,9 +1554,7 @@ export const products: Product[] = [
     name: "By the Fireplace",
     brand: "Maison Martin Margiela",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 210 },
       { size: '3ml', price: 315 },
@@ -1686,9 +1586,7 @@ export const products: Product[] = [
     name: "Instant Crush",
     brand: "Mancera",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 156 },
       { size: '3ml', price: 234 },
@@ -1720,9 +1618,7 @@ export const products: Product[] = [
     name: "Daisy Eau So Fresh",
     brand: "Marc Jacobs",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 170 },
       { size: '3ml', price: 255 },
@@ -1754,9 +1650,7 @@ export const products: Product[] = [
     name: "BLOOMING BOUQUET",
     brand: "Miss Dior",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 256 },
       { size: '3ml', price: 384 },
@@ -1788,9 +1682,7 @@ export const products: Product[] = [
     name: "Explorer",
     brand: "Montblanc",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 96 },
       { size: '3ml', price: 144 },
@@ -1822,9 +1714,7 @@ export const products: Product[] = [
     name: "Toy 2 Pearl",
     brand: "Moschino",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 150 },
       { size: '3ml', price: 225 },
@@ -1856,9 +1746,7 @@ export const products: Product[] = [
     name: "Voyage",
     brand: "Nautica",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 50 },
       { size: '3ml', price: 75 },
@@ -1890,9 +1778,7 @@ export const products: Product[] = [
     name: "HACIVAT X",
     brand: "Nishane",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 356 },
       { size: '3ml', price: 534 },
@@ -1924,9 +1810,7 @@ export const products: Product[] = [
     name: "Valaya",
     brand: "Parfums de Marly",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 496 },
       { size: '3ml', price: 744 },
@@ -1958,9 +1842,7 @@ export const products: Product[] = [
     name: "Bluebell",
     brand: "Penhaligon's",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 316 },
       { size: '3ml', price: 474 },
@@ -1992,9 +1874,7 @@ export const products: Product[] = [
     name: "Paradoxe Intense",
     brand: "Prada",
     scentProfile: 'Spicy',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 300 },
       { size: '3ml', price: 450 },
@@ -2026,9 +1906,7 @@ export const products: Product[] = [
     name: "1 Million",
     brand: "Rabanne",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 150 },
       { size: '3ml', price: 225 },
@@ -2060,9 +1938,7 @@ export const products: Product[] = [
     name: "POLO 67",
     brand: "Ralph Lauren",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 196 },
       { size: '3ml', price: 294 },
@@ -2094,9 +1970,7 @@ export const products: Product[] = [
     name: "Hawas Ice",
     brand: "Rasasi",
     scentProfile: 'Citrus',
-    occasion: 'Summer Fresh' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 76 },
       { size: '3ml', price: 114 },
@@ -2128,9 +2002,7 @@ export const products: Product[] = [
     name: "Cheirosa '68",
     brand: "Sol de Janeiro",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 70 },
       { size: '3ml', price: 105 },
@@ -2162,9 +2034,7 @@ export const products: Product[] = [
     name: "Vibrato",
     brand: "Sospiro",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 356 },
       { size: '3ml', price: 534 },
@@ -2196,9 +2066,7 @@ export const products: Product[] = [
     name: "Donna Born In Roma",
     brand: "Valentino",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Feminine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 220 },
       { size: '3ml', price: 330 },
@@ -2230,9 +2098,7 @@ export const products: Product[] = [
     name: "Uomo Born In Roma Intense",
     brand: "Valentino",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 270 },
       { size: '3ml', price: 405 },
@@ -2264,9 +2130,7 @@ export const products: Product[] = [
     name: "Bright Crystal",
     brand: "Versace",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Feminine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 156 },
       { size: '3ml', price: 234 },
@@ -2298,9 +2162,7 @@ export const products: Product[] = [
     name: "DYLAN BLUE",
     brand: "Versace",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 116 },
       { size: '3ml', price: 174 },
@@ -2332,9 +2194,7 @@ export const products: Product[] = [
     name: "Eros",
     brand: "Versace",
     scentProfile: 'Spicy',
-    occasion: 'Winter Warmth' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 136 },
       { size: '3ml', price: 204 },
@@ -2366,9 +2226,7 @@ export const products: Product[] = [
     name: "Eros Energy",
     brand: "Versace",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 156 },
       { size: '3ml', price: 234 },
@@ -2400,9 +2258,7 @@ export const products: Product[] = [
     name: "Eros Flame",
     brand: "Versace",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 160 },
       { size: '3ml', price: 240 },
@@ -2434,9 +2290,7 @@ export const products: Product[] = [
     name: "Versace Man Eau Fraiche",
     brand: "Versace",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Masculine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 100 },
       { size: '3ml', price: 150 },
@@ -2468,9 +2322,7 @@ export const products: Product[] = [
     name: "Black Opium",
     brand: "Yves Saint Laurent",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 270 },
       { size: '3ml', price: 405 },
@@ -2502,9 +2354,7 @@ export const products: Product[] = [
     name: "LIBRE",
     brand: "Yves Saint Laurent",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 240 },
       { size: '3ml', price: 360 },
@@ -2536,9 +2386,7 @@ export const products: Product[] = [
     name: "MYSLF Le Parfum",
     brand: "Yves Saint Laurent",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 296 },
       
@@ -2571,9 +2419,7 @@ export const products: Product[] = [
     name: "Y Eau de Parfum",
     brand: "Yves Saint Laurent",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 270 },
       { size: '3ml', price: 405 },
@@ -2605,9 +2451,7 @@ export const products: Product[] = [
     name: "Elegantly Tokyo",
     brand: "Zara",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 130 },
       { size: '3ml', price: 195 },
@@ -2639,9 +2483,7 @@ export const products: Product[] = [
     name: "Golden Decade",
     brand: "Zara",
     scentProfile: 'Floral',
-    occasion: 'Date Night' as Occasion,
     demographic: 'Unisex',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 100 },
       { size: '3ml', price: 150 },
@@ -2673,9 +2515,7 @@ export const products: Product[] = [
     name: "Red Temptation For Her",
     brand: "Zara",
     scentProfile: 'Woody',
-    occasion: 'Corporate Office' as Occasion,
     demographic: 'Feminine',
-    concentration: 'EDP',
     volumes: [
       { size: '2ml', price: 90 },
       { size: '3ml', price: 135 },

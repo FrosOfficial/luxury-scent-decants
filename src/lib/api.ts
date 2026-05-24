@@ -57,9 +57,7 @@ export function mapDbProductToFrontend(dbProduct: any): any {
     name: dbProduct.name,
     brand: dbProduct.brand,
     scentProfile: dbProduct.scent_profile,
-    occasion: dbProduct.occasion,
     demographic: dbProduct.demographic,
-    concentration: dbProduct.concentration,
     image: (dbProduct.image_url || '/placeholder.png').replace(/\.(png|jpg|jpeg)$/i, '.webp'),
     volumes: Array.isArray(dbProduct.volumes) 
       ? dbProduct.volumes.map((v: any) => ({ id: v.id, size: v.size, price: Number(v.price) }))
