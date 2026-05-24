@@ -161,7 +161,7 @@ export default function AuthenticityProcess() {
               <div className="space-y-1">
                 <h4 className="text-xs font-bold tracking-widest uppercase text-brand-cream">Sterile Workspace</h4>
                 <p className="text-xs text-brand-cream/60 leading-relaxed font-sans font-light">
-                  We decant every single bottle using sterile syringes under super clean conditions. No air exposure, no dirt—just pure, untouched perfume.
+                  We decant every single bottle using sterile syringes under super clean conditions. No air exposure and no dirt, just pure, untouched perfume.
                 </p>
               </div>
             </motion.div>
