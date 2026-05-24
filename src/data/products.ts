@@ -1,4 +1,11 @@
-export type ScentProfile = 'Woody' | 'Floral' | 'Citrus' | 'Aquatic' | 'Spicy' | 'Gourmand';
+export type ScentProfile = 
+  | 'Aldehydic' | 'Amber' | 'Animalic' | 'Aquatic' | 'Aromatic' | 'Balsamic' 
+  | 'Cinnamon' | 'Citrus' | 'Coconut' | 'Coffee' | 'Earthy' | 'Floral' 
+  | 'Fresh' | 'Fresh Spicy' | 'Fruity' | 'Gourmand' | 'Green' | 'Iris' | 'Lactonic' 
+  | 'Lavender' | 'Leather' | 'Marine' | 'Metallic' | 'Mossy' | 'Musky' 
+  | 'Oud' | 'Ozonic' | 'Patchouli' | 'Powdery' | 'Rose' | 'Savory' 
+  | 'Smoky' | 'Soft Spicy' | 'Spicy' | 'Sweet' | 'Tobacco' | 'Tropical' | 'Vanilla' 
+  | 'Violet' | 'Warm Spicy' | 'White Floral' | 'Woody' | 'Yellow Floral';
 export type Demographic = 'Masculine' | 'Feminine' | 'Unisex';
   
 export interface VolumePricing {
