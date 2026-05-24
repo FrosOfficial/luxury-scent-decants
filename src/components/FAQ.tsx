@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircle, ChevronDown, Compass, Truck, Sparkles, AlertCircle } from 'lucide-react';
+import { HelpCircle, ChevronDown, Compass, Truck, AlertCircle } from 'lucide-react';
 
 interface FAQItem {
   id: number;
@@ -20,7 +20,7 @@ const faqData: FAQItem[] = [
     id: 2,
     question: "What is a \"Fresh Decant\"?",
     answer: "A FRESH DECANT is the original luxury perfume poured straight into a clean, premium travel size glass bottle. We bottle it by hand using sterile syringes right when you order so the scent stays 100% fresh and untouched.",
-    icon: Sparkles
+    icon: HelpCircle
   },
   {
     id: 3,
