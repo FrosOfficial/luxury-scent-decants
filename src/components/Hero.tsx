@@ -205,6 +205,10 @@ export default function Hero({ onNavigate }: HeroProps) {
                     src={bottle.src}
                     alt={bottle.name}
                     draggable={false}
+                    loading="eager"
+                    fetchPriority="high"
+                    width={360}
+                    height={460}
                     className="object-contain select-none"
                     style={{
                       height:   'min(460px, 70vh)',

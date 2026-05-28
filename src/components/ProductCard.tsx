@@ -38,6 +38,9 @@ export default function ProductCard({ product, index, activeSizeFilter }: Produc
           <img 
             src={product.image} 
             alt={product.name}
+            loading="lazy"
+            width={400}
+            height={400}
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-brand-emerald-dark via-brand-emerald-dark/20 to-transparent opacity-80" />

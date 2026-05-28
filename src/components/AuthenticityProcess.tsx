@@ -34,66 +34,88 @@ export default function AuthenticityProcess() {
   const [useFallback, setUseFallback] = useState(false);
   const playersRef = useRef<{ [key: string]: any }>({});
   const timerRef = useRef<any>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const sdkLoadedRef = useRef(false);
 
   useEffect(() => {
-    // Start a 3.5s timeout. If XFBML hasn't parsed successfully in this time,
-    // we use standard bulletproof iframes as a fallback.
-    timerRef.current = setTimeout(() => {
-      console.log('FB SDK load timeout, falling back to static iframes.');
-      setUseFallback(true);
-    }, 3500);
+    function loadFbSdk() {
+      if (sdkLoadedRef.current) return;
+      sdkLoadedRef.current = true;
 
-    // Set up global SDK callback
-    window.fbAsyncInit = function() {
-      if (!window.FB) return;
-      
-      window.FB.init({
-        xfbml: true,
-        version: 'v18.0'
-      });
+      // Start a 3.5s timeout. If XFBML hasn't parsed successfully in this time,
+      // we use standard bulletproof iframes as a fallback.
+      timerRef.current = setTimeout(() => {
+        console.log('FB SDK load timeout, falling back to static iframes.');
+        setUseFallback(true);
+      }, 3500);
 
-      // Listen for players to become ready
-      window.FB.Event.subscribe('xfbml.ready', function(msg: any) {
-        if (msg.type === 'video') {
-          console.log('FB Player Ready:', msg.id);
-          playersRef.current[msg.id] = msg.instance;
-          
-          // Once at least one FB player is ready, disable the fallback
-          setUseFallback(false);
-          if (timerRef.current) {
-            clearTimeout(timerRef.current);
-            timerRef.current = null;
-          }
+      // Set up global SDK callback
+      window.fbAsyncInit = function() {
+        if (!window.FB) return;
+        
+        window.FB.init({
+          xfbml: true,
+          version: 'v18.0'
+        });
 
-          // Subscribe to finishedPlaying event
-          msg.instance.subscribe('finishedPlaying', () => {
-            console.log('Video finished:', msg.id);
-            const currentIndex = parseInt(msg.id.replace('fb-video-', ''));
-            const nextIndex = (currentIndex + 1) % videoList.length;
-            const nextPlayer = playersRef.current[`fb-video-${nextIndex}`];
-            if (nextPlayer) {
-              console.log('Autoplay next:', `fb-video-${nextIndex}`);
-              nextPlayer.play();
+        // Listen for players to become ready
+        window.FB.Event.subscribe('xfbml.ready', function(msg: any) {
+          if (msg.type === 'video') {
+            console.log('FB Player Ready:', msg.id);
+            playersRef.current[msg.id] = msg.instance;
+            
+            // Once at least one FB player is ready, disable the fallback
+            setUseFallback(false);
+            if (timerRef.current) {
+              clearTimeout(timerRef.current);
+              timerRef.current = null;
             }
-          });
-        }
-      });
-    };
 
-    // Inject Facebook SDK if not already present
-    if (!document.getElementById('facebook-jssdk')) {
-      const js = document.createElement('script');
-      js.id = 'facebook-jssdk';
-      js.src = 'https://connect.facebook.net/en_US/sdk.js';
-      js.async = true;
-      js.defer = true;
-      document.body.appendChild(js);
-    } else if (window.FB) {
-      // If already present, parse the page for fb-video elements and clear timer if already loaded
-      window.FB.XFBML.parse();
+            // Subscribe to finishedPlaying event
+            msg.instance.subscribe('finishedPlaying', () => {
+              console.log('Video finished:', msg.id);
+              const currentIndex = parseInt(msg.id.replace('fb-video-', ''));
+              const nextIndex = (currentIndex + 1) % videoList.length;
+              const nextPlayer = playersRef.current[`fb-video-${nextIndex}`];
+              if (nextPlayer) {
+                console.log('Autoplay next:', `fb-video-${nextIndex}`);
+                nextPlayer.play();
+              }
+            });
+          }
+        });
+      };
+
+      // Inject Facebook SDK if not already present
+      if (!document.getElementById('facebook-jssdk')) {
+        const js = document.createElement('script');
+        js.id = 'facebook-jssdk';
+        js.src = 'https://connect.facebook.net/en_US/sdk.js';
+        js.async = true;
+        js.defer = true;
+        document.body.appendChild(js);
+      } else if (window.FB) {
+        window.FB.XFBML.parse();
+      }
+    }
+
+    // Only load FB SDK when section scrolls near viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadFbSdk();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
     }
 
     return () => {
+      observer.disconnect();
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -101,7 +123,7 @@ export default function AuthenticityProcess() {
   }, []);
 
   return (
-    <section className="py-24 bg-gradient-to-b from-[#011611] to-brand-emerald-dark px-4 relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 bg-gradient-to-b from-[#011611] to-brand-emerald-dark px-4 relative overflow-hidden">
       {/* Decorative Gold Blurs */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 w-80 h-80 bg-brand-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-emerald-light/10 rounded-full blur-[120px] pointer-events-none" />

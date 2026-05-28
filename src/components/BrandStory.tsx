@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 export default function BrandStory() {
   return (
     <section className="py-32 relative overflow-hidden bg-brand-emerald">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1629904853716-f0bc54fea4b4?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-5 mix-blend-overlay" />
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(212,175,55,0.15) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(212,175,55,0.1) 0%, transparent 50%)' }} />
       
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <motion.div

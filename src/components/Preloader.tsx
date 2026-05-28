@@ -11,13 +11,13 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           clearInterval(interval);
           return 100;
         }
-        return prev + 1;
+        return prev + 2;
       });
-    }, 15);
+    }, 7);
 
     const timer = setTimeout(() => {
       onComplete();
-    }, 2200);
+    }, 800);
 
     return () => {
       clearInterval(interval);

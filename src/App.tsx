@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { Analytics } from '@vercel/analytics/react';
@@ -6,15 +6,17 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import ProductShowcase from './components/ProductShowcase';
 import BrandStory from './components/BrandStory';
-import AuthenticityProcess from './components/AuthenticityProcess';
-import FAQ from './components/FAQ';
-import UserProfile from './components/UserProfile';
-import InquiryForm from './components/InquiryForm';
-import AuthModal from './components/AuthModal';
-import InquiryBag from './components/InquiryBag';
 import Footer from './components/Footer';
+
+const ProductShowcase = lazy(() => import('./components/ProductShowcase'));
+const AuthenticityProcess = lazy(() => import('./components/AuthenticityProcess'));
+const FAQ = lazy(() => import('./components/FAQ'));
+const UserProfile = lazy(() => import('./components/UserProfile'));
+const InquiryForm = lazy(() => import('./components/InquiryForm'));
+const AuthModal = lazy(() => import('./components/AuthModal'));
+const InquiryBag = lazy(() => import('./components/InquiryBag'));
+
 
 type Page = 'home' | 'shop' | 'faq' | 'profile' | 'checkout';
 
@@ -58,6 +60,7 @@ function App() {
       </AnimatePresence>
 
       {!loading && (
+        <Suspense fallback={<div className="bg-brand-emerald-dark min-h-screen" />}>
         <div className="bg-brand-emerald-dark min-h-screen selection:bg-brand-gold selection:text-brand-emerald-dark">
           <Navbar 
             currentPage={currentPage} 
@@ -71,14 +74,18 @@ function App() {
               <motion.main key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <Hero onNavigate={setCurrentPage} />
                 <BrandStory />
-                <AuthenticityProcess />
+                <Suspense fallback={null}>
+                  <AuthenticityProcess />
+                </Suspense>
                 <Footer />
               </motion.main>
             )}
 
             {currentPage === 'shop' && (
               <motion.main key="shop" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <ProductShowcase />
+                <Suspense fallback={<div className="min-h-screen bg-brand-emerald-dark" />}>
+                  <ProductShowcase />
+                </Suspense>
                 <Footer />
               </motion.main>
             )}
@@ -86,7 +93,9 @@ function App() {
             {currentPage === 'faq' && (
               <motion.main key="faq" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <div className="pt-16 min-h-screen flex flex-col justify-center">
-                  <FAQ />
+                  <Suspense fallback={null}>
+                    <FAQ />
+                  </Suspense>
                 </div>
                 <Footer />
               </motion.main>
@@ -95,7 +104,9 @@ function App() {
             {currentPage === 'profile' && (
               <motion.main key="profile" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <div className="pt-24 pb-16 min-h-screen">
-                  <UserProfile />
+                  <Suspense fallback={null}>
+                    <UserProfile />
+                  </Suspense>
                 </div>
                 <Footer />
               </motion.main>
@@ -104,7 +115,9 @@ function App() {
             {currentPage === 'checkout' && (
               <motion.main key="checkout" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <div className="pt-24 pb-16 min-h-screen">
-                  <InquiryForm onBack={() => setCurrentPage('shop')} onClose={() => setCurrentPage('shop')} />
+                  <Suspense fallback={null}>
+                    <InquiryForm onBack={() => setCurrentPage('shop')} onClose={() => setCurrentPage('shop')} />
+                  </Suspense>
                 </div>
                 <Footer />
               </motion.main>
@@ -112,16 +125,19 @@ function App() {
           </AnimatePresence>
 
           {/* Global Modals */}
-          <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-          <InquiryBag 
-            isOpen={isBagOpen} 
-            onClose={() => setIsBagOpen(false)} 
-            onProceedToForm={() => {
-              setIsBagOpen(false);
-              setCurrentPage('checkout');
-            }}
-          />
+          <Suspense fallback={null}>
+            <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+            <InquiryBag 
+              isOpen={isBagOpen} 
+              onClose={() => setIsBagOpen(false)} 
+              onProceedToForm={() => {
+                setIsBagOpen(false);
+                setCurrentPage('checkout');
+              }}
+            />
+          </Suspense>
         </div>
+        </Suspense>
       )}
     </>
   );
