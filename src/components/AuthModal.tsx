@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -19,6 +19,18 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Reset tab and fields on modal close to prevent framer-motion exit freezes
+  useEffect(() => {
+    if (!isOpen) {
+      setTab('login');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setFullName('');
+      setShowPassword(false);
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,12 +139,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
                 }`}
               >
                 Sign In
-                {tab === 'login' && (
-                  <motion.div
-                    layoutId="auth-tab-underline"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-gold"
-                  />
-                )}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-brand-gold transition-all duration-300 transform ${
+                    tab === 'login' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0'
+                  }`}
+                />
               </button>
               <button
                 type="button"
@@ -142,12 +153,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
                 }`}
               >
                 Sign Up
-                {tab === 'signup' && (
-                  <motion.div
-                    layoutId="auth-tab-underline"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-gold"
-                  />
-                )}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-brand-gold transition-all duration-300 transform ${
+                    tab === 'signup' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0'
+                  }`}
+                />
               </button>
             </div>
 
