@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, User, Menu, X, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,7 +19,7 @@ const navLinks: { id: 'home' | 'shop' | 'faq'; label: string }[] = [
   { id: 'faq', label: 'FAQ' },
 ];
 
-export default function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag }: NavbarProps) {
+export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAuthenticated, logout, localUser } = useAuth();
   const { totalItemsCount } = useInquiryBag();
@@ -248,4 +248,4 @@ export default function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag 
       </AnimatePresence>
     </>
   );
-}
+});

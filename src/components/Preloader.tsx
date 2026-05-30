@@ -28,7 +28,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-brand-emerald-dark"
     >
       {/* Subtle luxury ambient gold glow */}

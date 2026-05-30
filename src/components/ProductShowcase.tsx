@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../data/products';
 import ProductCard from './ProductCard';
+import ProductModal from './ProductModal';
 import { ChevronDown, Search, X, SlidersHorizontal } from 'lucide-react';
 import api, { mapDbProductToFrontend } from '../lib/api';
 
@@ -109,6 +110,7 @@ export default function ProductShowcase() {
   const [sortOpen, setSortOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{ product: Product; volume: string } | null>(null);
 
   // Load products from local API on mount
   useEffect(() => {
@@ -403,7 +405,8 @@ export default function ProductShowcase() {
                   key={product.id} 
                   product={product} 
                   index={index} 
-                  activeSizeFilter={activeSizeFilter} 
+                  activeSizeFilter={activeSizeFilter}
+                  onSelect={(p, vol) => setSelectedProduct({ product: p, volume: vol })}
                 />
               ))
             )}
@@ -538,6 +541,17 @@ export default function ProductShowcase() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Hoisted Product Modal (single instance) ────────────────────────── */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductModal
+            product={selectedProduct.product}
+            onClose={() => setSelectedProduct(null)}
+            selectedVolume={selectedProduct.volume}
+          />
         )}
       </AnimatePresence>
     </div>

@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useTransition, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { Analytics } from '@vercel/analytics/react';
@@ -21,9 +21,9 @@ const InquiryBag = lazy(() => import('./components/InquiryBag'));
 type Page = 'home' | 'shop' | 'faq' | 'profile' | 'checkout';
 
 const pageVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
-  exit:    { opacity: 0, y: -8, transition: { duration: 0.18, ease: 'easeIn' } },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.15, ease: 'easeOut' } },
+  exit:    { opacity: 0, transition: { duration: 0.1, ease: 'easeIn' } },
 };
 
 function App() {
@@ -31,6 +31,13 @@ function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isBagOpen, setIsBagOpen] = useState(false);
+  const [, startTransition] = useTransition();
+
+  const navigate = useCallback((page: Page) => {
+    startTransition(() => {
+      setCurrentPage(page);
+    });
+  }, []);
 
   return (
     <>
@@ -64,7 +71,7 @@ function App() {
         <div className="bg-brand-emerald-dark min-h-screen selection:bg-brand-gold selection:text-brand-emerald-dark">
           <Navbar 
             currentPage={currentPage} 
-            onNavigate={setCurrentPage} 
+            onNavigate={navigate} 
             onOpenAuth={() => setIsAuthOpen(true)}
             onOpenBag={() => setIsBagOpen(true)}
           />
@@ -72,7 +79,7 @@ function App() {
           <AnimatePresence mode="wait">
             {currentPage === 'home' && (
               <motion.main key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <Hero onNavigate={setCurrentPage} />
+                <Hero onNavigate={navigate} />
                 <BrandStory />
                 <Suspense fallback={null}>
                   <AuthenticityProcess />
@@ -116,7 +123,7 @@ function App() {
               <motion.main key="checkout" variants={pageVariants} initial="initial" animate="animate" exit="exit">
                 <div className="pt-24 pb-16 min-h-screen">
                   <Suspense fallback={null}>
-                    <InquiryForm onBack={() => setCurrentPage('shop')} onClose={() => setCurrentPage('shop')} />
+                    <InquiryForm onBack={() => navigate('shop')} onClose={() => navigate('shop')} />
                   </Suspense>
                 </div>
                 <Footer />
@@ -132,7 +139,7 @@ function App() {
               onClose={() => setIsBagOpen(false)} 
               onProceedToForm={() => {
                 setIsBagOpen(false);
-                setCurrentPage('checkout');
+                navigate('checkout');
               }}
             />
           </Suspense>

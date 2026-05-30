@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { products } from '../data/products';
 
 type Page = 'home' | 'shop' | 'faq';
 interface HeroProps { onNavigate: (page: Page) => void; }
@@ -13,6 +12,8 @@ const LV_BOTTLES = [
     tagline:     'The freedom of the open sky',
     accords:     ['Aquatic', 'Woody', 'Citrus'],
     bottleTint:  'rgba(160,220,200,0.13)',
+    // Hardcoded hero prices (sourced from DB, avoids importing 80KB products.ts)
+    volumes:     [{ size: '5ml', price: 690 }, { size: '10ml', price: 1290 }, { size: '30ml', price: 3690 }],
   },
   {
     src:         '/Images/louis-vuitton/louis-vuitton-ombre-nomade--LP0095_PM2_Front view.webp',
@@ -20,6 +21,7 @@ const LV_BOTTLES = [
     tagline:     'A journey through ancient souks',
     accords:     ['Oud', 'Smoky', 'Woody'],
     bottleTint:  'rgba(140,70,10,0.16)',
+    volumes:     [{ size: '5ml', price: 890 }, { size: '10ml', price: 1690 }, { size: '30ml', price: 4890 }],
   },
   {
     src:         '/Images/louis-vuitton/louis-vuitton-symphony--LP0249_PM2_Front view.webp',
@@ -27,16 +29,10 @@ const LV_BOTTLES = [
     tagline:     'An ode to feminine florals',
     accords:     ['Floral', 'Powdery', 'Sweet'],
     bottleTint:  'rgba(200,150,215,0.13)',
+    volumes:     [{ size: '5ml', price: 690 }, { size: '10ml', price: 1290 }, { size: '30ml', price: 3690 }],
   },
 ];
 
-// Prices from products.ts
-const lvPrices = Object.fromEntries(
-  LV_BOTTLES.map(b => [
-    b.name,
-    products.find(p => p.brand === 'Louis Vuitton' && p.name === b.name)?.volumes ?? [],
-  ])
-);
 
 // ─── Variants ─────────────────────────────────────────────────────────────
 const bottleVariants = {
@@ -70,7 +66,7 @@ export default function Hero({ onNavigate }: HeroProps) {
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const bottle  = LV_BOTTLES[idx];
-  const volumes = lvPrices[bottle.name];
+  const volumes = bottle.volumes;
 
   // Auto-cycle every 5 s, pause on hover
   useEffect(() => {
