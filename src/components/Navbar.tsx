@@ -19,9 +19,13 @@ const navLinks: { id: 'home' | 'shop' | 'faq'; label: string }[] = [
   { id: 'faq', label: 'FAQ' },
 ];
 
+// Memoize Navbar to stop wasteful re-renders during page swaps
 export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag }: NavbarProps) {
+  // Mobile drawer open state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Pull authenticated user profiles
   const { isAuthenticated, logout, localUser } = useAuth();
+  // Pull dynamic count of inquiry bag items
   const { totalItemsCount } = useInquiryBag();
 
   const handleNavigate = (page: Page) => {
@@ -37,7 +41,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
       >
         <nav className="max-w-[1400px] mx-auto px-4 md:px-8 h-full flex items-center justify-between gap-6">
 
-          {/* ── Left: Logo ─────────────────────────────────────────────────── */}
+          {/* Logo brand home button */}
           <button
             onClick={() => handleNavigate('home')}
             className="flex items-center gap-3 shrink-0 group"
@@ -55,7 +59,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
             </span>
           </button>
 
-          {/* ── Center: Desktop Nav links ──────────────────────────────────── */}
+          {/* Desktop navigation link bar */}
           <div className="hidden md:flex items-center gap-1 md:gap-2">
             {navLinks.map(link => (
               <button
@@ -66,7 +70,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
                 <span className={currentPage === link.id ? 'text-brand-gold' : 'text-brand-cream/60 hover:text-brand-cream'}>
                   {link.label}
                 </span>
-                {/* Active indicator underline */}
+                {/* Framer layout underline shifts beautifully between active items */}
                 <AnimatePresence>
                   {currentPage === link.id && (
                     <motion.span
@@ -83,7 +87,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
             ))}
           </div>
 
-          {/* ── Right Actions (Desktop) ────────────────────────────────────── */}
+          {/* Desktop action menu */}
           <div className="hidden md:flex items-center gap-3 shrink-0">
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
@@ -119,6 +123,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
               className="relative p-2 text-brand-cream/60 hover:text-brand-gold transition-colors shrink-0"
             >
               <ShoppingBag size={19} />
+              {/* Floating count badge bouncing to grab attention */}
               {totalItemsCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand-gold text-brand-emerald-dark text-[9px] font-black flex items-center justify-center animate-bounce">
                   {totalItemsCount}
@@ -127,7 +132,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
             </button>
           </div>
 
-          {/* ── Mobile Action Buttons (Mobile Only) ────────────────────────── */}
+          {/* Mobile hamburger menu toggle */}
           <div className="flex md:hidden items-center gap-2.5 shrink-0">
             <button 
               onClick={onOpenBag}
@@ -152,11 +157,11 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
         </nav>
       </header>
 
-      {/* ── Mobile Menu Overlay & Drawer (Mobile Only) ────────────────────── */}
+      {/* Slide out mobile responsive navigation drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Blurred Backdrop */}
+            {/* Blurred background overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -166,7 +171,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
               onClick={() => setMobileMenuOpen(false)}
             />
 
-            {/* Slide Down Menu Content */}
+            {/* Menu options panel */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -176,7 +181,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
               style={{ background: 'linear-gradient(to bottom, rgba(2, 28, 19, 0.98), rgba(1, 22, 15, 0.98))' }}
             >
               <div className="px-6 py-8 flex flex-col gap-6">
-                {/* Navigation Links with Staggered Slide In */}
+                {/* Staggered slide effects for active page options */}
                 <div className="flex flex-col gap-4">
                   {navLinks.map((link, idx) => (
                     <motion.button
@@ -210,7 +215,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
                   )}
                 </div>
 
-                {/* Mobile Log In Button */}
+                {/* Staggered mobile login toggle options */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}

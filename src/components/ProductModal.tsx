@@ -11,9 +11,11 @@ interface ProductModalProps {
 }
 
 export default function ProductModal({ product, onClose, selectedVolume }: ProductModalProps) {
+  // Access global inquiry bag state and functions
   const { addToBag } = useInquiryBag();
   const currentPrice = product.volumes.find(v => v.size === selectedVolume)?.price || product.volumes[0].price;
 
+  // Add the current item to the bag and trigger a toast notification
   const handleInquiry = () => {
     const volPrice = product.volumes.find(v => v.size === selectedVolume) || product.volumes[0];
     
@@ -49,12 +51,14 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
+      {/* Spring transition for physical popping effect when opening */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="bg-brand-emerald-dark border border-brand-gold/30 rounded-2xl md:rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col md:flex-row relative"
+        // Prevent click events from closing the modal when clicking inside it
         onClick={e => e.stopPropagation()}
       >
         <button 
@@ -64,7 +68,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
           <X size={20} />
         </button>
 
-        {/* Image Section */}
+        {/* Product image layout */}
         <div className="md:w-5/12 relative aspect-square md:aspect-auto">
           <img 
             src={product.image} 
@@ -74,10 +78,10 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
           <div className="absolute inset-0 bg-gradient-to-t from-brand-emerald-dark to-transparent opacity-60" />
         </div>
 
-        {/* Content Section */}
+        {/* Product details panel */}
         <div className="md:w-7/12 p-6 md:p-10 flex flex-col gap-8">
           
-          {/* Header */}
+          {/* Brand header and rating details */}
           <div>
             <span className="text-brand-gold font-bold uppercase tracking-widest text-xs mb-1 block">
               {product.brand}
@@ -96,7 +100,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             </div>
           </div>
 
-          {/* Performance & Usage Grid */}
+          {/* Performance sillage metrics */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-brand-emerald p-4 rounded-xl border border-brand-gold/10">
               <div className="flex items-center gap-2 text-brand-gold mb-2">
@@ -114,7 +118,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             </div>
           </div>
 
-          {/* Seasonal & Time Usage Matrix */}
+          {/* Seasonal recommendation matrix */}
           <div className="bg-brand-emerald p-5 rounded-xl border border-brand-gold/10">
             <h4 className="text-xs uppercase text-brand-gold font-bold tracking-wider mb-4">Optimal Usage</h4>
             <div className="flex justify-between items-center mb-4">
@@ -132,7 +136,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             </div>
           </div>
 
-          {/* Main Accords Bar Chart */}
+          {/* Scent accord bar chart animated by framer-motion */}
           <div>
             <h4 className="text-xs uppercase text-brand-gold font-bold tracking-wider mb-4">Main Accords</h4>
             <div className="space-y-3">
@@ -150,7 +154,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             </div>
           </div>
 
-          {/* Visual Note Grid */}
+          {/* Detailed top, middle, and base notes */}
           <div>
             <h4 className="text-xs uppercase text-brand-gold font-bold tracking-wider mb-4">Scent Pyramid</h4>
             <div className="flex flex-col gap-3">
@@ -169,7 +173,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             </div>
           </div>
 
-          {/* Action Area */}
+          {/* Price display and CTA button */}
           <div className="mt-auto pt-6 border-t border-brand-gold/20 flex items-center justify-between">
             <div>
               <span className="text-brand-cream/60 text-xs uppercase tracking-widest block mb-1">Total Price</span>

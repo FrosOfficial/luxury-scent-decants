@@ -12,15 +12,18 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'login' }: AuthModalProps) {
+  // Toggle between sign in and sign up screens
   const [tab, setTab] = useState<'login' | 'signup'>(initialTab);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  // Track backend request processing
   const [loading, setLoading] = useState(false);
+  // Toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
 
-  // Reset tab and fields on modal close to prevent framer-motion exit freezes
+  // Reset all state when closing so the modal starts fresh next time and unblocks framer exit transitions
   useEffect(() => {
     if (!isOpen) {
       setTab('login');
@@ -32,12 +35,14 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
     }
   }, [isOpen]);
 
+  // Handle registration and login forms
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (tab === 'login') {
+        // Authenticate user with Supabase
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -49,10 +54,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
         if (onSuccess) onSuccess();
         onClose();
       } else {
+        // Guard against password mismatches on registration
         if (password !== confirmPassword) {
           throw new Error('Passwords do not match');
         }
 
+        // Register new user with full name metadata in Supabase
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -85,13 +92,13 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
-          {/* Backdrop */}
+          {/* Transparent dark screen overlay behind the modal */}
           <div
             onClick={onClose}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm"
           />
 
-          {/* Modal Container */}
+          {/* Main modal container */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -99,11 +106,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
             className="relative w-full max-w-md overflow-hidden rounded-2xl border border-brand-gold/20 bg-gradient-to-b from-[#03251a] to-[#011611] p-8 shadow-[0_0_50px_rgba(2,28,19,0.8)] z-10"
           >
-            {/* Corner Decorative Lights */}
+            {/* Visual background ambient glow blur highlights */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-brand-gold/10 rounded-full blur-2xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-brand-emerald-light/20 rounded-full blur-2xl pointer-events-none" />
 
-            {/* Close Button */}
+            {/* Click to close the modal */}
             <button
               type="button"
               onClick={onClose}
@@ -112,7 +119,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
               <X size={18} />
             </button>
 
-            {/* Title / Logo */}
+            {/* Brand details and logo header */}
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-brand-gold/20 bg-brand-emerald-dark mb-3 overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.25)]">
                 <img 
@@ -129,7 +136,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
               </p>
             </div>
 
-            {/* Tabs */}
+            {/* Navigation tab links to switch screens with custom CSS slider lines */}
             <div className="flex border-b border-brand-gold/15 mb-6">
               <button
                 type="button"
@@ -161,7 +168,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
               </button>
             </div>
 
-            {/* Form */}
+            {/* Authentication form inputs */}
             <form onSubmit={handleSubmit} className="space-y-4">
               {tab === 'signup' && (
                 <div>
@@ -255,7 +262,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
                 </div>
               )}
 
-              {/* Action Button */}
+              {/* Submit action button */}
               <button
                 type="submit"
                 disabled={loading}
