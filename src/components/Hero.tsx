@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 type Page = 'home' | 'shop' | 'faq';
 interface HeroProps { onNavigate: (page: Page) => void; }
 
-// ─── LV bottle data (Images5 official press shots) ────────────────────────
+// Scent details for the 3 highlight bottles in the hero
 const LV_BOTTLES = [
   {
     src:         '/Images/louis-vuitton/louis-vuitton-imagination--LP0219_PM2_Front view.webp',
@@ -12,7 +12,7 @@ const LV_BOTTLES = [
     tagline:     'The freedom of the open sky',
     accords:     ['Aquatic', 'Woody', 'Citrus'],
     bottleTint:  'rgba(160,220,200,0.13)',
-    // Hardcoded hero prices (sourced from DB, avoids importing 80KB products.ts)
+    // Sourced directly to save 80KB of bundle size instead of importing the whole list
     volumes:     [{ size: '5ml', price: 690 }, { size: '10ml', price: 1290 }, { size: '30ml', price: 3690 }],
   },
   {
@@ -33,8 +33,7 @@ const LV_BOTTLES = [
   },
 ];
 
-
-// ─── Variants ─────────────────────────────────────────────────────────────
+// Framer motion variants to handle transition animations
 const bottleVariants = {
   enter:  (d: number) => ({ opacity: 0, x: d > 0 ? 70 : -70, scale: 0.93 }),
   center: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.42, ease: 'easeOut' } },
@@ -60,15 +59,19 @@ const goldText: React.CSSProperties = {
 };
 
 export default function Hero({ onNavigate }: HeroProps) {
+  // Track active bottle index
   const [idx,    setIdx]    = useState(0);
+  // Track navigation direction for slide effects
   const [dir,    setDir]    = useState(1);
+  // Track if auto cycle is paused on hover
   const [paused, setPaused] = useState(false);
+  // Store auto cycle timer reference
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const bottle  = LV_BOTTLES[idx];
   const volumes = bottle.volumes;
 
-  // Auto-cycle every 5 s, pause on hover
+  // Runs auto carousel every 5 seconds but pauses when user hovers
   useEffect(() => {
     if (paused) return;
     timer.current = setInterval(() => {
@@ -78,7 +81,7 @@ export default function Hero({ onNavigate }: HeroProps) {
     return () => { if (timer.current) clearInterval(timer.current); };
   }, [paused, idx]);
 
-  // Keyboard arrow key navigation
+  // Listening for arrow key presses to slide slides
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
@@ -107,15 +110,15 @@ export default function Hero({ onNavigate }: HeroProps) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* ── Static amber/gold background ──────────────────────────────────── */}
+      {/* Base background style */}
       <div className="absolute inset-0"
         style={{ background: 'linear-gradient(135deg,#1a0d00 0%,#3b1f00 35%,#2a1500 65%,#0d0600 100%)' }} />
 
-      {/* Ambient gold glows */}
+      {/* Gold gradient accents */}
       <div className="absolute inset-0 opacity-[0.09] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(circle at 15% 50%,#d4af37 0%,transparent 55%), radial-gradient(circle at 85% 30%,#a07010 0%,transparent 55%)' }} />
 
-      {/* Per-bottle colour tint — cross-fades */}
+      {/* Dynamic color backdrop that fades and matches the active bottle */}
       <AnimatePresence mode="sync">
         <motion.div key={`tint-${idx}`} className="absolute inset-0 pointer-events-none"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -123,14 +126,14 @@ export default function Hero({ onNavigate }: HeroProps) {
           style={{ background: `radial-gradient(circle at 50% 65%,${bottle.bottleTint} 0%,transparent 70%)` }} />
       </AnimatePresence>
 
-      {/* Gold shimmer top */}
+      {/* Gold highlight line at the top */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-gold to-transparent opacity-50 z-10" />
 
-      {/* ── Three-column layout ────────────────────────────────────────────── */}
+      {/* Main grid splitting content into three columns */}
       <div className="relative z-10 w-full max-w-[1400px] mx-auto flex-1 flex items-center">
         <div className="w-full px-6 md:px-12 py-12 grid grid-cols-1 md:grid-cols-[1fr_1.3fr_1fr] gap-6 items-center">
 
-          {/* ── LEFT: static brand copy + per-bottle info ──────────────────── */}
+          {/* General copy and details of the selected bottle */}
           <div className="flex flex-col gap-4 text-center md:text-left">
             <motion.p {...fadeUp(0.04)} className="text-brand-gold uppercase tracking-[0.35em] text-xs font-bold">
               ✦ Exclusive Collection ✦
@@ -149,7 +152,7 @@ export default function Hero({ onNavigate }: HeroProps) {
               Three iconic Louis Vuitton masterpieces — cycle through and discover your signature.
             </motion.p>
 
-            {/* Per-bottle: name, tagline, accord pills, prices */}
+            {/* Information block that slides out when bottle swaps */}
             <AnimatePresence mode="wait">
               <motion.div key={`info-${idx}`} variants={infoVariants}
                 initial="enter" animate="center" exit="exit"
@@ -164,7 +167,7 @@ export default function Hero({ onNavigate }: HeroProps) {
                 <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                   {bottle.accords.map(a => (
                     <span key={a}
-                      className="px-2.5 py-0.5 rounded-full border border-brand-gold/30 text-brand-gold text-[10px] font-bold uppercase tracking-wider">
+                       className="px-2.5 py-0.5 rounded-full border border-brand-gold/30 text-brand-gold text-[10px] font-bold uppercase tracking-wider">
                       {a}
                     </span>
                   ))}
@@ -185,7 +188,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             </AnimatePresence>
           </div>
 
-          {/* ── CENTER: Big animated bottle + inner dot nav ─────────────────── */}
+          {/* Center image and dots navigation */}
           <div className="relative flex items-center justify-center h-[420px] md:h-[540px]">
             <AnimatePresence mode="wait" custom={dir}>
               <motion.div key={`bottle-${idx}`} custom={dir}
@@ -213,14 +216,14 @@ export default function Hero({ onNavigate }: HeroProps) {
                       filter:   'drop-shadow(0 44px 64px rgba(0,0,0,0.72)) drop-shadow(0 12px 24px rgba(212,175,55,0.2))',
                     }}
                   />
-                  {/* Glow puddle beneath bottle */}
+                  {/* Radial drop shadow puddle */}
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full blur-3xl"
                     style={{ width: '50%', height: '24px', background: 'rgba(212,175,55,0.22)' }} />
                 </motion.div>
               </motion.div>
             </AnimatePresence>
 
-            {/* Inner bottle dots */}
+            {/* Dot selectors at the bottom of the bottle */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-20">
               {LV_BOTTLES.map((b, i) => (
                 <button key={b.name} onClick={() => goTo(i)} aria-label={b.name}
@@ -236,7 +239,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             </div>
           </div>
 
-          {/* ── RIGHT: House info + CTA ──────────────────────────────────────── */}
+          {/* Description and call to action buttons */}
           <div className="flex flex-col gap-5 items-center md:items-end text-center md:text-right">
             <motion.div {...fadeUp(0.08)}>
               <p className="text-xs uppercase tracking-[0.4em] mb-1"
@@ -249,7 +252,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             <motion.div {...fadeUp(0.14)} className="w-10 h-[1px]"
               style={{ background: '#d4af37', opacity: 0.45 }} />
 
-            {/* Tagline synced to active bottle */}
+            {/* Dynamic subtitle linked to selection */}
             <AnimatePresence mode="wait">
               <motion.p key={`tagline-${idx}`}
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -286,7 +289,7 @@ export default function Hero({ onNavigate }: HeroProps) {
         </div>
       </div>
 
-      {/* Bottom fade to page background */}
+      {/* Soft gradient mask at the bottom to blend with the rest of the page */}
       <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none z-10"
         style={{ background: 'linear-gradient(to bottom,transparent,#011611)' }} />
     </section>
