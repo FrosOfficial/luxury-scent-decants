@@ -130,7 +130,7 @@ export default function AuthenticityProcess() {
 
       <div className="max-w-7xl mx-auto relative z-10 space-y-16">
         
-        {/* ── Top Header Section ─────────────────────────────────────── */}
+        {/*  Top Header Section */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -164,7 +164,7 @@ export default function AuthenticityProcess() {
           </motion.p>
         </div>
 
-        {/* ── Main Content Grid ──────────────────────────────────────── */}
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Left Column: 3 Guarantees (Stacked) (4/12 Cols) */}
