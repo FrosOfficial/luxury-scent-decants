@@ -1,16 +1,9 @@
 import { motion } from 'framer-motion';
-import { Product } from '../data/products';
 import { Star, Clock, Droplets, ArrowRight, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useInquiryBag } from '../contexts/InquiryBagContext';
 
-interface ProductModalProps {
-  product: Product;
-  onClose: () => void;
-  selectedVolume: string;
-}
-
-export default function ProductModal({ product, onClose, selectedVolume }: ProductModalProps) {
+export default function ProductModal({ product, onClose, selectedVolume }) {
   // Access global inquiry bag state and functions
   const { addToBag } = useInquiryBag();
   const currentPrice = product.volumes.find(v => v.size === selectedVolume)?.price || product.volumes[0].price;
@@ -18,7 +11,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
   // Add the current item to the bag and trigger a toast notification
   const handleInquiry = () => {
     const volPrice = product.volumes.find(v => v.size === selectedVolume) || product.volumes[0];
-    
+
     addToBag(
       {
         id: product.id,
@@ -39,7 +32,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
       style: { background: '#043927', color: '#fdfbf7', border: '1px solid #d4af37', borderRadius: '16px' },
       iconTheme: { primary: '#d4af37', secondary: '#043927' }
     });
-    
+
     onClose();
   };
 
@@ -61,7 +54,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
         // Prevent click events from closing the modal when clicking inside it
         onClick={e => e.stopPropagation()}
       >
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-brand-cream hover:text-brand-gold transition-colors"
         >
@@ -70,9 +63,9 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
 
         {/* Product image layout */}
         <div className="md:w-5/12 relative aspect-square md:aspect-auto">
-          <img 
-            src={product.image} 
-            alt={product.name} 
+          <img
+            src={product.image}
+            alt={product.name}
             className="w-full h-full object-cover rounded-t-2xl md:rounded-l-3xl md:rounded-tr-none"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-brand-emerald-dark to-transparent opacity-60" />
@@ -80,7 +73,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
 
         {/* Product details panel */}
         <div className="md:w-7/12 p-6 md:p-10 flex flex-col gap-8">
-          
+
           {/* Brand header and rating details */}
           <div>
             <span className="text-brand-gold font-bold uppercase tracking-widest text-xs mb-1 block">
@@ -129,7 +122,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             </div>
             <div className="grid grid-cols-4 gap-2">
               {['spring', 'summer', 'autumn', 'winter'].map((season) => (
-                <div key={season} className={`py-2 text-center text-xs rounded-lg uppercase tracking-wider font-medium ${product.usage.seasons[season as keyof typeof product.usage.seasons] ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold/50' : 'bg-brand-emerald-dark text-brand-cream/30'}`}>
+                <div key={season} className={`py-2 text-center text-xs rounded-lg uppercase tracking-wider font-medium ${product.usage.seasons[season] ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold/50' : 'bg-brand-emerald-dark text-brand-cream/30'}`}>
                   {season}
                 </div>
               ))}
@@ -142,7 +135,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
             <div className="space-y-3">
               {product.mainAccords.map((accord, idx) => (
                 <div key={idx} className="relative h-6 bg-brand-emerald rounded-full overflow-hidden flex items-center px-3 border border-brand-gold/5">
-                  <motion.div 
+                  <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${accord.percentage}%` }}
                     transition={{ duration: 1, delay: idx * 0.1, ease: "easeOut" }}
@@ -179,7 +172,7 @@ export default function ProductModal({ product, onClose, selectedVolume }: Produ
               <span className="text-brand-cream/60 text-xs uppercase tracking-widest block mb-1">Total Price</span>
               <span className="text-3xl font-serif text-brand-gold">₱{currentPrice.toLocaleString()}</span>
             </div>
-            <button 
+            <button
               onClick={handleInquiry}
               className="flex items-center gap-2 px-8 py-3 bg-brand-gold text-brand-emerald-dark font-bold uppercase tracking-widest text-sm rounded-full hover:bg-brand-gold-light transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]"
             >

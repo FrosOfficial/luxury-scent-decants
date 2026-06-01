@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type Page = 'home' | 'shop' | 'faq';
-interface HeroProps { onNavigate: (page: Page) => void; }
-
 // Scent details for the 3 highlight bottles in the hero
 const LV_BOTTLES = [
   {
@@ -35,9 +32,9 @@ const LV_BOTTLES = [
 
 // Framer motion variants to handle transition animations
 const bottleVariants = {
-  enter:  (d: number) => ({ opacity: 0, x: d > 0 ? 70 : -70, scale: 0.93 }),
+  enter:  (d) => ({ opacity: 0, x: d > 0 ? 70 : -70, scale: 0.93 }),
   center: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.42, ease: 'easeOut' } },
-  exit:   (d: number) => ({ opacity: 0, x: d > 0 ? -70 : 70, scale: 0.93, transition: { duration: 0.28, ease: 'easeIn' } }),
+  exit:   (d) => ({ opacity: 0, x: d > 0 ? -70 : 70, scale: 0.93, transition: { duration: 0.28, ease: 'easeIn' } }),
 };
 
 const infoVariants = {
@@ -52,13 +49,13 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.45, delay, ease: 'easeOut' },
 });
 
-const goldText: React.CSSProperties = {
+const goldText = {
   background: 'linear-gradient(90deg,#bf953f,#fcf6ba,#b38728,#fcf6ba,#aa771c)',
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
 };
 
-export default function Hero({ onNavigate }: HeroProps) {
+export default function Hero({ onNavigate }) {
   // Track active bottle index
   const [idx,    setIdx]    = useState(0);
   // Track navigation direction for slide effects
@@ -66,7 +63,7 @@ export default function Hero({ onNavigate }: HeroProps) {
   // Track if auto cycle is paused on hover
   const [paused, setPaused] = useState(false);
   // Store auto cycle timer reference
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timer = useRef(null);
 
   const bottle  = LV_BOTTLES[idx];
   const volumes = bottle.volumes;
@@ -83,7 +80,7 @@ export default function Hero({ onNavigate }: HeroProps) {
 
   // Listening for arrow key presses to slide slides
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') {
         setDir(-1);
         setIdx(i => (i - 1 + LV_BOTTLES.length) % LV_BOTTLES.length);
@@ -98,7 +95,7 @@ export default function Hero({ onNavigate }: HeroProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const goTo = (target: number) => {
+  const goTo = (target) => {
     setDir(target > idx ? 1 : -1);
     setIdx(target);
     if (timer.current) clearInterval(timer.current);

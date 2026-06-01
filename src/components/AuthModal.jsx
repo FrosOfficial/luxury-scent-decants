@@ -4,16 +4,9 @@ import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
-interface AuthModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: () => void;
-  initialTab?: 'login' | 'signup';
-}
-
-export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'login' }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'login' }) {
   // Toggle between sign in and sign up screens
-  const [tab, setTab] = useState<'login' | 'signup'>(initialTab);
+  const [tab, setTab] = useState(initialTab);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,7 +29,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
   }, [isOpen]);
 
   // Handle registration and login forms
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -49,7 +42,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
         });
 
         if (error) throw error;
-        
+
         toast.success('Welcome back to Luxury Scent Decants!');
         if (onSuccess) onSuccess();
         onClose();
@@ -76,7 +69,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
         if (onSuccess) onSuccess();
         onClose();
       }
-    } catch (err: any) {
+    } catch (err) {
       toast.error(err.message || 'An error occurred during authentication');
     } finally {
       setLoading(false);
@@ -122,9 +115,9 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialTab = 'lo
             {/* Brand details and logo header */}
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-brand-gold/20 bg-brand-emerald-dark mb-3 overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.25)]">
-                <img 
-                  src="/Images/logo.webp" 
-                  alt="Luxury Scent Decants Logo" 
+                <img
+                  src="/Images/logo.webp"
+                  alt="Luxury Scent Decants Logo"
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -7,8 +7,8 @@ import toast from 'react-hot-toast';
 
 export default function UserProfile() {
   const { localUser, fetchLocalProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState<'profile' | 'inquiries'>('profile');
-  
+  const [activeTab, setActiveTab] = useState('profile');
+
   // Profile Form States
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -19,9 +19,9 @@ export default function UserProfile() {
   const [updating, setUpdating] = useState(false);
 
   // Inquiries History States
-  const [inquiries, setInquiries] = useState<any[]>([]);
+  const [inquiries, setInquiries] = useState([]);
   const [loadingInquiries, setLoadingInquiries] = useState(false);
-  const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);
+  const [selectedInquiry, setSelectedInquiry] = useState(null);
 
   // Load profile values on mount/update
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function UserProfile() {
     }
   };
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setUpdating(true);
     try {
@@ -69,7 +69,7 @@ export default function UserProfile() {
       });
       await fetchLocalProfile();
       toast.success('Profile updated successfully!');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to update profile:', error);
       toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
@@ -77,7 +77,7 @@ export default function UserProfile() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case 'pending': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
       case 'contacted': return 'bg-sky-500/10 text-sky-400 border-sky-500/20';
@@ -365,7 +365,7 @@ export default function UserProfile() {
                           onClick={() => setSelectedInquiry(null)}
                           className="absolute top-4 right-4 p-1.5 rounded-full border border-brand-cream/10 text-brand-cream/60 hover:text-brand-gold hover:border-brand-gold/30 transition-all duration-200"
                         >
-                          <X size={16} />
+                          <CloseIcon size={16} />
                         </button>
 
                         <div>
@@ -382,7 +382,7 @@ export default function UserProfile() {
 
                         {/* Items list inside details */}
                         <div className="space-y-3 max-h-56 overflow-y-auto pr-1" id="filter-sidebar-scroll">
-                          {selectedInquiry.items?.map((item: any) => (
+                          {selectedInquiry.items?.map((item) => (
                             <div
                               key={item.id}
                               className="flex justify-between items-center gap-3 p-3 rounded-lg border border-brand-gold/5 bg-brand-emerald-dark/40 text-xs"
@@ -438,7 +438,7 @@ export default function UserProfile() {
   );
 }
 
-// Helper X Close
-const X = ({ size }: { size: number }) => (
+// Helper X Close icon
+const CloseIcon = ({ size }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
 );

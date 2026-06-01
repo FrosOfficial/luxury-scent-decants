@@ -4,23 +4,14 @@ import { ShoppingBag, User, Menu, X, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useInquiryBag } from '../contexts/InquiryBagContext';
 
-type Page = 'home' | 'shop' | 'faq' | 'profile' | 'checkout';
-
-interface NavbarProps {
-  currentPage: Page;
-  onNavigate: (page: Page) => void;
-  onOpenAuth: () => void;
-  onOpenBag: () => void;
-}
-
-const navLinks: { id: 'home' | 'shop' | 'faq'; label: string }[] = [
+const navLinks = [
   { id: 'home', label: 'HOME' },
   { id: 'shop', label: 'SHOP' },
   { id: 'faq', label: 'FAQ' },
 ];
 
 // Memoize Navbar to stop wasteful re-renders during page swaps
-export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag }: NavbarProps) {
+export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpenBag }) {
   // Mobile drawer open state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Pull authenticated user profiles
@@ -28,14 +19,14 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
   // Pull dynamic count of inquiry bag items
   const { totalItemsCount } = useInquiryBag();
 
-  const handleNavigate = (page: Page) => {
+  const handleNavigate = (page) => {
     onNavigate(page);
     setMobileMenuOpen(false);
   };
 
   return (
     <>
-      <header 
+      <header
         className="fixed top-0 left-0 right-0 h-16 z-50 border-b border-brand-gold/10"
         style={{ background: 'rgba(2, 28, 19, 0.88)', backdropFilter: 'blur(16px)' }}
       >
@@ -47,10 +38,10 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
             className="flex items-center gap-3 shrink-0 group"
           >
             <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-gold/30 shadow-[0_0_12px_rgba(212,175,55,0.4)] group-hover:border-brand-gold group-hover:shadow-[0_0_20px_rgba(212,175,55,0.6)] transition-all duration-300 shrink-0">
-              <img 
-                src="/Images/logo.webp" 
-                alt="Luxury Scent Decants Logo" 
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
+              <img
+                src="/Images/logo.webp"
+                alt="Luxury Scent Decants Logo"
+                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <span className="font-serif text-brand-cream text-[13px] md:text-sm leading-tight tracking-wide text-left transition-colors group-hover:text-brand-gold">
@@ -91,7 +82,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
           <div className="hidden md:flex items-center gap-3 shrink-0">
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
-                <button 
+                <button
                   onClick={() => handleNavigate('profile')}
                   className={`flex items-center gap-1.5 transition-colors text-xs font-medium tracking-wide border-r border-brand-gold/15 pr-3 ${
                     currentPage === 'profile' ? 'text-brand-gold font-bold' : 'text-brand-cream/60 hover:text-brand-gold'
@@ -100,7 +91,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
                   <User size={17} />
                   <span>{localUser?.full_name?.split(' ')[0] || 'Account'}</span>
                 </button>
-                <button 
+                <button
                   onClick={logout}
                   className="text-brand-cream/40 hover:text-brand-gold transition-colors p-1.5"
                   title="Log Out"
@@ -109,7 +100,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
                 </button>
               </div>
             ) : (
-              <button 
+              <button
                 onClick={onOpenAuth}
                 className="flex items-center gap-1.5 text-brand-cream/60 hover:text-brand-gold transition-colors text-xs font-medium tracking-wide pr-1"
               >
@@ -118,7 +109,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
               </button>
             )}
 
-            <button 
+            <button
               onClick={onOpenBag}
               className="relative p-2 text-brand-cream/60 hover:text-brand-gold transition-colors shrink-0"
             >
@@ -134,7 +125,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
 
           {/* Mobile hamburger menu toggle */}
           <div className="flex md:hidden items-center gap-2.5 shrink-0">
-            <button 
+            <button
               onClick={onOpenBag}
               className="relative p-2 text-brand-cream/60 hover:text-brand-gold transition-colors"
             >
@@ -223,7 +214,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
                   className="flex flex-col gap-4 pt-4 border-t border-brand-gold/10"
                 >
                   {isAuthenticated ? (
-                    <button 
+                    <button
                       onClick={() => {
                         logout();
                         setMobileMenuOpen(false);
@@ -234,7 +225,7 @@ export default memo(function Navbar({ currentPage, onNavigate, onOpenAuth, onOpe
                       <span>Log Out</span>
                     </button>
                   ) : (
-                    <button 
+                    <button
                       onClick={() => {
                         onOpenAuth();
                         setMobileMenuOpen(false);

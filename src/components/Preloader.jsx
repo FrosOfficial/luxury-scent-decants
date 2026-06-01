@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
-export default function Preloader({ onComplete }: { onComplete: () => void }) {
+export default function Preloader({ onComplete }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -42,33 +42,33 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       >
         {/* Concentric pulsing gold rings representing scent dispersion */}
         <div className="relative w-20 h-20 mb-8 flex items-center justify-center">
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.8, 0.3],
             }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 rounded-full border border-brand-gold/30" 
+            className="absolute inset-0 rounded-full border border-brand-gold/30"
           />
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               scale: [1.2, 1, 1.2],
               opacity: [0.6, 0.2, 0.6],
             }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-2 rounded-full border border-brand-gold/50" 
+            className="absolute inset-2 rounded-full border border-brand-gold/50"
           />
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               scale: [0.8, 1.1, 0.8],
               opacity: [0.3, 0.9, 0.3],
             }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-4 rounded-full bg-gradient-to-tr from-brand-gold-dark via-brand-gold to-brand-gold-light opacity-80 shadow-lg shadow-brand-gold/25" 
+            className="absolute inset-4 rounded-full bg-gradient-to-tr from-brand-gold-dark via-brand-gold to-brand-gold-light opacity-80 shadow-lg shadow-brand-gold/25"
           />
         </div>
 
-        <motion.h1 
+        <motion.h1
           animate={{ opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           className="text-4xl font-serif text-transparent bg-clip-text bg-gold-gradient tracking-[0.25em] font-bold pl-4"
@@ -77,7 +77,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         </motion.h1>
 
         {/* Dynamic scent-vault curating message */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -88,7 +88,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
         {/* Minimalist Golden Progress Indicator */}
         <div className="w-48 h-[1.5px] bg-white/[0.08] rounded-full mt-4 overflow-hidden relative">
-          <motion.div 
+          <motion.div
             className="h-full bg-gradient-to-r from-brand-gold-dark to-brand-gold-light"
             style={{ width: `${progress}%` }}
           />

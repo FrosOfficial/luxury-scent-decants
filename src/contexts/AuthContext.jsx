@@ -1,50 +1,23 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import api from '../lib/api';
 
-export interface LocalUser {
-  id: string;
-  supabase_auth_id: string;
-  full_name: string;
-  email: string;
-  phone: string | null;
-  delivery_address: string | null;
-  city: string | null;
-  province: string | null;
-  facebook_profile: string | null;
-  role: 'customer' | 'admin';
-  created_at: string;
-  updated_at: string;
-}
+const AuthContext = createContext(undefined);
 
-interface AuthContextType {
-  supabaseUser: SupabaseUser | null;
-  localUser: LocalUser | null;
-  loading: boolean;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  logout: () => Promise<void>;
-  fetchLocalProfile: () => Promise<LocalUser | null>;
-  syncLocalProfile: () => Promise<LocalUser | null>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
-  const [localUser, setLocalUser] = useState<LocalUser | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [supabaseUser, setSupabaseUser] = useState(null);
+  const [localUser, setLocalUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const verifyingRef = React.useRef(false);
   const checkedRef = React.useRef(false);
 
-  const fetchLocalProfile = async (): Promise<LocalUser | null> => {
+  const fetchLocalProfile = async () => {
     try {
       const response = await api.get('/me');
       setLocalUser(response.data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to fetch local user profile:', error);
       // If unauthorized, clear localUser and Supabase session
       if (error.response?.status === 401) {
@@ -61,12 +34,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let isMounted = true;
 
-    const handleAuth = async (session: any) => {
+    const handleAuth = async (session) => {
       if (!isMounted) return;
 
       if (session?.user) {
         setSupabaseUser(session.user);
-        
+
         // Prevent duplicate concurrent /me checks
         if (!checkedRef.current && !verifyingRef.current) {
           verifyingRef.current = true;
@@ -124,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const value: AuthContextType = {
+  const value = {
     supabaseUser,
     localUser,
     loading,

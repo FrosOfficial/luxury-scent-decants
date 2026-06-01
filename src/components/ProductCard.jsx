@@ -1,16 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Product } from '../data/products';
 
-interface ProductCardProps {
-  product: Product;
-  index: number;
-  activeSizeFilter?: string;
-  onSelect: (product: Product, selectedVolume: string) => void;
-}
-
-export default function ProductCard({ product, index, activeSizeFilter, onSelect }: ProductCardProps) {
+export default function ProductCard({ product, index, activeSizeFilter, onSelect }) {
   // Track currently selected decant volume (e.g. 5ml, 10ml)
-  const [selectedVolume, setSelectedVolume] = useState<string>(product.volumes[0].size);
+  const [selectedVolume, setSelectedVolume] = useState(product.volumes[0].size);
 
   // Automatically update the selected volume pill if the user applies a size filter in the sidebar
   useEffect(() => {
@@ -28,12 +20,12 @@ export default function ProductCard({ product, index, activeSizeFilter, onSelect
       // Stagger card fade-in animation based on loop index
       style={{ animationDelay: `${Math.min(index, 7) * 60}ms` }}
     >
-      <div 
+      <div
         className="aspect-square relative overflow-hidden cursor-pointer"
         onClick={() => onSelect(product, selectedVolume)}
       >
-        <img 
-          src={product.image} 
+        <img
+          src={product.image}
           alt={product.name}
           loading="lazy"
           width={400}
@@ -41,7 +33,7 @@ export default function ProductCard({ product, index, activeSizeFilter, onSelect
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-emerald-dark via-brand-emerald-dark/20 to-transparent opacity-80" />
-        
+
         {/* Scent tags and demographic tags */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
           <span className="px-3 py-1 bg-brand-emerald-dark/80 backdrop-blur text-brand-gold text-[10px] uppercase font-bold tracking-widest rounded-full border border-brand-gold/20">
@@ -63,7 +55,7 @@ export default function ProductCard({ product, index, activeSizeFilter, onSelect
       <div className="p-6 flex flex-col flex-grow">
         <span className="text-brand-gold/80 text-xs font-bold uppercase tracking-widest mb-1">{product.brand}</span>
         <h3 className="text-xl md:text-2xl font-serif text-brand-cream mb-4 line-clamp-2">{product.name}</h3>
-        
+
         <div className="mt-auto">
           {/* Decant volume selectors */}
           <div className="flex flex-wrap gap-2 mb-4">

@@ -2,13 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useInquiryBag } from '../contexts/InquiryBagContext';
 
-interface InquiryBagProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onProceedToForm: () => void;
-}
-
-export default function InquiryBag({ isOpen, onClose, onProceedToForm }: InquiryBagProps) {
+export default function InquiryBag({ isOpen, onClose, onProceedToForm }) {
   const { items, removeFromBag, updateQuantity, totalEstimatedPrice, totalItemsCount } = useInquiryBag();
 
   return (
@@ -35,7 +29,7 @@ export default function InquiryBag({ isOpen, onClose, onProceedToForm }: Inquiry
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
               className="w-screen max-w-md pointer-events-auto"
             >
-              <div 
+              <div
                 className="h-full flex flex-col shadow-2xl border-l border-brand-gold/15"
                 style={{ background: 'linear-gradient(to bottom, #021c13, #011611)' }}
               >
@@ -85,9 +79,9 @@ export default function InquiryBag({ isOpen, onClose, onProceedToForm }: Inquiry
                       >
                         {/* Image */}
                         <div className="w-16 h-20 rounded-lg overflow-hidden border border-brand-gold/10 bg-brand-emerald-dark shrink-0">
-                          <img 
-                            src={item.product.image_url} 
-                            alt={item.product.name} 
+                          <img
+                            src={item.product.image_url}
+                            alt={item.product.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -158,7 +152,7 @@ export default function InquiryBag({ isOpen, onClose, onProceedToForm }: Inquiry
                     </div>
 
                     <p className="text-[10px] text-brand-cream/40 leading-relaxed text-center">
-                      * No payments are made on this website. Submitting will register your inquiry & let you copy order details directly to Messenger.
+                      * No payments are made on this website. Submitting will register your inquiry &amp; let you copy order details directly to Messenger.
                     </p>
 
                     <button

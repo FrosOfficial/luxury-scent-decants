@@ -1,57 +1,5 @@
-export type ScentProfile = 
-  | 'Aldehydic' | 'Amber' | 'Animalic' | 'Aquatic' | 'Aromatic' | 'Balsamic' 
-  | 'Cinnamon' | 'Citrus' | 'Coconut' | 'Coffee' | 'Earthy' | 'Floral' 
-  | 'Fresh' | 'Fresh Spicy' | 'Fruity' | 'Gourmand' | 'Green' | 'Iris' | 'Lactonic' 
-  | 'Lavender' | 'Leather' | 'Marine' | 'Metallic' | 'Mossy' | 'Musky' 
-  | 'Oud' | 'Ozonic' | 'Patchouli' | 'Powdery' | 'Rose' | 'Savory' 
-  | 'Smoky' | 'Soft Spicy' | 'Spicy' | 'Sweet' | 'Tobacco' | 'Tropical' | 'Vanilla' 
-  | 'Violet' | 'Warm Spicy' | 'White Floral' | 'Woody' | 'Yellow Floral';
-export type Demographic = 'Masculine' | 'Feminine' | 'Unisex';
-  
-export interface VolumePricing {
-  id?: string;
-  size: '2ml' | '3ml' | '5ml' | '10ml' | '15ml' | '30ml';
-  price: number;
-}
-  
-export interface MainAccord {
-  name: string;
-  percentage: number;
-}
-  
-export interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  scentProfile: ScentProfile;
-  demographic: Demographic;
-  volumes: VolumePricing[];
-  image: string;
-  mainAccords: MainAccord[];
-  notes: {
-    top: string[];
-    middle: string[];
-    base: string[];
-  };
-  performance: {
-    longevity: string;
-    sillage: string;
-  };
-  usage: {
-    day: boolean;
-    night: boolean;
-    seasons: {
-      spring: boolean;
-      summer: boolean;
-      autumn: boolean;
-      winter: boolean;
-    };
-  };
-  rating: number;
-  ratingCount: number;
-}
-  
-export const products: Product[] = [
+﻿  
+export const products = [
   {
     id: '1',
     name: "9 PM Night Out",
@@ -1239,7 +1187,7 @@ export const products: Product[] = [
   {
     id: '38',
     name: "La Vie Est Belle",
-    brand: "Lancôme",
+    brand: "LancÃ´me",
     scentProfile: 'Sweet',
     demographic: 'Unisex',
     volumes: [
@@ -1270,7 +1218,7 @@ export const products: Product[] = [
   },
   {
     id: '39',
-    name: "Eclat d'Arpège",
+    name: "Eclat d'ArpÃ¨ge",
     brand: "Lanvin",
     scentProfile: 'Floral',
     demographic: 'Unisex',
@@ -2550,3 +2498,4 @@ export const products: Product[] = [
     ratingCount: 3461,
   }
 ];
+

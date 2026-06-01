@@ -2,56 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import api from '../lib/api';
 import { useAuth } from './AuthContext';
 
-export interface BagItem {
-  product: {
-    id: string;
-    name: string;
-    brand: string;
-    image_url: string;
-    scent_profile?: string;
-  };
-  volumePricing: {
-    id: string;
-    size: string;
-    price: number;
-  };
-  quantity: number;
-}
+const InquiryBagContext = createContext(undefined);
 
-interface CustomerDetails {
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  delivery_address: string;
-  city: string;
-  province: string;
-  facebook_profile: string;
-  additional_notes?: string;
-}
-
-interface InquiryResponse {
-  message: string;
-  reference_code: string;
-  messenger_message: string;
-  messenger_url: string;
-  inquiry: any;
-}
-
-interface InquiryBagContextType {
-  items: BagItem[];
-  addToBag: (product: BagItem['product'], volumePricing: BagItem['volumePricing'], quantity?: number) => void;
-  removeFromBag: (productId: string, volumePricingId: string) => void;
-  updateQuantity: (productId: string, volumePricingId: string, quantity: number) => void;
-  clearBag: () => void;
-  totalItemsCount: number;
-  totalEstimatedPrice: number;
-  submitInquiry: (details: CustomerDetails) => Promise<InquiryResponse>;
-}
-
-const InquiryBagContext = createContext<InquiryBagContextType | undefined>(undefined);
-
-export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<BagItem[]>([]);
+export const InquiryBagProvider = ({ children }) => {
+  const [items, setItems] = useState([]);
   const { supabaseUser } = useAuth();
 
   // Load from localStorage on mount
@@ -67,12 +21,12 @@ export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   // Save to localStorage when items change
-  const saveItems = (newItems: BagItem[]) => {
+  const saveItems = (newItems) => {
     setItems(newItems);
     localStorage.setItem('lsd_inquiry_bag', JSON.stringify(newItems));
   };
 
-  const addToBag = (product: BagItem['product'], volumePricing: BagItem['volumePricing'], quantity = 1) => {
+  const addToBag = (product, volumePricing, quantity = 1) => {
     const newItems = [...items];
     const existingIndex = newItems.findIndex(
       (item) => item.product.id === product.id && item.volumePricing.id === volumePricing.id
@@ -87,14 +41,14 @@ export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     saveItems(newItems);
   };
 
-  const removeFromBag = (productId: string, volumePricingId: string) => {
+  const removeFromBag = (productId, volumePricingId) => {
     const newItems = items.filter(
       (item) => !(item.product.id === productId && item.volumePricing.id === volumePricingId)
     );
     saveItems(newItems);
   };
 
-  const updateQuantity = (productId: string, volumePricingId: string, quantity: number) => {
+  const updateQuantity = (productId, volumePricingId, quantity) => {
     if (quantity <= 0) {
       removeFromBag(productId, volumePricingId);
       return;
@@ -131,7 +85,7 @@ export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const totalEstimatedPrice = items.reduce((sum, item) => sum + (item.volumePricing.price * item.quantity), 0);
 
-  const submitInquiry = async (details: CustomerDetails): Promise<InquiryResponse> => {
+  const submitInquiry = async (details) => {
     // Format the items matching Laravel validator rules
     const formattedItems = items.map((item) => ({
       product_id: item.product.id,
@@ -145,14 +99,14 @@ export const InquiryBagProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     };
 
     const response = await api.post('/inquiries', payload);
-    
+
     // Clear the bag upon successful submission
     clearBag();
 
     return response.data;
   };
 
-  const value: InquiryBagContextType = {
+  const value = {
     items,
     addToBag,
     removeFromBag,

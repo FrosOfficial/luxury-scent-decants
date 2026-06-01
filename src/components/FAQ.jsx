@@ -2,14 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle, ChevronDown, Compass, Truck, AlertCircle } from 'lucide-react';
 
-interface FAQItem {
-  id: number;
-  question: string;
-  answer: string;
-  icon: any;
-}
-
-const faqData: FAQItem[] = [
+const faqData = [
   {
     id: 1,
     question: "How is delivery and shipping handled?",
@@ -37,7 +30,7 @@ const faqData: FAQItem[] = [
 ];
 
 export default function FAQ() {
-  const [openId, setOpenId] = useState<number | null>(1);
+  const [openId, setOpenId] = useState(1);
 
   return (
     <section className="py-24 px-4 bg-brand-emerald-dark relative overflow-hidden">
@@ -87,8 +80,8 @@ export default function FAQ() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
                 className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                  isOpen 
-                    ? 'border-brand-gold/30 bg-brand-emerald-dark/70 shadow-[0_4px_30px_rgba(212,175,55,0.05)]' 
+                  isOpen
+                    ? 'border-brand-gold/30 bg-brand-emerald-dark/70 shadow-[0_4px_30px_rgba(212,175,55,0.05)]'
                     : 'border-brand-gold/10 bg-brand-emerald-dark/40 hover:border-brand-gold/25'
                 }`}
               >
@@ -109,9 +102,9 @@ export default function FAQ() {
                       {item.question}
                     </span>
                   </div>
-                  <ChevronDown 
-                    size={18} 
-                    className={`text-brand-gold transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+                  <ChevronDown
+                    size={18}
+                    className={`text-brand-gold transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
                   />
                 </button>
 

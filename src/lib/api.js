@@ -23,15 +23,15 @@ api.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 });
 
-export function mapDbProductToFrontend(dbProduct: any): any {
+export function mapDbProductToFrontend(dbProduct) {
   const notesObj = {
-    top: [] as string[],
-    middle: [] as string[],
-    base: [] as string[]
+    top: [],
+    middle: [],
+    base: []
   };
-  
+
   if (Array.isArray(dbProduct.notes)) {
-    dbProduct.notes.forEach((n: any) => {
+    dbProduct.notes.forEach((n) => {
       if (n.layer === 'top') notesObj.top.push(n.note_name);
       else if (n.layer === 'middle' || n.layer === 'mid') notesObj.middle.push(n.note_name);
       else if (n.layer === 'base') notesObj.base.push(n.note_name);
@@ -59,11 +59,11 @@ export function mapDbProductToFrontend(dbProduct: any): any {
     scentProfile: dbProduct.scent_profile,
     demographic: dbProduct.demographic,
     image: (dbProduct.image_url || '/placeholder.png').replace(/\.(png|jpg|jpeg)$/i, '.webp'),
-    volumes: Array.isArray(dbProduct.volumes) 
-      ? dbProduct.volumes.map((v: any) => ({ id: v.id, size: v.size, price: Number(v.price) }))
+    volumes: Array.isArray(dbProduct.volumes)
+      ? dbProduct.volumes.map((v) => ({ id: v.id, size: v.size, price: Number(v.price) }))
       : [],
     mainAccords: Array.isArray(dbProduct.accords)
-      ? dbProduct.accords.map((a: any) => ({ name: a.name, percentage: Number(a.percentage) }))
+      ? dbProduct.accords.map((a) => ({ name: a.name, percentage: Number(a.percentage) }))
       : [],
     notes: notesObj,
     performance: performanceObj,

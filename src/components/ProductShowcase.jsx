@@ -1,27 +1,14 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Product } from '../data/products';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import { ChevronDown, Search, X, SlidersHorizontal } from 'lucide-react';
 import api, { mapDbProductToFrontend } from '../lib/api';
+import toast from 'react-hot-toast';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-type Size = '2ml' | '3ml' | '5ml' | '10ml' | '15ml' | '30ml';
-type SortKey = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc' | 'rating';
+const ALL_SIZES = ['2ml', '3ml', '5ml', '10ml', '15ml', '30ml'];
 
-interface Filters {
-  search: string;
-  brands: string[];
-  seasons: Array<'spring' | 'summer' | 'autumn' | 'winter'>;
-  timeOfDay: Array<'day' | 'night'>;
-  volumes: Size[];
-  demographics: string[];
-  sillage: string[];
-  accords: string[];
-}
-
-const EMPTY_FILTERS: Filters = {
+const EMPTY_FILTERS = {
   search: '',
   brands: [],
   seasons: [],
@@ -32,12 +19,8 @@ const EMPTY_FILTERS: Filters = {
   accords: [],
 };
 
-const ALL_SIZES: Size[] = ['2ml', '3ml', '5ml', '10ml', '15ml', '30ml'];
-
-
-
-// ─── Checkbox item ────────────────────────────────────────────────────────────
-function CheckItem({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+// Checkbox item
+function CheckItem({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -61,10 +44,8 @@ function CheckItem({ label, active, onClick }: { label: string; active: boolean;
   );
 }
 
-// ─── Accordion section for sidebar ───────────────────────────────────────────
-function SidebarSection({ title, children, defaultOpen = true }: {
-  title: string; children: React.ReactNode; defaultOpen?: boolean;
-}) {
+// Accordion section for sidebar
+function SidebarSection({ title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="border-b border-brand-gold/10">
@@ -90,8 +71,8 @@ function SidebarSection({ title, children, defaultOpen = true }: {
   );
 }
 
-// ─── Sort dropdown ────────────────────────────────────────────────────────────
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+// Sort dropdown options
+const SORT_OPTIONS = [
   { value: 'recommended', label: 'Recommended' },
   { value: 'price-asc', label: 'Price: Low to High' },
   { value: 'price-desc', label: 'Price: High to Low' },
@@ -99,18 +80,16 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'rating', label: 'Top Rated' },
 ];
 
-import toast from 'react-hot-toast';
-
-// ─── Main component ───────────────────────────────────────────────────────────
+// Main component
 export default function ProductShowcase() {
-  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [productsList, setProductsList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
-  const [sortBy, setSortBy] = useState<SortKey>('recommended');
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [sortBy, setSortBy] = useState('recommended');
   const [sortOpen, setSortOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<{ product: Product; volume: string } | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Load products from local API on mount
   useEffect(() => {
@@ -119,7 +98,7 @@ export default function ProductShowcase() {
         setLoading(true);
         const response = await api.get('/products');
         const dbProducts = Array.isArray(response.data) ? response.data : response.data.data || [];
-        const mapped = dbProducts.map((p: any) => mapDbProductToFrontend(p));
+        const mapped = dbProducts.map((p) => mapDbProductToFrontend(p));
         setProductsList(mapped);
       } catch (error) {
         console.error('Failed to load products from API:', error);
@@ -138,13 +117,15 @@ export default function ProductShowcase() {
   const ALL_SILLAGE = useMemo(() => [...new Set(productsList.map(p => p.performance.sillage))].sort(), [productsList]);
   const ALL_ACCORDS = useMemo(() => [...new Set(productsList.flatMap(p => p.mainAccords.map(a => a.name)))].sort(), [productsList]);
 
-  function toggle<T extends string>(key: keyof Filters, value: T) {
+  // Toggle a value in a filter array on or off
+  function toggle(key, value) {
     setFilters(prev => {
-      const arr = prev[key] as T[];
+      const arr = prev[key];
       return { ...prev, [key]: arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value] };
     });
   }
-  const isActive = <T extends string>(key: keyof Filters, value: T) => (filters[key] as T[]).includes(value);
+
+  const isActive = (key, value) => filters[key].includes(value);
 
   const activeFilterCount = useMemo(() =>
     filters.brands.length + filters.seasons.length + filters.timeOfDay.length +
@@ -173,6 +154,7 @@ export default function ProductShowcase() {
       case 'price-desc': list = [...list].sort((a, b) => (b.volumes.find(v => v.size === '10ml')?.price ?? 0) - (a.volumes.find(v => v.size === '10ml')?.price ?? 0)); break;
       case 'name-asc':   list = [...list].sort((a, b) => a.name.localeCompare(b.name)); break;
       case 'rating':     list = [...list].sort((a, b) => b.rating - a.rating); break;
+      default: break;
     }
     return list;
   }, [productsList, filters, sortBy]);
@@ -187,13 +169,13 @@ export default function ProductShowcase() {
         </SidebarSection>
 
         <SidebarSection title="For" defaultOpen>
-          {([['Masculine', 'Men'], ['Feminine', 'Women'], ['Unisex', 'Unisex']] as [string, string][]).map(([v, l]) => (
+          {[['Masculine', 'Men'], ['Feminine', 'Women'], ['Unisex', 'Unisex']].map(([v, l]) => (
             <CheckItem key={v} label={l} active={isActive('demographics', v)} onClick={() => toggle('demographics', v)} />
           ))}
         </SidebarSection>
 
         <SidebarSection title="Season">
-          {(['spring', 'summer', 'autumn', 'winter'] as const).map(s => (
+          {['spring', 'summer', 'autumn', 'winter'].map(s => (
             <CheckItem key={s} label={s.charAt(0).toUpperCase() + s.slice(1)} active={isActive('seasons', s)} onClick={() => toggle('seasons', s)} />
           ))}
         </SidebarSection>
@@ -205,7 +187,7 @@ export default function ProductShowcase() {
 
         <SidebarSection title="Decant Size">
           {ALL_SIZES.map(s => <CheckItem key={s} label={s} active={isActive('volumes', s)} onClick={() => toggle('volumes', s)} />)}
-          <button 
+          <button
             onClick={() => setSizeGuideOpen(true)}
             className="mt-3 text-[10px] font-bold text-brand-gold uppercase tracking-widest hover:text-brand-gold-light transition-colors flex items-center justify-center gap-1.5 w-full py-2 bg-brand-emerald-dark/50 hover:bg-brand-emerald-dark border border-brand-gold/15 rounded-lg"
           >
@@ -238,7 +220,7 @@ export default function ProductShowcase() {
   return (
     <div className="min-h-screen bg-brand-emerald-dark pt-16">
 
-      {/* ── Page header ─────────────────────────────────────────────────────── */}
+      {/* Page header */}
       <div className="border-b border-brand-gold/10 bg-brand-emerald-dark">
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8">
           {/* Breadcrumb */}
@@ -267,10 +249,10 @@ export default function ProductShowcase() {
         </div>
       </div>
 
-      {/* ── Main layout ─────────────────────────────────────────────────────── */}
+      {/* Main layout */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8 flex gap-8">
 
-        {/* ── Desktop Sidebar ──────────────────────────────────────────────── */}
+        {/* Desktop Sidebar */}
         <div className="hidden lg:block w-56 xl:w-64 shrink-0">
           <div
             id="filter-sidebar-scroll"
@@ -281,7 +263,7 @@ export default function ProductShowcase() {
           </div>
         </div>
 
-        {/* ── Right content area ───────────────────────────────────────────── */}
+        {/* Right content area */}
         <div className="flex-1 min-w-0">
 
           {/* Topbar: search + count + sort + mobile filters */}
@@ -366,13 +348,13 @@ export default function ProductShowcase() {
           {activeFilterCount > 0 && (
             <div className="flex flex-wrap gap-2 mb-5">
               {[
-                ...filters.brands.map(v => ({ key: 'brands' as keyof Filters, value: v, label: v })),
-                ...filters.demographics.map(v => ({ key: 'demographics' as keyof Filters, value: v, label: v })),
-                ...filters.seasons.map(v => ({ key: 'seasons' as keyof Filters, value: v, label: v })),
-                ...filters.timeOfDay.map(v => ({ key: 'timeOfDay' as keyof Filters, value: v, label: v })),
-                ...filters.volumes.map(v => ({ key: 'volumes' as keyof Filters, value: v, label: v })),
-                ...filters.sillage.map(v => ({ key: 'sillage' as keyof Filters, value: v, label: v })),
-                ...filters.accords.map(v => ({ key: 'accords' as keyof Filters, value: v, label: v })),
+                ...filters.brands.map(v => ({ key: 'brands', value: v, label: v })),
+                ...filters.demographics.map(v => ({ key: 'demographics', value: v, label: v })),
+                ...filters.seasons.map(v => ({ key: 'seasons', value: v, label: v })),
+                ...filters.timeOfDay.map(v => ({ key: 'timeOfDay', value: v, label: v })),
+                ...filters.volumes.map(v => ({ key: 'volumes', value: v, label: v })),
+                ...filters.sillage.map(v => ({ key: 'sillage', value: v, label: v })),
+                ...filters.accords.map(v => ({ key: 'accords', value: v, label: v })),
               ].map(({ key, value, label }) => (
                 <button
                   key={`${key}-${value}`}
@@ -401,10 +383,10 @@ export default function ProductShowcase() {
               ))
             ) : (
               filteredProducts.map((product, index) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  index={index} 
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  index={index}
                   activeSizeFilter={activeSizeFilter}
                   onSelect={(p, vol) => setSelectedProduct({ product: p, volume: vol })}
                 />
@@ -425,7 +407,7 @@ export default function ProductShowcase() {
         </div>
       </div>
 
-      {/* ── Mobile slide-out sidebar ─────────────────────────────────────────── */}
+      {/* Mobile slide-out sidebar */}
       <AnimatePresence>
         {mobileSidebarOpen && (
           <>
@@ -462,7 +444,7 @@ export default function ProductShowcase() {
         )}
       </AnimatePresence>
 
-      {/* ── Bottle Size Guide Modal ────────────────────────────────────────── */}
+      {/* Bottle Size Guide Modal */}
       <AnimatePresence>
         {sizeGuideOpen && (
           <motion.div
@@ -489,7 +471,7 @@ export default function ProductShowcase() {
                     <p className="text-[10px] text-brand-gold uppercase tracking-widest mt-0.5">Find your perfect bottle volume</p>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => setSizeGuideOpen(false)}
                   className="p-1.5 rounded-full hover:bg-brand-gold/10 text-brand-cream/60 hover:text-brand-gold transition-colors"
                   aria-label="Close modal"
@@ -501,13 +483,13 @@ export default function ProductShowcase() {
               {/* Body */}
               <div className="p-6 overflow-y-auto max-h-[70vh] flex flex-col items-center gap-5">
                 <div className="relative rounded-xl overflow-hidden border border-brand-gold/20 bg-brand-emerald-dark shadow-inner max-w-sm w-full">
-                  <img 
-                    src="/Images/size-reference.webp" 
-                    alt="Decant bottle size reference" 
+                  <img
+                    src="/Images/size-reference.webp"
+                    alt="Decant bottle size reference"
                     className="w-full h-auto object-contain"
                   />
                 </div>
-                
+
                 {/* Description Text */}
                 <div className="text-center max-w-sm">
                   <p className="text-xs text-brand-cream/70 leading-relaxed font-light">
@@ -544,7 +526,7 @@ export default function ProductShowcase() {
         )}
       </AnimatePresence>
 
-      {/* ── Hoisted Product Modal (single instance) ────────────────────────── */}
+      {/* Hoisted Product Modal (single instance) */}
       <AnimatePresence>
         {selectedProduct && (
           <ProductModal

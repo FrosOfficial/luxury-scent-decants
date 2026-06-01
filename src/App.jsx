@@ -1,8 +1,6 @@
 import { useState, lazy, Suspense, useTransition, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -17,9 +15,6 @@ const InquiryForm = lazy(() => import('./components/InquiryForm'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
 const InquiryBag = lazy(() => import('./components/InquiryBag'));
 
-
-type Page = 'home' | 'shop' | 'faq' | 'profile' | 'checkout';
-
 const pageVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.15, ease: 'easeOut' } },
@@ -28,12 +23,12 @@ const pageVariants = {
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [currentPage, setCurrentPage] = useState('home');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isBagOpen, setIsBagOpen] = useState(false);
   const [, startTransition] = useTransition();
 
-  const navigate = useCallback((page: Page) => {
+  const navigate = useCallback((page) => {
     startTransition(() => {
       setCurrentPage(page);
     });
@@ -41,10 +36,8 @@ function App() {
 
   return (
     <>
-      <Analytics />
-      <SpeedInsights />
-      <Toaster 
-        position="top-center" 
+      <Toaster
+        position="top-center"
         toastOptions={{
           duration: 2000,
           style: {
@@ -69,9 +62,9 @@ function App() {
       {!loading && (
         <Suspense fallback={<div className="bg-brand-emerald-dark min-h-screen" />}>
         <div className="bg-brand-emerald-dark min-h-screen selection:bg-brand-gold selection:text-brand-emerald-dark">
-          <Navbar 
-            currentPage={currentPage} 
-            onNavigate={navigate} 
+          <Navbar
+            currentPage={currentPage}
+            onNavigate={navigate}
             onOpenAuth={() => setIsAuthOpen(true)}
             onOpenBag={() => setIsBagOpen(true)}
           />
@@ -134,9 +127,9 @@ function App() {
           {/* Global Modals */}
           <Suspense fallback={null}>
             <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-            <InquiryBag 
-              isOpen={isBagOpen} 
-              onClose={() => setIsBagOpen(false)} 
+            <InquiryBag
+              isOpen={isBagOpen}
+              onClose={() => setIsBagOpen(false)}
               onProceedToForm={() => {
                 setIsBagOpen(false);
                 navigate('checkout');
@@ -151,4 +144,3 @@ function App() {
 }
 
 export default App;
-

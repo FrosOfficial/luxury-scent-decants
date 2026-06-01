@@ -5,12 +5,7 @@ import { useInquiryBag } from '../contexts/InquiryBagContext';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
-interface InquiryFormProps {
-  onBack: () => void;
-  onClose: () => void;
-}
-
-export default function InquiryForm({ onBack, onClose }: InquiryFormProps) {
+export default function InquiryForm({ onBack, onClose }) {
   const { items, totalEstimatedPrice, submitInquiry } = useInquiryBag();
   const { localUser, isAuthenticated } = useAuth();
 
@@ -26,7 +21,7 @@ export default function InquiryForm({ onBack, onClose }: InquiryFormProps) {
 
   // States
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<any | null>(null);
+  const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
@@ -43,7 +38,7 @@ export default function InquiryForm({ onBack, onClose }: InquiryFormProps) {
     }
   }, [localUser]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (items.length === 0) {
       toast.error('Your inquiry bag is empty.');
@@ -73,7 +68,7 @@ export default function InquiryForm({ onBack, onClose }: InquiryFormProps) {
         setCopied(true);
         toast.success('Order summary copied to clipboard!');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Inquiry Submission Error:', error);
       toast.error(error.response?.data?.message || 'Failed to submit inquiry. Please try again.');
     } finally {
@@ -349,7 +344,7 @@ export default function InquiryForm({ onBack, onClose }: InquiryFormProps) {
             ) : (
               <>
                 <Sparkles size={16} />
-                <span>GENERATE & REDIRECT TO MESSENGER</span>
+                <span>GENERATE &amp; REDIRECT TO MESSENGER</span>
               </>
             )}
           </button>

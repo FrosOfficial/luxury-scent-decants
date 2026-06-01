@@ -2,13 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, AlertCircle, Droplet } from 'lucide-react';
 
-declare global {
-  interface Window {
-    FB?: any;
-    fbAsyncInit?: () => void;
-  }
-}
-
 const videoList = [
   {
     id: 'fb-video-0',
@@ -32,9 +25,9 @@ const videoList = [
 
 export default function AuthenticityProcess() {
   const [useFallback, setUseFallback] = useState(false);
-  const playersRef = useRef<{ [key: string]: any }>({});
-  const timerRef = useRef<any>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const playersRef = useRef({});
+  const timerRef = useRef(null);
+  const sectionRef = useRef(null);
   const sdkLoadedRef = useRef(false);
 
   useEffect(() => {
@@ -52,18 +45,18 @@ export default function AuthenticityProcess() {
       // Set up global SDK callback
       window.fbAsyncInit = function() {
         if (!window.FB) return;
-        
+
         window.FB.init({
           xfbml: true,
           version: 'v18.0'
         });
 
         // Listen for players to become ready
-        window.FB.Event.subscribe('xfbml.ready', function(msg: any) {
+        window.FB.Event.subscribe('xfbml.ready', function(msg) {
           if (msg.type === 'video') {
             console.log('FB Player Ready:', msg.id);
             playersRef.current[msg.id] = msg.instance;
-            
+
             // Once at least one FB player is ready, disable the fallback
             setUseFallback(false);
             if (timerRef.current) {
@@ -129,7 +122,7 @@ export default function AuthenticityProcess() {
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-emerald-light/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10 space-y-16">
-        
+
         {/*  Top Header Section */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <motion.div
@@ -142,7 +135,7 @@ export default function AuthenticityProcess() {
             <ShieldCheck size={14} />
             <span>100% Purity Guaranteed</span>
           </motion.div>
-          
+
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -150,7 +143,7 @@ export default function AuthenticityProcess() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-serif text-brand-cream leading-tight tracking-wide"
           >
-            Our Decanting <span className="text-brand-gold">Craft & Precision</span>
+            Our Decanting <span className="text-brand-gold">Craft &amp; Precision</span>
           </motion.h2>
 
           <motion.p
@@ -166,7 +159,7 @@ export default function AuthenticityProcess() {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
+
           {/* Left Column: 3 Guarantees (Stacked) (4/12 Cols) */}
           <div className="lg:col-span-4 space-y-6">
             <motion.div
@@ -266,7 +259,7 @@ export default function AuthenticityProcess() {
                       />
                     )}
                   </div>
-                  
+
                   {/* Bottom Video Metadata */}
                   <div className="text-center space-y-0.5">
                     <span className="text-[9px] uppercase font-bold tracking-[0.25em] text-brand-gold block">
