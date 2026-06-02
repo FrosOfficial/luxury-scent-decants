@@ -52,7 +52,7 @@ export default function AdminLayout({ onExitStorefront }) {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex flex-col w-72 bg-black/40 border-r border-white/[0.08] min-h-screen relative z-10 shrink-0">
+      <aside className="hidden lg:flex flex-col w-72 bg-black/40 border-r border-white/[0.08] h-screen sticky top-0 z-10 shrink-0">
         <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
 
         <div className="p-6 border-b border-white/[0.06] flex flex-col items-center">
