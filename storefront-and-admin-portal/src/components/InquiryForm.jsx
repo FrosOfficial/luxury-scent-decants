@@ -103,31 +103,44 @@ export default function InquiryForm({ onBack, onClose }) {
 
   // Delivery Calculator effect
   useEffect(() => {
-    const provLower = (province || '').toLowerCase();
-    const cityLower = (city || '').toLowerCase();
-    const addressLower = (address || '').toLowerCase();
+    if (!regionCode) {
+      setShippingFee(0);
+      setDeliveryType('Enter delivery address to compute');
+      setEstimatedDeliveryDays('');
+      return;
+    }
 
-    const isDavao = 
-      provLower.includes('davao') || 
-      cityLower.includes('davao') || 
-      addressLower.includes('davao');
+    const isDavaoCity = (city || '').toLowerCase().includes('davao city');
 
-    if (provLower || cityLower || addressLower) {
-      if (isDavao) {
+    if (regionCode === '11') {
+      if (isDavaoCity) {
         setShippingFee(50);
         setDeliveryType('Davao Local Express');
         setEstimatedDeliveryDays('1-2 Business Days');
       } else {
-        setShippingFee(150);
-        setDeliveryType('J&T Express Nationwide');
-        setEstimatedDeliveryDays('4-7 Business Days');
+        setShippingFee(85);
+        setDeliveryType('Davao Regional Courier');
+        setEstimatedDeliveryDays('2-3 Business Days');
       }
+    } else if (['09', '10', '12', '15', '16'].includes(regionCode)) {
+      setShippingFee(120);
+      setDeliveryType('J&T Express Mindanao');
+      setEstimatedDeliveryDays('3-5 Business Days');
+    } else if (['06', '07', '08'].includes(regionCode)) {
+      setShippingFee(145);
+      setDeliveryType('J&T Express Visayas');
+      setEstimatedDeliveryDays('4-6 Business Days');
+    } else if (regionCode === '13') {
+      setShippingFee(165);
+      setDeliveryType('J&T Express Metro Manila');
+      setEstimatedDeliveryDays('5-7 Business Days');
     } else {
-      setShippingFee(0);
-      setDeliveryType('Enter delivery address to compute');
-      setEstimatedDeliveryDays('');
+      // Luzon regions: 01, 02, 03, 04, 05, 14, 17
+      setShippingFee(185);
+      setDeliveryType('J&T Express Luzon');
+      setEstimatedDeliveryDays('5-8 Business Days');
     }
-  }, [province, city, address]);
+  }, [regionCode, city]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
