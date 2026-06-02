@@ -62,3 +62,13 @@
   animation: cardFadeIn 0.3s ease-out both;
 }
 
+/* Prevent text highlighting and text insertion cursors on visual elements for a premium app feel */
+h1, h2, h3, h4, h5, h6, 
+a, button, img, 
+.brand-logo, .logo-text, .exclusive-collection {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
