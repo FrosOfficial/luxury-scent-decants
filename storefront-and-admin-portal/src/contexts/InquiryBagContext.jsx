@@ -68,21 +68,6 @@ export const InquiryBagProvider = ({ children }) => {
     saveItems([]);
   };
 
-  // Clear bag automatically upon logging out (transition from logged-in to logged-out)
-  useEffect(() => {
-    if (loading) return; // Skip checking during initial app load/auth loading state
-
-    const wasLoggedIn = localStorage.getItem('lsd_user_logged_in') === 'true';
-    if (localUser) {
-      localStorage.setItem('lsd_user_logged_in', 'true');
-    } else {
-      localStorage.removeItem('lsd_user_logged_in');
-      if (wasLoggedIn) {
-        clearBag();
-      }
-    }
-  }, [localUser, loading]);
-
   const totalItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const totalEstimatedPrice = items.reduce((sum, item) => sum + (item.volumePricing.price * item.quantity), 0);
