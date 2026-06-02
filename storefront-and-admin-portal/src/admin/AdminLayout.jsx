@@ -45,14 +45,14 @@ export default function AdminLayout({ onExitStorefront }) {
   ];
 
   return (
-    <div className="min-h-screen bg-brand-emerald-dark flex text-brand-cream relative overflow-hidden font-sans w-full">
+    <div className="h-screen bg-brand-emerald-dark flex text-brand-cream relative overflow-hidden font-sans w-full">
       {/* Background Overlay */}
       <div className="absolute inset-0 bg-marble opacity-5 pointer-events-none mix-blend-overlay"></div>
       <div className="absolute top-0 left-0 w-96 h-96 bg-brand-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex flex-col w-72 bg-black/40 border-r border-white/[0.08] h-screen sticky top-0 z-10 shrink-0">
+      <aside className="hidden lg:flex flex-col w-72 bg-black/40 border-r border-white/[0.08] h-full relative z-10 shrink-0">
         <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
 
         <div className="p-6 border-b border-white/[0.06] flex flex-col items-center">
@@ -229,7 +229,7 @@ export default function AdminLayout({ onExitStorefront }) {
       </AnimatePresence>
 
       {/* Main Panel Content */}
-      <main className="flex-1 min-h-screen overflow-y-auto px-6 lg:px-12 pt-24 lg:pt-12 pb-12 relative z-10 w-full">
+      <main className="flex-1 h-full overflow-y-auto px-6 lg:px-12 pt-24 lg:pt-12 pb-12 relative z-10 w-full">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 15 }}
