@@ -645,7 +645,7 @@ export const Inquiries = () => {
                 <X className="w-6 h-6" />
               </button>
 
-              <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/[0.08] pb-6 mb-6 gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/[0.08] pb-6 mb-6 gap-4 pr-10 md:pr-12">
                 <div>
                   <div className="flex items-center gap-3">
                     <span className="font-mono text-xl font-bold tracking-wider text-brand-gold">{selectedInquiry.reference_code}</span>
