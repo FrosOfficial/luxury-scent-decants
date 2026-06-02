@@ -4,6 +4,7 @@ import { Check, ArrowLeft, Loader2, Sparkles, Receipt, Truck, CreditCard, Printe
 import { useInquiryBag } from '../contexts/InquiryBagContext';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { regions, provinces, cities, getBarangaysForCity, findMatchingCodes } from '../data/philippines_addresses';
 
 export default function InquiryForm({ onBack, onClose }) {
   const { items, totalEstimatedPrice, submitInquiry } = useInquiryBag();
@@ -18,6 +19,14 @@ export default function InquiryForm({ onBack, onClose }) {
   const [province, setProvince] = useState('');
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('cod');
+
+  // Cascading Address Fields
+  const [regionCode, setRegionCode] = useState('');
+  const [provinceCode, setProvinceCode] = useState('');
+  const [cityCode, setCityCode] = useState('');
+  const [barangay, setBarangay] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [postalCode, setPostalCode] = useState('');
 
   // Shipping Calculator States
   const [shippingFee, setShippingFee] = useState(0);
@@ -34,11 +43,63 @@ export default function InquiryForm({ onBack, onClose }) {
       setName(localUser.full_name || '');
       setEmail(localUser.email || '');
       setPhone(localUser.phone || '');
-      setAddress(localUser.delivery_address || '');
-      setCity(localUser.city || '');
-      setProvince(localUser.province || '');
+      
+      const userProv = localUser.province || '';
+      const userCity = localUser.city || '';
+      
+      const parsed = findMatchingCodes(userProv, userCity);
+      if (parsed.regionCode) setRegionCode(parsed.regionCode);
+      if (parsed.provinceCode) setProvinceCode(parsed.provinceCode);
+      if (parsed.cityCode) setCityCode(parsed.cityCode);
+      
+      setProvince(parsed.provinceName || userProv);
+      setCity(parsed.cityName || userCity);
+      
+      // Extract street address and barangay if possible from delivery_address
+      const rawAddr = localUser.delivery_address || '';
+      if (rawAddr) {
+        const addressParts = rawAddr.split(',').map(p => p.trim());
+        let foundBarangay = '';
+        let foundPostal = '';
+        let foundStreet = rawAddr;
+
+        // Check if last part looks like postal code (numeric, 4 digits)
+        if (addressParts.length > 1) {
+          const lastPart = addressParts[addressParts.length - 1];
+          if (/^\d{4}$/.test(lastPart)) {
+            foundPostal = lastPart;
+            addressParts.pop();
+          }
+        }
+
+        // Check if new last part has "barangay" in it
+        if (addressParts.length > 1) {
+          const potentialBrgy = addressParts[addressParts.length - 1];
+          if (potentialBrgy.toLowerCase().includes('barangay')) {
+            foundBarangay = potentialBrgy.replace(/barangay/i, '').trim();
+            addressParts.pop();
+          }
+        }
+
+        if (addressParts.length > 0) {
+          foundStreet = addressParts.join(', ');
+        }
+
+        setStreetAddress(foundStreet);
+        if (foundBarangay) setBarangay(foundBarangay);
+        if (foundPostal) setPostalCode(foundPostal);
+      }
     }
   }, [localUser]);
+
+  // Compile full address whenever parts change
+  useEffect(() => {
+    let parts = [];
+    if (streetAddress.trim()) parts.push(streetAddress.trim());
+    if (barangay.trim()) parts.push(`Barangay ${barangay.trim()}`);
+    if (postalCode.trim()) parts.push(postalCode.trim());
+    setAddress(parts.join(', '));
+  }, [streetAddress, barangay, postalCode]);
 
   // Delivery Calculator effect
   useEffect(() => {
@@ -351,48 +412,154 @@ export default function InquiryForm({ onBack, onClose }) {
               </div>
             </div>
 
-            {/* Delivery Address */}
-            <div>
-              <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                Complete Delivery Address
-              </label>
-              <input
-                type="text"
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="House Number, Street Name, Barangay"
-                className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
-              />
-            </div>
-
+            {/* Region & Province */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Province */}
+              {/* Region Selector */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                  Region
+                </label>
+                <select
+                  required
+                  value={regionCode}
+                  onChange={(e) => {
+                    const code = e.target.value;
+                    setRegionCode(code);
+                    setProvinceCode('');
+                    setCityCode('');
+                    setBarangay('');
+                    setProvince('');
+                    setCity('');
+                  }}
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
+                >
+                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select Region</option>
+                  {regions.map((r) => (
+                    <option key={r.code} value={r.code} className="bg-[#021c13] text-brand-cream">
+                      {r.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Province Selector */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
                   Province
                 </label>
-                <input
-                  type="text"
+                <select
                   required
-                  value={province}
-                  onChange={(e) => setProvince(e.target.value)}
-                  placeholder="e.g. Davao del Sur, Cebu, Metro Manila"
-                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
-                />
+                  disabled={!regionCode}
+                  value={provinceCode}
+                  onChange={(e) => {
+                    const code = e.target.value;
+                    setProvinceCode(code);
+                    const selected = provinces.find((p) => p.code === code);
+                    setProvince(selected ? selected.name : '');
+                    setCityCode('');
+                    setBarangay('');
+                    setCity('');
+                  }}
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
+                >
+                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select Province</option>
+                  {provinces
+                    .filter((p) => p.regionCode === regionCode)
+                    .map((p) => (
+                      <option key={p.code} value={p.code} className="bg-[#021c13] text-brand-cream">
+                        {p.name}
+                      </option>
+                    ))}
+                </select>
               </div>
+            </div>
 
-              {/* City */}
+            {/* City & Barangay */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* City Selector */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                  City
+                  City / Municipality
+                </label>
+                <select
+                  required
+                  disabled={!provinceCode}
+                  value={cityCode}
+                  onChange={(e) => {
+                    const code = e.target.value;
+                    setCityCode(code);
+                    const selected = cities.find((c) => c.code === code);
+                    setCity(selected ? selected.name : '');
+                    setBarangay('');
+                  }}
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
+                >
+                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select City / Municipality</option>
+                  {cities
+                    .filter((c) => c.provinceCode === provinceCode)
+                    .map((c) => (
+                      <option key={c.code} value={c.code} className="bg-[#021c13] text-brand-cream">
+                        {c.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Barangay Selector */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                  Barangay
+                </label>
+                <select
+                  required
+                  disabled={!cityCode}
+                  value={barangay}
+                  onChange={(e) => setBarangay(e.target.value)}
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
+                >
+                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select Barangay</option>
+                  {cityCode &&
+                    getBarangaysForCity(cityCode, city).map((brgy) => (
+                      <option key={brgy} value={brgy} className="bg-[#021c13] text-brand-cream">
+                        {brgy}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Postal Code & Street Address */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Street Address */}
+              <div className="sm:col-span-2">
+                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                  Street Name, Building, House No.
                 </label>
                 <input
                   type="text"
                   required
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. Davao City, Makati"
+                  value={streetAddress}
+                  onChange={(e) => setStreetAddress(e.target.value)}
+                  placeholder="e.g. Unit 4B Gold Crest Condo, 123 Mabini St"
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                />
+              </div>
+
+              {/* Postal Code */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                  Postal Code
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  placeholder="e.g. 8000"
                   className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
                 />
               </div>
