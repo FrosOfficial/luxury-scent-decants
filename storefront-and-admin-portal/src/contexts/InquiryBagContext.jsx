@@ -6,7 +6,7 @@ const InquiryBagContext = createContext(undefined);
 
 export const InquiryBagProvider = ({ children }) => {
   const [items, setItems] = useState([]);
-  const { localUser } = useAuth();
+  const { localUser, loading } = useAuth();
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -70,6 +70,8 @@ export const InquiryBagProvider = ({ children }) => {
 
   // Clear bag automatically upon logging out (transition from logged-in to logged-out)
   useEffect(() => {
+    if (loading) return; // Skip checking during initial app load/auth loading state
+
     const wasLoggedIn = localStorage.getItem('lsd_user_logged_in') === 'true';
     if (localUser) {
       localStorage.setItem('lsd_user_logged_in', 'true');
@@ -79,7 +81,7 @@ export const InquiryBagProvider = ({ children }) => {
         clearBag();
       }
     }
-  }, [localUser]);
+  }, [localUser, loading]);
 
   const totalItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
