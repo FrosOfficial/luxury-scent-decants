@@ -55,31 +55,19 @@ export default function UserProfile() {
         const addressParts = rawAddr.split(',').map(p => p.trim());
         let foundBarangay = '';
         let foundPostal = '';
-        let foundStreet = rawAddr;
+        let streetParts = [];
 
-        // Check if last part looks like postal code (numeric, 4 digits)
-        if (addressParts.length > 1) {
-          const lastPart = addressParts[addressParts.length - 1];
-          if (/^\d{4}$/.test(lastPart)) {
-            foundPostal = lastPart;
-            addressParts.pop();
+        for (let part of addressParts) {
+          if (/^\d{4}$/.test(part)) {
+            foundPostal = part;
+          } else if (part.toLowerCase().includes('barangay')) {
+            foundBarangay = part.replace(/barangay/i, '').trim();
+          } else {
+            streetParts.push(part);
           }
         }
 
-        // Check if new last part has "barangay" in it
-        if (addressParts.length > 1) {
-          const potentialBrgy = addressParts[addressParts.length - 1];
-          if (potentialBrgy.toLowerCase().includes('barangay')) {
-            foundBarangay = potentialBrgy.replace(/barangay/i, '').trim();
-            addressParts.pop();
-          }
-        }
-
-        if (addressParts.length > 0) {
-          foundStreet = addressParts.join(', ');
-        }
-
-        setStreetAddress(foundStreet);
+        setStreetAddress(streetParts.join(', '));
         if (foundBarangay) setBarangay(foundBarangay);
         if (foundPostal) setPostalCode(foundPostal);
       } else {
