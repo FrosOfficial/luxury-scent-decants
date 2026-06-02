@@ -419,8 +419,8 @@ export default function InquiryForm({ onBack, onClose }) {
                   type="tel"
                   required
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+63 917 123 4567"
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                  placeholder="09171234567"
                   className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
                 />
               </div>
@@ -524,7 +524,7 @@ export default function InquiryForm({ onBack, onClose }) {
                   type="text"
                   required
                   value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
+                  onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
                   placeholder="e.g. 8000"
                   className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
                 />
