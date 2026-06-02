@@ -1,0 +1,9 @@
+node_modules/
+storefront-and-admin-portal/
+vendor/
+*.sqlite
+.git/
+.env
+.env.*
+Dockerfile
+.dockerignore
