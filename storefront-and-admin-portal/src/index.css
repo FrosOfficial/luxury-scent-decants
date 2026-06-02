@@ -6,6 +6,10 @@
   body {
     @apply bg-brand-emerald-dark text-brand-cream overflow-x-hidden;
     background-color: #011611;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 
   /* Custom Scrollbar styled for luxury theme */
