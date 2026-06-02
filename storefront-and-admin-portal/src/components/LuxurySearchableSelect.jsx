@@ -48,8 +48,11 @@ export default function LuxurySearchableSelect({
     opt.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Find currently selected option label
-  const selectedOption = normalizedOptions.find(opt => opt.value === value);
+  // Find currently selected option label (case-insensitive for safety)
+  const selectedOption = normalizedOptions.find(opt => 
+    opt.value === value || 
+    (typeof opt.value === 'string' && typeof value === 'string' && opt.value.toLowerCase().trim() === value.toLowerCase().trim())
+  );
   const displayLabel = selectedOption ? selectedOption.label : '';
 
   const handleSelect = (optionValue) => {
@@ -133,7 +136,8 @@ export default function LuxurySearchableSelect({
                 </li>
               ) : (
                 filteredOptions.map((opt) => {
-                  const isSelected = opt.value === value;
+                  const isSelected = opt.value === value || 
+                    (typeof opt.value === 'string' && typeof value === 'string' && opt.value.toLowerCase().trim() === value.toLowerCase().trim());
                   return (
                     <li
                       key={opt.value}
