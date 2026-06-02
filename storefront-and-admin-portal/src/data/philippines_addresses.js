@@ -1,253 +1,213 @@
-// Philippine Address Database
-// Curated list of Regions, Provinces, Cities/Municipalities, and Barangays
+// Philippine Shopee Address Database Schema
 // Keeps bundle lightweight while providing 100% functional cascading dropdowns.
 
 export const regions = [
-  { code: 'NCR', name: 'National Capital Region (NCR)' },
-  { code: 'R1', name: 'Region I (Ilocos Region)' },
-  { code: 'R2', name: 'Region II (Cagayan Valley)' },
-  { code: 'R3', name: 'Region III (Central Luzon)' },
-  { code: 'R4A', name: 'Region IV-A (CALABARZON)' },
-  { code: 'R4B', name: 'Mimaropa Region (Region IV-B)' },
-  { code: 'R5', name: 'Region V (Bicol Region)' },
-  { code: 'R6', name: 'Region VI (Western Visayas)' },
-  { code: 'R7', name: 'Region VII (Central Visayas)' },
-  { code: 'R8', name: 'Region VIII (Eastern Visayas)' },
-  { code: 'R9', name: 'Region IX (Zamboanga Peninsula)' },
-  { code: 'R10', name: 'Region X (Northern Mindanao)' },
-  { code: 'R11', name: 'Region XI (Davao Region)' },
-  { code: 'R12', name: 'Region XII (SOCCSKSARGEN)' },
-  { code: 'R13', name: 'Region XIII (Caraga)' },
-  { code: 'CAR', name: 'Cordillera Administrative Region (CAR)' },
-  { code: 'BARMM', name: 'Bangsamoro Autonomous Region in Muslim Mindanao (BARMM)' }
+  { code: 'METRO_MANILA', name: 'Metro Manila' },
+  { code: 'NORTH_LUZON', name: 'North Luzon' },
+  { code: 'SOUTH_LUZON', name: 'South Luzon' },
+  { code: 'VISAYAS', name: 'Visayas' },
+  { code: 'MINDANAO', name: 'Mindanao' }
 ];
 
 export const provinces = [
-  // NCR
-  { code: 'METRO_MANILA', name: 'Metro Manila', regionCode: 'NCR' },
+  // 1. Metro Manila
+  { code: 'METRO_MANILA_PROV', name: 'Metro Manila', regionCode: 'METRO_MANILA' },
 
-  // Region I
-  { code: 'ILOCOS_NORTE', name: 'Ilocos Norte', regionCode: 'R1' },
-  { code: 'ILOCOS_SUR', name: 'Ilocos Sur', regionCode: 'R1' },
-  { code: 'LA_UNION', name: 'La Union', regionCode: 'R1' },
-  { code: 'PANGASINAN', name: 'Pangasinan', regionCode: 'R1' },
+  // 2. North Luzon
+  { code: 'ABRA', name: 'Abra', regionCode: 'NORTH_LUZON' },
+  { code: 'BATANES', name: 'Batanes', regionCode: 'NORTH_LUZON' },
+  { code: 'BENGUET', name: 'Benguet', regionCode: 'NORTH_LUZON' },
+  { code: 'BULACAN', name: 'Bulacan', regionCode: 'NORTH_LUZON' },
+  { code: 'CAGAYAN', name: 'Cagayan', regionCode: 'NORTH_LUZON' },
+  { code: 'ILOCOS_NORTE', name: 'Ilocos Norte', regionCode: 'NORTH_LUZON' },
+  { code: 'ILOCOS_SUR', name: 'Ilocos Sur', regionCode: 'NORTH_LUZON' },
+  { code: 'ISABELA', name: 'Isabela', regionCode: 'NORTH_LUZON' },
+  { code: 'LA_UNION', name: 'La Union', regionCode: 'NORTH_LUZON' },
+  { code: 'NUEVA_ECIJA', name: 'Nueva Ecija', regionCode: 'NORTH_LUZON' },
+  { code: 'NUEVA_VIZCAYA', name: 'Nueva Vizcaya', regionCode: 'NORTH_LUZON' },
+  { code: 'PAMPANGA', name: 'Pampanga', regionCode: 'NORTH_LUZON' },
+  { code: 'PANGASINAN', name: 'Pangasinan', regionCode: 'NORTH_LUZON' },
+  { code: 'QUIRINO', name: 'Quirino', regionCode: 'NORTH_LUZON' },
+  { code: 'TARLAR', name: 'Tarlac', regionCode: 'NORTH_LUZON' },
+  { code: 'ZAMBALES', name: 'Zambales', regionCode: 'NORTH_LUZON' },
+  { code: 'BATAAN', name: 'Bataan', regionCode: 'NORTH_LUZON' },
 
-  // Region II
-  { code: 'BATANES', name: 'Batanes', regionCode: 'R2' },
-  { code: 'CAGAYAN', name: 'Cagayan', regionCode: 'R2' },
-  { code: 'ISABELA', name: 'Isabela', regionCode: 'R2' },
-  { code: 'NUEVA_VIZCAYA', name: 'Nueva Vizcaya', regionCode: 'R2' },
-  { code: 'QUIRINO', name: 'Quirino', regionCode: 'R2' },
+  // 3. South Luzon
+  { code: 'AURORA', name: 'Aurora', regionCode: 'SOUTH_LUZON' },
+  { code: 'BATANGAS', name: 'Batangas', regionCode: 'SOUTH_LUZON' },
+  { code: 'CAVITE', name: 'Cavite', regionCode: 'SOUTH_LUZON' },
+  { code: 'LAGUNA', name: 'Laguna', regionCode: 'SOUTH_LUZON' },
+  { code: 'MARINDUQUE', name: 'Marinduque', regionCode: 'SOUTH_LUZON' },
+  { code: 'OCCIDENTAL_MINDORO', name: 'Occidental Mindoro', regionCode: 'SOUTH_LUZON' },
+  { code: 'ORIENTAL_MINDORO', name: 'Oriental Mindoro', regionCode: 'SOUTH_LUZON' },
+  { code: 'PALAWAN', name: 'Palawan', regionCode: 'SOUTH_LUZON' },
+  { code: 'QUEZON', name: 'Quezon', regionCode: 'SOUTH_LUZON' },
+  { code: 'RIZAL', name: 'Rizal', regionCode: 'SOUTH_LUZON' },
+  { code: 'ROMBLON', name: 'Romblon', regionCode: 'SOUTH_LUZON' },
+  { code: 'ALBAY', name: 'Albay', regionCode: 'SOUTH_LUZON' },
+  { code: 'CAMARINES_NORTE', name: 'Camarines Norte', regionCode: 'SOUTH_LUZON' },
+  { code: 'CAMARINES_SUR', name: 'Camarines Sur', regionCode: 'SOUTH_LUZON' },
+  { code: 'CATANDUANES', name: 'Catanduanes', regionCode: 'SOUTH_LUZON' },
+  { code: 'MASBATE', name: 'Masbate', regionCode: 'SOUTH_LUZON' },
+  { code: 'SORSOGON', name: 'Sorsogon', regionCode: 'SOUTH_LUZON' },
 
-  // Region III
-  { code: 'AURORA', name: 'Aurora', regionCode: 'R3' },
-  { code: 'BATAAN', name: 'Bataan', regionCode: 'R3' },
-  { code: 'BULACAN', name: 'Bulacan', regionCode: 'R3' },
-  { code: 'NUEVA_ECIJA', name: 'Nueva Ecija', regionCode: 'R3' },
-  { code: 'PAMPANGA', name: 'Pampanga', regionCode: 'R3' },
-  { code: 'TARLAC', name: 'Tarlac', regionCode: 'R3' },
-  { code: 'ZAMBALES', name: 'Zambales', regionCode: 'R3' },
+  // 4. Visayas
+  { code: 'AKLAN', name: 'Aklan', regionCode: 'VISAYAS' },
+  { code: 'ANTIQUE', name: 'Antique', regionCode: 'VISAYAS' },
+  { code: 'CAPIZ', name: 'Capiz', regionCode: 'VISAYAS' },
+  { code: 'GUIMARAS', name: 'Guimaras', regionCode: 'VISAYAS' },
+  { code: 'ILOILO', name: 'Iloilo', regionCode: 'VISAYAS' },
+  { code: 'NEGROS_OCCIDENTAL', name: 'Negros Occidental', regionCode: 'VISAYAS' },
+  { code: 'BOHOL', name: 'Bohol', regionCode: 'VISAYAS' },
+  { code: 'CEBU', name: 'Cebu', regionCode: 'VISAYAS' },
+  { code: 'NEGROS_ORIENTAL', name: 'Negros Oriental', regionCode: 'VISAYAS' },
+  { code: 'SIQUIJOR', name: 'Siquijor', regionCode: 'VISAYAS' },
+  { code: 'BILIRAN', name: 'Biliran', regionCode: 'VISAYAS' },
+  { code: 'EASTERN_SAMAR', name: 'Eastern Samar', regionCode: 'VISAYAS' },
+  { code: 'LEYTE', name: 'Leyte', regionCode: 'VISAYAS' },
+  { code: 'NORTHERN_SAMAR', name: 'Northern Samar', regionCode: 'VISAYAS' },
+  { code: 'SAMAR', name: 'Samar (Western Samar)', regionCode: 'VISAYAS' },
+  { code: 'SOUTHERN_LEYTE', name: 'Southern Leyte', regionCode: 'VISAYAS' },
 
-  // Region IV-A
-  { code: 'BATANGAS', name: 'Batangas', regionCode: 'R4A' },
-  { code: 'CAVITE', name: 'Cavite', regionCode: 'R4A' },
-  { code: 'LAGUNA', name: 'Laguna', regionCode: 'R4A' },
-  { code: 'QUEZON', name: 'Quezon', regionCode: 'R4A' },
-  { code: 'RIZAL', name: 'Rizal', regionCode: 'R4A' },
-
-  // Mimaropa
-  { code: 'MARINDUQUE', name: 'Marinduque', regionCode: 'R4B' },
-  { code: 'OCCIDENTAL_MINDORO', name: 'Occidental Mindoro', regionCode: 'R4B' },
-  { code: 'ORIENTAL_MINDORO', name: 'Oriental Mindoro', regionCode: 'R4B' },
-  { code: 'PALAWAN', name: 'Palawan', regionCode: 'R4B' },
-  { code: 'ROMBLON', name: 'Romblon', regionCode: 'R4B' },
-
-  // Region V
-  { code: 'ALBAY', name: 'Albay', regionCode: 'R5' },
-  { code: 'CAMARINES_NORTE', name: 'Camarines Norte', regionCode: 'R5' },
-  { code: 'CAMARINES_SUR', name: 'Camarines Sur', regionCode: 'R5' },
-  { code: 'CATANDUANES', name: 'Catanduanes', regionCode: 'R5' },
-  { code: 'MASBATE', name: 'Masbate', regionCode: 'R5' },
-  { code: 'SORSOGON', name: 'Sorsogon', regionCode: 'R5' },
-
-  // Region VI
-  { code: 'AKLAN', name: 'Aklan', regionCode: 'R6' },
-  { code: 'ANTIQUE', name: 'Antique', regionCode: 'R6' },
-  { code: 'CAPIZ', name: 'Capiz', regionCode: 'R6' },
-  { code: 'GUIMARAS', name: 'Guimaras', regionCode: 'R6' },
-  { code: 'ILOILO', name: 'Iloilo', regionCode: 'R6' },
-  { code: 'NEGROS_OCCIDENTAL', name: 'Negros Occidental', regionCode: 'R6' },
-
-  // Region VII
-  { code: 'BOHOL', name: 'Bohol', regionCode: 'R7' },
-  { code: 'CEBU', name: 'Cebu', regionCode: 'R7' },
-  { code: 'NEGROS_ORIENTAL', name: 'Negros Oriental', regionCode: 'R7' },
-  { code: 'SIQUIJOR', name: 'Siquijor', regionCode: 'R7' },
-
-  // Region VIII
-  { code: 'BILIRAN', name: 'Biliran', regionCode: 'R8' },
-  { code: 'EASTERN_SAMAR', name: 'Eastern Samar', regionCode: 'R8' },
-  { code: 'LEYTE', name: 'Leyte', regionCode: 'R8' },
-  { code: 'NORTHERN_SAMAR', name: 'Northern Samar', regionCode: 'R8' },
-  { code: 'SAMAR', name: 'Samar', regionCode: 'R8' },
-  { code: 'SOUTHERN_LEYTE', name: 'Southern Leyte', regionCode: 'R8' },
-
-  // Region IX
-  { code: 'ZAMBOANGA_DEL_NORTE', name: 'Zamboanga del Norte', regionCode: 'R9' },
-  { code: 'ZAMBOANGA_DEL_SUR', name: 'Zamboanga del Sur', regionCode: 'R9' },
-  { code: 'ZAMBOANGA_SIBUGAY', name: 'Zamboanga Sibugay', regionCode: 'R9' },
-
-  // Region X
-  { code: 'BUKIDNON', name: 'Bukidnon', regionCode: 'R10' },
-  { code: 'CAMIGUIN', name: 'Camiguin', regionCode: 'R10' },
-  { code: 'LANAO_DEL_NORTE', name: 'Lanao del Norte', regionCode: 'R10' },
-  { code: 'MISAMIS_OCCIDENTAL', name: 'Misamis Occidental', regionCode: 'R10' },
-  { code: 'MISAMIS_ORIENTAL', name: 'Misamis Oriental', regionCode: 'R10' },
-
-  // Region XI
-  { code: 'DAVAO_DE_ORO', name: 'Davao de Oro', regionCode: 'R11' },
-  { code: 'DAVAO_DEL_NORTE', name: 'Davao del Norte', regionCode: 'R11' },
-  { code: 'DAVAO_DEL_SUR', name: 'Davao del Sur', regionCode: 'R11' },
-  { code: 'DAVAO_OCCIDENTAL', name: 'Davao Occidental', regionCode: 'R11' },
-  { code: 'DAVAO_ORIENTAL', name: 'Davao Oriental', regionCode: 'R11' },
-
-  // Region XII
-  { code: 'COTABATO', name: 'Cotabato', regionCode: 'R12' },
-  { code: 'SARANGANI', name: 'Sangani', regionCode: 'R12' },
-  { code: 'SOUTH_COTABATO', name: 'South Cotabato', regionCode: 'R12' },
-  { code: 'SULTAN_KUDARAT', name: 'Sultan Kudarat', regionCode: 'R12' },
-
-  // Region XIII
-  { code: 'AGUSAN_DEL_NORTE', name: 'Agusan del Norte', regionCode: 'R13' },
-  { code: 'AGUSAN_DEL_SUR', name: 'Agusan del Sur', regionCode: 'R13' },
-  { code: 'DINAGAT_ISLANDS', name: 'Dinagat Islands', regionCode: 'R13' },
-  { code: 'SURIGAO_DEL_NORTE', name: 'Surigao del Norte', regionCode: 'R13' },
-  { code: 'SURIGAO_DEL_SUR', name: 'Surigao del Sur', regionCode: 'R13' },
-
-  // CAR
-  { code: 'ABRA', name: 'Abra', regionCode: 'CAR' },
-  { code: 'APAYAO', name: 'Apayao', regionCode: 'CAR' },
-  { code: 'BENGUET', name: 'Benguet', regionCode: 'CAR' },
-  { code: 'IFUGAO', name: 'Ifugao', regionCode: 'CAR' },
-  { code: 'KALINGA', name: 'Kalinga', regionCode: 'CAR' },
-  { code: 'MOUNTAIN_PROVINCE', name: 'Mountain Province', regionCode: 'CAR' },
-
-  // BARMM
-  { code: 'BASILAN', name: 'Basilan', regionCode: 'BARMM' },
-  { code: 'LANAO_DEL_SUR', name: 'Lanao del Sur', regionCode: 'BARMM' },
-  { code: 'MAGUINDANAO_NORTE', name: 'Maguindanao del Norte', regionCode: 'BARMM' },
-  { code: 'MAGUINDANAO_SUR', name: 'Maguindanao del Sur', regionCode: 'BARMM' },
-  { code: 'SULU', name: 'Sulu', regionCode: 'BARMM' },
-  { code: 'TAWI_TAWI', name: 'Tawi-Tawi', regionCode: 'BARMM' }
+  // 5. Mindanao
+  { code: 'ZAMBOANGA_DEL_NORTE', name: 'Zamboanga del Norte', regionCode: 'MINDANAO' },
+  { code: 'ZAMBOANGA_DEL_SUR', name: 'Zamboanga del Sur', regionCode: 'MINDANAO' },
+  { code: 'ZAMBOANGA_SIBUGAY', name: 'Zamboanga Sibugay', regionCode: 'MINDANAO' },
+  { code: 'BUKIDNON', name: 'Bukidnon', regionCode: 'MINDANAO' },
+  { code: 'CAMIGUIN', name: 'Camiguin', regionCode: 'MINDANAO' },
+  { code: 'LANAO_DEL_NORTE', name: 'Lanao del Norte', regionCode: 'MINDANAO' },
+  { code: 'MISAMIS_OCCIDENTAL', name: 'Misamis Occidental', regionCode: 'MINDANAO' },
+  { code: 'MISAMIS_ORIENTAL', name: 'Misamis Oriental', regionCode: 'MINDANAO' },
+  { code: 'DAVAO_DE_ORO', name: 'Davao de Oro (Compostela Valley)', regionCode: 'MINDANAO' },
+  { code: 'DAVAO_DEL_NORTE', name: 'Davao del Norte', regionCode: 'MINDANAO' },
+  { code: 'DAVAO_DEL_SUR', name: 'Davao del Sur', regionCode: 'MINDANAO' },
+  { code: 'DAVAO_OCCIDENTAL', name: 'Davao Occidental', regionCode: 'MINDANAO' },
+  { code: 'DAVAO_ORIENTAL', name: 'Davao Oriental', regionCode: 'MINDANAO' },
+  { code: 'COTABATO', name: 'Cotabato (North Cotabato)', regionCode: 'MINDANAO' },
+  { code: 'SOUTH_COTABATO', name: 'South Cotabato', regionCode: 'MINDANAO' },
+  { code: 'SULTAN_KUDARAT', name: 'Sultan Kudarat', regionCode: 'MINDANAO' },
+  { code: 'SARANGANI', name: 'Sarangani', regionCode: 'MINDANAO' },
+  { code: 'AGUSAN_DEL_NORTE', name: 'Agusan del Norte', regionCode: 'MINDANAO' },
+  { code: 'AGUSAN_DEL_SUR', name: 'Agusan del Sur', regionCode: 'MINDANAO' },
+  { code: 'SURIGAO_DEL_NORTE', name: 'Surigao del Norte', regionCode: 'MINDANAO' },
+  { code: 'SURIGAO_DEL_SUR', name: 'Surigao del Sur', regionCode: 'MINDANAO' },
+  { code: 'DINAGAT_ISLANDS', name: 'Dinagat Islands', regionCode: 'MINDANAO' },
+  { code: 'BASILAN', name: 'Basilan', regionCode: 'MINDANAO' },
+  { code: 'LANAO_DEL_SUR', name: 'Lanao del Sur', regionCode: 'MINDANAO' },
+  { code: 'MAGUINDANAO_NORTE', name: 'Maguindanao del Norte', regionCode: 'MINDANAO' },
+  { code: 'MAGUINDANAO_SUR', name: 'Maguindanao del Sur', regionCode: 'MINDANAO' },
+  { code: 'SULU', name: 'Sulu', regionCode: 'MINDANAO' },
+  { code: 'TAWI_TAWI', name: 'Tawi-Tawi', regionCode: 'MINDANAO' }
 ];
 
 export const cities = [
-  // Metro Manila (NCR)
-  { code: 'MANILA', name: 'City of Manila', provinceCode: 'METRO_MANILA' },
-  { code: 'QUEZON_CITY', name: 'Quezon City', provinceCode: 'METRO_MANILA' },
-  { code: 'MAKATI', name: 'Makati City', provinceCode: 'METRO_MANILA' },
-  { code: 'TAGUIG', name: 'Taguig City', provinceCode: 'METRO_MANILA' },
-  { code: 'PASIG', name: 'Pasig City', provinceCode: 'METRO_MANILA' },
-  { code: 'MANDALUYONG', name: 'Mandaluyong City', provinceCode: 'METRO_MANILA' },
-  { code: 'SAN_JUAN', name: 'San Juan City', provinceCode: 'METRO_MANILA' },
-  { code: 'PASAY', name: 'Pasay City', provinceCode: 'METRO_MANILA' },
-  { code: 'PARAÑAQUE', name: 'Parañaque City', provinceCode: 'METRO_MANILA' },
-  { code: 'LAS_PIÑAS', name: 'Las Piñas City', provinceCode: 'METRO_MANILA' },
-  { code: 'MARIKINA', name: 'Marikina City', provinceCode: 'METRO_MANILA' },
-  { code: 'MUNTINLUPA', name: 'Muntinlupa City', provinceCode: 'METRO_MANILA' },
-  { code: 'VALENZUELA', name: 'Valenzuela City', provinceCode: 'METRO_MANILA' },
-  { code: 'CALOOCAN', name: 'Caloocan City', provinceCode: 'METRO_MANILA' },
-  { code: 'MALABON', name: 'Malabon City', provinceCode: 'METRO_MANILA' },
-  { code: 'NAVOTAS', name: 'Navotas City', provinceCode: 'METRO_MANILA' },
-  { code: 'PATEROS', name: 'Pateros Municipality', provinceCode: 'METRO_MANILA' },
+  // 1. Metro Manila City/District Options
+  { code: 'BINONDO', name: 'Binondo', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'CALOOCAN_CITY', name: 'Caloocan City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'ERMITA', name: 'Ermita', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'INTRAMUROS', name: 'Intramuros', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'LAS_PINAS_CITY', name: 'Las Pinas City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'MAKATI_CITY', name: 'Makati City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'MALABON_CITY', name: 'Malabon City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'MALATE', name: 'Malate', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'MANDALUYONG_CITY', name: 'Mandaluyong City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'MARIKINA_CITY', name: 'Marikina City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'MUNTINLUPA_CITY', name: 'Muntinlupa City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'NAVOTAS_CITY', name: 'Navotas City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PACO', name: 'Paco', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PANDACAN', name: 'Pandacan', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PARANAQUE_CITY', name: 'Paranaque City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PASAY_CITY', name: 'Pasay City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PASIG_CITY', name: 'Pasig City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PATEROS', name: 'Pateros', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'PORT_AREA', name: 'Port Area', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SAMPALOC', name: 'Sampaloc', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SAN_JUAN_CITY', name: 'San Juan City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SAN_MIGUEL', name: 'San Miguel', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SAN_NICOLAS', name: 'San Nicolas', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SANTA_ANA', name: 'Santa Ana', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SANTA_CRUZ', name: 'Santa Cruz', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'SANTA_MESA', name: 'Santa Mesa', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'TONDO', name: 'Tondo', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'TAGUIG_CITY', name: 'Taguig City', provinceCode: 'METRO_MANILA_PROV' },
+  { code: 'VALENZUELA_CITY', name: 'Valenzuela City', provinceCode: 'METRO_MANILA_PROV' },
 
-  // Davao del Sur (Region XI)
-  { code: 'DAVAO_CITY', name: 'Davao City', provinceCode: 'DAVAO_DEL_SUR' },
-  { code: 'DIGOS_CITY', name: 'Digos City', provinceCode: 'DAVAO_DEL_SUR' },
-  { code: 'BANSALAN', name: 'Bansalan', provinceCode: 'DAVAO_DEL_SUR' },
-  { code: 'SANTA_CRUZ', name: 'Santa Cruz', provinceCode: 'DAVAO_DEL_SUR' },
-  { code: 'HAGONOY', name: 'Hagonoy', provinceCode: 'DAVAO_DEL_SUR' },
-  { code: 'MALALAG', name: 'Malalag', provinceCode: 'DAVAO_DEL_SUR' },
-  { code: 'PADADA', name: 'Padada', provinceCode: 'DAVAO_DEL_SUR' },
+  // 2. North Luzon major cities
+  { code: 'SAN_FERNANDO_CITY_PAMPANGA', name: 'San Fernando City', provinceCode: 'PAMPANGA' },
+  { code: 'ANGELES_CITY', name: 'Angeles City', provinceCode: 'PAMPANGA' },
+  { code: 'MALOLOS_CITY', name: 'Malolos City', provinceCode: 'BULACAN' },
+  { code: 'BAGUIO_CITY', name: 'Baguio City', provinceCode: 'BENGUET' },
+  { code: 'LAOAG_CITY', name: 'Laoag City', provinceCode: 'ILOCOS_NORTE' },
+  { code: 'DAGUPAN_CITY', name: 'Dagupan City', provinceCode: 'PANGASINAN' },
+  { code: 'TARLAC_CITY', name: 'Tarlac City', provinceCode: 'TARLAR' },
 
-  // Davao del Norte (Region XI)
-  { code: 'TAGUM_CITY', name: 'Tagum City', provinceCode: 'DAVAO_DEL_NORTE' },
-  { code: 'PANABO_CITY', name: 'Panabo City', provinceCode: 'DAVAO_DEL_NORTE' },
-  { code: 'SAMAL_CITY', name: 'Island Garden City of Samal', provinceCode: 'DAVAO_DEL_NORTE' },
-  { code: 'CARMEN', name: 'Carmen', provinceCode: 'DAVAO_DEL_NORTE' },
+  // 3. South Luzon major cities
+  { code: 'DASMARINAS_CITY', name: 'Dasmariñas City', provinceCode: 'CAVITE' },
+  { code: 'CALAMBA_CITY', name: 'Calamba City', provinceCode: 'LAGUNA' },
+  { code: 'ANTIPOLO_CITY', name: 'Antipolo City', provinceCode: 'RIZAL' },
+  { code: 'BATANGAS_CITY', name: 'Batangas City', provinceCode: 'BATANGAS' },
+  { code: 'LIPA_CITY', name: 'Lipa City', provinceCode: 'BATANGAS' },
+  { code: 'PUERTO_PRINCESA', name: 'Puerto Princesa City', provinceCode: 'PALAWAN' },
 
-  // Cebu (Region VII)
+  // 4. Visayas major cities
   { code: 'CEBU_CITY', name: 'Cebu City', provinceCode: 'CEBU' },
+  { code: 'ILOILO_CITY', name: 'Iloilo City', provinceCode: 'ILOILO' },
+  { code: 'BACOLOD_CITY', name: 'Bacod City', provinceCode: 'NEGROS_OCCIDENTAL' },
   { code: 'MANDAUE_CITY', name: 'Mandaue City', provinceCode: 'CEBU' },
   { code: 'LAPU_LAPU_CITY', name: 'Lapu-Lapu City', provinceCode: 'CEBU' },
-  { code: 'TALISAY_CITY', name: 'Talisay City', provinceCode: 'CEBU' },
-  { code: 'TOLEDO_CITY', name: 'Toledo City', provinceCode: 'CEBU' },
-  { code: 'LILOAN', name: 'Liloan', provinceCode: 'CEBU' },
-  { code: 'CONSOLACION', name: 'Consolacion', provinceCode: 'CEBU' },
+  { code: 'TACLOBAN_CITY', name: 'Tacloban City', provinceCode: 'LEYTE' },
 
-  // Cavite (Region IV-A)
-  { code: 'IMUS_CITY', name: 'Imus City', provinceCode: 'CAVITE' },
-  { code: 'BACOOR_CITY', name: 'Bacoor City', provinceCode: 'CAVITE' },
-  { code: 'DASMARIÑAS_CITY', name: 'Dasmariñas City', provinceCode: 'CAVITE' },
-  { code: 'TAGAYTAY_CITY', name: 'Tagaytay City', provinceCode: 'CAVITE' },
-  { code: 'GENERAL_TRIAS_CITY', name: 'General Trias City', provinceCode: 'CAVITE' },
-
-  // Laguna (Region IV-A)
-  { code: 'CALAMBA_CITY', name: 'Calamba City', provinceCode: 'LAGUNA' },
-  { code: 'BIÑAN_CITY', name: 'Biñan City', provinceCode: 'LAGUNA' },
-  { code: 'SANTA_ROSA_CITY', name: 'Santa Rosa City', provinceCode: 'LAGUNA' },
-  { code: 'SAN_PEDRO_CITY', name: 'San Pedro City', provinceCode: 'LAGUNA' },
-  { code: 'LOS_BAÑOS', name: 'Los Baños', provinceCode: 'LAGUNA' },
-
-  // Rizal (Region IV-A)
-  { code: 'ANTIPOLO_CITY', name: 'Antipolo City', provinceCode: 'RIZAL' },
-  { code: 'CAINTA', name: 'Cainta', provinceCode: 'RIZAL' },
-  { code: 'TAYTAY', name: 'Taytay', provinceCode: 'RIZAL' },
-  { code: 'ANGONO', name: 'Angono', provinceCode: 'RIZAL' },
-
-  // Ilocos Norte (Region I)
-  { code: 'LAOAG_CITY', name: 'Laoag City', provinceCode: 'ILOCOS_NORTE' },
-  { code: 'BATAC_CITY', name: 'Batac City', provinceCode: 'ILOCOS_NORTE' },
-
-  // Pangasinan (Region I)
-  { code: 'DAGUPAN_CITY', name: 'Dagupan City', provinceCode: 'PANGASINAN' },
-  { code: 'URDANETA_CITY', name: 'Urdaneta City', provinceCode: 'PANGASINAN' },
-  { code: 'ALAMINOS_CITY', name: 'Alaminos City', provinceCode: 'PANGASINAN' }
+  // 5. Mindanao major cities
+  { code: 'DAVAO_CITY', name: 'Davao City', provinceCode: 'DAVAO_DEL_SUR' },
+  { code: 'CAGAYAN_DE_ORO_CITY', name: 'Cagayan de Oro City', provinceCode: 'MISAMIS_ORIENTAL' },
+  { code: 'ZAMBOANGA_CITY', name: 'Zamboanga City', provinceCode: 'ZAMBOANGA_DEL_SUR' },
+  { code: 'GENERAL_SANTOS', name: 'General Santos City', provinceCode: 'SOUTH_COTABATO' },
+  { code: 'ILIGAN_CITY', name: 'Iligan City', provinceCode: 'LANAO_DEL_NORTE' },
+  { code: 'BUTUAN_CITY', name: 'Butuan City', provinceCode: 'AGUSAN_DEL_NORTE' },
+  { code: 'DIGOS_CITY', name: 'Digos City', provinceCode: 'DAVAO_DEL_SUR' }
 ];
 
 export const barangaysByCity = {
-  // Davao City (Very detailed for Davao-specific orders!)
-  'DAVAO_CITY': [
-    'Buhangin (Pob.)',
-    'Talomo (Pob.)',
-    'Agdao',
-    'Barangay 1-A (Pob.)',
-    'Barangay 2-A (Pob.)',
-    'Barangay 3-A (Pob.)',
-    'Barangay 5-A (Pob.)',
-    'Barangay 10-A (Pob.)',
-    'Barangay 19-B (Pob.)',
-    'Barangay 22-C (Pob.)',
-    'Cabantian',
-    'Catalunan Grande',
-    'Catalunan Pequeño',
-    'Daliao (Toril)',
-    'Dumoy (Toril)',
-    'Indangan',
-    'Lanang',
-    'Matina Aplaya',
-    'Matina Crossing',
-    'Matina Pangi',
-    'Ma-a',
-    'Mintal',
-    'Pampanga',
-    'Sasa',
-    'Tibungco',
-    'Toril (Pob.)'
+  // Numbered Zones/Barangays specific to Binondo
+  'BINONDO': [
+    'Barangay 287',
+    'Barangay 288',
+    'Barangay 289',
+    'Barangay 290',
+    'Barangay 291',
+    'Barangay 292',
+    'Barangay 293',
+    'Barangay 294',
+    'Barangay 295',
+    'Barangay 296'
   ],
 
-  // Makati City
-  'MAKATI': [
+  // Numbered Zones for Ermita
+  'ERMITA': [
+    'Barangay 659',
+    'Barangay 659-A',
+    'Barangay 660',
+    'Barangay 660-A',
+    'Barangay 661',
+    'Barangay 666',
+    'Barangay 667',
+    'Barangay 668'
+  ],
+
+  // Numbered Zones for Tondo
+  'TONDO': [
+    'Barangay 1',
+    'Barangay 2',
+    'Barangay 3',
+    'Barangay 4',
+    'Barangay 10',
+    'Barangay 50',
+    'Barangay 100',
+    'Barangay 200'
+  ],
+
+  // Makati City Major Zones
+  'MAKATI_CITY': [
     'Bel-Air',
     'San Lorenzo',
     'Urdaneta',
@@ -259,133 +219,74 @@ export const barangaysByCity = {
     'Tejeros',
     'Bangkal',
     'San Antonio',
-    'Pio del Pilar',
-    'Palanan',
-    'Cembo',
-    'Pembo',
-    'Rembo',
-    'Rizal'
-  ],
-
-  // Quezon City
-  'QUEZON_CITY': [
-    'Batasan Hills',
-    'Commonwealth',
-    'Bagong Pag-asa',
-    'Diliman',
-    'Katipunan',
-    'Loyola Heights',
-    'Cubao (Socorro)',
-    'Kamuning',
-    'Fairview',
-    'Pasong Tamo',
-    'Holy Spirit',
-    'Tandang Sora',
-    'South Triangle',
-    'New Manila'
-  ],
-
-  // Manila
-  'MANILA': [
-    'Barangay 659 (Intramuros)',
-    'Barangay 667 (Ermita)',
-    'Barangay 699 (Malate)',
-    'Binondo (Pob.)',
-    'Quiapo (Pob.)',
-    'Sampaloc',
-    'Tondo I',
-    'Tondo II',
-    'San Miguel',
-    'Paco',
-    'Santa Ana',
-    'Santa Cruz'
+    'Pio del Pilar'
   ],
 
   // Taguig City
-  'TAGUIG': [
+  'TAGUIG_CITY': [
     'Fort Bonifacio (BGC)',
     'Pinagsama',
     'Ususan',
     'Tuktukan',
     'Signal Village',
-    'Central Bicutan',
-    'Upper Bicutan',
-    'Lower Bicutan',
-    'Bagumbayan',
-    'Hagonoy'
+    'Central Bicutan'
   ],
 
-  // Cebu City
-  'CEBU_CITY': [
-    'Lahug',
-    'Banilad',
-    'Mabolo',
-    'Guadalupe',
-    'Capitol Site',
-    'Apas',
-    'Talamban',
-    'Pardo',
-    'Tisa',
-    'Punta Princesa',
-    'Sambag I',
-    'Sambag II',
-    'Tejero',
-    'Basak San Nicolas'
-  ],
-
-  // Bacoor City
-  'BACOOR_CITY': [
-    'Molino I',
-    'Molino II',
-    'Molino III',
-    'Molino IV',
-    'Habay I',
-    'Habay II',
-    'San Nicolas I',
-    'San Nicolas II',
-    'Ligas I',
-    'Ligas II',
-    'Bayanan'
-  ],
-
-  // Imus City
-  'IMUS_CITY': [
-    'Anabu I-A',
-    'Anabu II-A',
-    'Bayan Luma I',
-    'Bayan Luma II',
-    'Bucandala I',
-    'Bucandala II',
-    'Carsadang Bago I',
-    'Malagasang I-A',
-    'Malagasang II-A',
-    'Poblacion I-A'
+  // Davao City
+  'DAVAO_CITY': [
+    'Buhangin (Pob.)',
+    'Talomo (Pob.)',
+    'Agdao',
+    'Barangay 1-A (Pob.)',
+    'Barangay 2-A (Pob.)',
+    'Barangay 3-A (Pob.)',
+    'Barangay 5-A (Pob.)',
+    'Barangay 10-A (Pob.)',
+    'Cabantian',
+    'Catalunan Grande',
+    'Lanang',
+    'Matina Aplaya',
+    'Sasa',
+    'Toril (Pob.)'
   ]
 };
 
 // Smart fallback generator for cities/municipalities that don't have custom barangays listed.
-// Keeps dataset lean while maintaining full selectability for every town in the country!
+// Generates appropriate customized local villages/neighborhoods for each region type.
 export function getBarangaysForCity(cityCode, cityName = '') {
   if (barangaysByCity[cityCode]) {
     return barangaysByCity[cityCode];
   }
   
-  // Generic high-quality barangays that are common in any Philippine town/city
+  // Custom fallback generator depending on names to feel extremely realistic
+  if (cityCode.includes('CITY') || cityName.includes('City')) {
+    return [
+      'Poblacion',
+      'San Jose',
+      'Santo Niño',
+      'Santa Maria',
+      'San Pedro',
+      'San Miguel',
+      'Bagong Pag-asa',
+      'Barangay 1',
+      'Barangay 2',
+      'Barangay 3',
+      'Santa Cruz',
+      'San Juan'
+    ];
+  }
+
+  // Fallback for smaller municipalities
   return [
     'Poblacion',
-    'San Jose',
-    'Santo Niño',
-    'Santa Maria',
-    'San Pedro',
-    'San Miguel',
     'Barangay I',
     'Barangay II',
     'Barangay III',
-    'Bagong Pag-asa',
-    'Maligaya',
+    'San Jose',
+    'Santo Rosario',
+    'San Antonio',
     'Santa Cruz',
-    'San Juan',
-    'San Francisco'
+    'Maligaya'
   ];
 }
 
@@ -399,7 +300,6 @@ export function findMatchingCodes(userProvince, userCity) {
   let matchedRegion = null;
 
   if (normalizedProv) {
-    // Try exact or contains match on Province list
     matchedProvince = provinces.find(p => 
       p.name.toLowerCase() === normalizedProv || 
       p.name.toLowerCase().includes(normalizedProv) ||
@@ -411,7 +311,6 @@ export function findMatchingCodes(userProvince, userCity) {
     matchedRegion = regions.find(r => r.code === matchedProvince.regionCode);
     
     if (normalizedCity) {
-      // Find city within this province
       matchedCity = cities.find(c => 
         c.provinceCode === matchedProvince.code && (
           c.name.toLowerCase() === normalizedCity ||
@@ -421,7 +320,6 @@ export function findMatchingCodes(userProvince, userCity) {
       );
     }
   } else if (normalizedCity) {
-    // Try to find city directly
     matchedCity = cities.find(c => 
       c.name.toLowerCase() === normalizedCity ||
       c.name.toLowerCase().includes(normalizedCity) ||
