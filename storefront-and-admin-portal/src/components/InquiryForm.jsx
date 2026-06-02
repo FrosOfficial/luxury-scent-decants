@@ -5,6 +5,7 @@ import { useInquiryBag } from '../contexts/InquiryBagContext';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { regions, provinces, cities, getBarangaysForCity, findMatchingCodes } from '../data/philippines_addresses';
+import LuxurySearchableSelect from './LuxurySearchableSelect';
 
 export default function InquiryForm({ onBack, onClose }) {
   const { items, totalEstimatedPrice, submitInquiry } = useInquiryBag();
@@ -428,121 +429,73 @@ export default function InquiryForm({ onBack, onClose }) {
             {/* Region & Province */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Region Selector */}
-              <div>
-                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                  Region
-                </label>
-                <select
-                  required
-                  value={regionCode}
-                  onChange={(e) => {
-                    const code = e.target.value;
-                    setRegionCode(code);
-                    setProvinceCode('');
-                    setCityCode('');
-                    setBarangay('');
-                    setProvince('');
-                    setCity('');
-                  }}
-                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer appearance-none"
-                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
-                >
-                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select Region</option>
-                  {regions.map((r) => (
-                    <option key={r.code} value={r.code} className="bg-[#021c13] text-brand-cream">
-                      {r.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <LuxurySearchableSelect
+                label="Region"
+                required
+                value={regionCode}
+                onChange={(code) => {
+                  setRegionCode(code);
+                  setProvinceCode('');
+                  setCityCode('');
+                  setBarangay('');
+                  setProvince('');
+                  setCity('');
+                }}
+                placeholder="Select Region"
+                options={regions.map(r => ({ value: r.code, label: r.name }))}
+              />
 
               {/* Province Selector */}
-              <div>
-                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                  Province
-                </label>
-                <select
-                  required
-                  disabled={!regionCode}
-                  value={provinceCode}
-                  onChange={(e) => {
-                    const code = e.target.value;
-                    setProvinceCode(code);
-                    const selected = provinces.find((p) => p.code === code);
-                    setProvince(selected ? selected.name : '');
-                    setCityCode('');
-                    setBarangay('');
-                    setCity('');
-                  }}
-                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
-                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
-                >
-                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select Province</option>
-                  {provinces
-                    .filter((p) => p.regionCode === regionCode)
-                    .map((p) => (
-                      <option key={p.code} value={p.code} className="bg-[#021c13] text-brand-cream">
-                        {p.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
+              <LuxurySearchableSelect
+                label="Province"
+                required
+                disabled={!regionCode}
+                value={provinceCode}
+                onChange={(code) => {
+                  setProvinceCode(code);
+                  const selected = provinces.find((p) => p.code === code);
+                  setProvince(selected ? selected.name : '');
+                  setCityCode('');
+                  setBarangay('');
+                  setCity('');
+                }}
+                placeholder="Select Province"
+                options={provinces
+                  .filter((p) => p.regionCode === regionCode)
+                  .map((p) => ({ value: p.code, label: p.name }))}
+              />
             </div>
 
             {/* City & Barangay */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* City Selector */}
-              <div>
-                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                  City / Municipality
-                </label>
-                <select
-                  required
-                  disabled={!provinceCode}
-                  value={cityCode}
-                  onChange={(e) => {
-                    const code = e.target.value;
-                    setCityCode(code);
-                    const selected = cities.find((c) => c.code === code);
-                    setCity(selected ? selected.name : '');
-                    setBarangay('');
-                  }}
-                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
-                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
-                >
-                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select City / Municipality</option>
-                  {cities
-                    .filter((c) => c.provinceCode === provinceCode)
-                    .map((c) => (
-                      <option key={c.code} value={c.code} className="bg-[#021c13] text-brand-cream">
-                        {c.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
+              <LuxurySearchableSelect
+                label="City / Municipality"
+                required
+                disabled={!provinceCode}
+                value={cityCode}
+                onChange={(code) => {
+                  setCityCode(code);
+                  const selected = cities.find((c) => c.code === code);
+                  setCity(selected ? selected.name : '');
+                  setBarangay('');
+                }}
+                placeholder="Select City / Municipality"
+                options={cities
+                  .filter((c) => c.provinceCode === provinceCode)
+                  .map((c) => ({ value: c.code, label: c.name }))}
+              />
 
               {/* Barangay Selector */}
-              <div>
-                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                  Barangay
-                </label>
-                <select
-                  required
-                  disabled={!cityCode}
-                  value={barangay}
-                  onChange={(e) => setBarangay(e.target.value)}
-                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm focus:outline-none focus:border-brand-gold/50 transition-colors font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
-                  style={{ backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em 1.5em', backgroundRepeat: 'no-repeat', paddingRight: '2.5rem' }}
-                >
-                  <option value="" className="bg-[#021c13] text-brand-cream/50">Select Barangay</option>
-                  {cityCode &&
-                    getBarangaysForCity(cityCode, city).map((brgy) => (
-                      <option key={brgy} value={brgy} className="bg-[#021c13] text-brand-cream">
-                        {brgy}
-                      </option>
-                    ))}
-                </select>
-              </div>
+              <LuxurySearchableSelect
+                label="Barangay"
+                required
+                disabled={!cityCode}
+                value={barangay}
+                onChange={(val) => setBarangay(val)}
+                placeholder="Select Barangay"
+                options={cityCode ? getBarangaysForCity(cityCode, city) : []}
+              />
             </div>
 
             {/* Postal Code & Street Address */}
