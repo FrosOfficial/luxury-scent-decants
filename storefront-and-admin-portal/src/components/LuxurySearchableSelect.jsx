@@ -78,7 +78,7 @@ export default function LuxurySearchableSelect({
               : 'border-brand-gold/15 hover:border-brand-gold/40'
         }`}
       >
-        <span className={`truncate ${displayLabel ? 'text-brand-cream font-medium' : 'text-brand-cream/30'}`}>
+        <span className={`${displayLabel ? 'text-brand-cream font-medium' : 'text-brand-cream/30'} pr-2`}>
           {displayLabel || placeholder}
         </span>
         <ChevronDown 
@@ -144,7 +144,7 @@ export default function LuxurySearchableSelect({
                           : 'text-brand-cream/80 hover:bg-brand-gold/5 hover:text-brand-cream'
                       }`}
                     >
-                      <span className="truncate pr-4">{opt.label}</span>
+                      <span className="pr-4 whitespace-normal break-words">{opt.label}</span>
                       {isSelected && (
                         <Check size={14} className="text-brand-gold shrink-0" />
                       )}
