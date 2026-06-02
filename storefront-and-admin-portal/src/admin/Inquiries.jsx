@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import api from '../lib/api';
 import { 
   Search, 
@@ -21,19 +21,262 @@ import {
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Memoized Inquiry Row Component
+const InquiryRow = React.memo(({ inquiry, onRowClick, onStatusChange, formatCurrency }) => {
+  let statusStyle = 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
+  if (inquiry.status === 'contacted') statusStyle = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+  if (inquiry.status === 'confirmed') statusStyle = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+  if (inquiry.status === 'fulfilled') statusStyle = 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
+  if (inquiry.status === 'cancelled') statusStyle = 'text-rose-500 bg-rose-500/10 border-rose-500/20';
+
+  return (
+    <tr 
+      className="hover:bg-white/[0.01] transition duration-150 cursor-pointer"
+      onClick={() => onRowClick(inquiry.id)}
+    >
+      <td className="py-4 px-6 font-mono font-semibold text-brand-gold select-all">{inquiry.reference_code}</td>
+      <td className="py-4 px-6">
+        <div className="font-medium text-brand-cream">{inquiry.customer_name}</div>
+        <div className="text-xs text-brand-cream/50 mt-0.5">{inquiry.customer_phone}</div>
+      </td>
+      <td className="py-4 px-6 text-brand-cream/60 text-xs">
+        {new Date(inquiry.created_at).toLocaleString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })}
+      </td>
+      <td className="py-4 px-6 text-brand-cream/90 font-medium">
+        {formatCurrency(inquiry.total_estimated_price)}
+      </td>
+      <td className="py-4 px-6">
+        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider border ${statusStyle}`}>
+          {inquiry.status}
+        </span>
+      </td>
+      <td className="py-4 px-6 text-right" onClick={(e) => e.stopPropagation()}>
+        <select
+          value={inquiry.status}
+          onChange={(e) => onStatusChange(inquiry.id, e.target.value)}
+          className="bg-black/40 border border-white/[0.08] hover:border-brand-gold text-brand-cream text-xs rounded-sm p-1.5 focus:outline-none"
+        >
+          <option value="pending">Pending</option>
+          <option value="contacted">Contacted</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="fulfilled">Fulfilled</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </td>
+    </tr>
+  );
+});
+InquiryRow.displayName = 'InquiryRow';
+
+// Memoized Standalone Inquiry Details Modal / Drawer to isolate re-render scope
+const InquiryDetailModal = React.memo(({ inquiry, onClose, onStatusChange, formatCurrency, onPrintWaybill, onDownloadWaybill }) => {
+  if (!inquiry) return null;
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+          className="bg-brand-emerald-dark border border-brand-gold/30 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative p-8 text-brand-cream font-sans"
+        >
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent"></div>
+
+          <button 
+            onClick={onClose}
+            className="absolute top-6 right-6 p-2 text-brand-cream/60 hover:text-brand-gold transition cursor-pointer"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/[0.08] pb-6 mb-6 gap-4 pr-10 md:pr-12">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xl font-bold tracking-wider text-brand-gold">{inquiry.reference_code}</span>
+                <span className="text-xs text-brand-cream/40 uppercase">Inquiry Receipt</span>
+              </div>
+              <p className="text-xs text-brand-cream/60 mt-1">
+                Submitted on {new Date(inquiry.created_at).toLocaleString()}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="text-xs font-semibold uppercase text-brand-gold tracking-wide">Status Workflow:</label>
+              <select
+                value={inquiry.status}
+                onChange={(e) => onStatusChange(inquiry.id, e.target.value)}
+                className="bg-black/60 border border-brand-gold/30 text-brand-gold text-xs font-bold uppercase tracking-wider rounded-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-brand-gold"
+              >
+                <option value="pending">Pending Review</option>
+                <option value="contacted">Customer Contacted</option>
+                <option value="confirmed">Order Confirmed</option>
+                <option value="fulfilled">Inquiry Fulfilled</option>
+                <option value="cancelled">Inquiry Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
+                <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
+                  <User className="w-4.5 h-4.5 text-brand-gold" /> Customer Profile
+                </h3>
+                <div className="space-y-3 text-sm text-brand-cream/80">
+                  <div className="flex gap-3">
+                    <span className="font-medium text-brand-cream min-w-[70px]">Name:</span>
+                    <span>{inquiry.customer_name}</span>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <span className="font-medium text-brand-cream min-w-[70px] flex items-center gap-1">
+                      <Mail className="w-3.5 h-3.5 text-brand-gold/60" /> Email:
+                    </span>
+                    <a href={`mailto:${inquiry.customer_email}`} className="text-brand-gold hover:underline font-medium">
+                      {inquiry.customer_email}
+                    </a>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <span className="font-medium text-brand-cream min-w-[70px] flex items-center gap-1">
+                      <Phone className="w-3.5 h-3.5 text-brand-gold/60" /> Phone:
+                    </span>
+                    <a href={`tel:${inquiry.customer_phone}`} className="text-brand-gold hover:underline">
+                      {inquiry.customer_phone}
+                    </a>
+                  </div>
+                  <div className="flex gap-3 items-start">
+                    <span className="font-medium text-brand-cream min-w-[70px] flex items-center gap-1 pt-0.5">
+                      <MapPin className="w-3.5 h-3.5 text-brand-gold/60" /> Address:
+                    </span>
+                    <div>
+                      <div>{inquiry.delivery_address}</div>
+                      <div className="text-xs text-brand-cream/50 mt-0.5">{inquiry.city}, {inquiry.province}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-3">
+                <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
+                  <FileText className="w-4.5 h-4.5 text-brand-gold" /> Special Instructions
+                </h3>
+                <p className="text-sm text-brand-cream/80 whitespace-pre-line leading-relaxed italic">
+                  {inquiry.additional_notes || 'No special requests or instructions provided by client.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
+                <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
+                  <ShoppingBag className="w-4.5 h-4.5 text-brand-gold" /> Decant Selection Details
+                </h3>
+                
+                <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
+                  {inquiry.items.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center py-2 border-b border-white/[0.03] text-sm last:border-b-0">
+                      <div>
+                        <div className="font-medium text-brand-cream">{item.product_name}</div>
+                        <div className="text-xs text-brand-cream/50 mt-0.5">{item.product_brand} • Size: {item.volume_size}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold text-brand-gold">{formatCurrency(item.unit_price * item.quantity)}</div>
+                        <div className="text-xs text-brand-cream/40 mt-0.5">{formatCurrency(item.unit_price)} × {item.quantity}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t border-white/[0.06] pt-4 space-y-2 text-sm text-brand-cream/70">
+                  <div className="flex justify-between items-center">
+                    <span>Decant Subtotal:</span>
+                    <span className="text-brand-cream font-medium">{formatCurrency(inquiry.total_estimated_price)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Courier Shipping:</span>
+                    <span className="text-brand-cream font-medium">
+                      {formatCurrency(inquiry.shipping_fee || 0)} 
+                      <span className="text-[10px] text-brand-gold ml-1.5 font-bold uppercase tracking-wider">({inquiry.delivery_type || 'Standard'})</span>
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 border-t border-white/[0.04] text-base font-bold">
+                    <span className="text-brand-cream font-serif">Collectible Grand Total:</span>
+                    <span className="text-brand-gold text-lg">
+                      {formatCurrency(Number(inquiry.total_estimated_price) + Number(inquiry.shipping_fee || 0))}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/[0.02] border border-brand-gold/20 rounded-xl p-5 space-y-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                  <FileText className="w-20 h-20 text-brand-gold" />
+                </div>
+
+                <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
+                  <FileText className="w-4.5 h-4.5 text-brand-gold" /> Courier Delivery Waybill
+                </h3>
+                
+                <div className="space-y-1.5 text-xs text-brand-cream/70 leading-relaxed">
+                  <p>💳 Payment Settlement: <strong className="text-brand-gold uppercase">
+                    {inquiry.payment_method === 'cod' ? 'Cash On Delivery (COD)' :
+                     inquiry.payment_method === 'gcash' ? 'GCash e-Wallet' :
+                     inquiry.payment_method === 'maya' ? 'Maya e-Wallet' :
+                     inquiry.payment_method === 'rcbc' ? 'Online Banking (RCBC)' :
+                     inquiry.payment_method === 'bank_transfer' ? 'Online Banking (RCBC)' :
+                     inquiry.payment_method || 'Cash On Delivery'}
+                  </strong></p>
+                  {inquiry.estimated_delivery_days && (
+                    <p>🚚 Transit Estimate: <strong className="text-brand-gold">{inquiry.estimated_delivery_days}</strong></p>
+                  )}
+                </div>
+
+                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    onClick={() => onPrintWaybill(inquiry)}
+                    className="py-3 bg-gradient-to-r from-brand-gold-dark to-brand-gold text-brand-emerald-dark font-black hover:brightness-110 text-xs tracking-[0.2em] uppercase rounded-sm transition-all shadow-[0_4px_15px_rgba(212,175,55,0.15)] cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <FileText className="w-4 h-4 stroke-[3]" /> Print Waybill
+                  </button>
+                  <button
+                    onClick={() => onDownloadWaybill(inquiry)}
+                    className="py-3 bg-white/[0.02] border border-brand-gold/25 hover:bg-brand-gold/10 text-brand-gold font-bold text-xs tracking-[0.2em] uppercase rounded-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-4 h-4 stroke-[2]" /> Download Label
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
+});
+InquiryDetailModal.displayName = 'InquiryDetailModal';
+
 export const Inquiries = () => {
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   
+  // Decoupled search inputs
   const [search, setSearch] = useState('');
+  const [localSearch, setLocalSearch] = useState('');
+
   const [status, setStatus] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
 
-  const fetchInquiries = async (background = false) => {
+  const fetchInquiries = useCallback(async (background = false) => {
     const isBackground = background === true;
     if (!isBackground) setLoading(true);
     try {
@@ -59,7 +302,7 @@ export const Inquiries = () => {
     } finally {
       if (!isBackground) setLoading(false);
     }
-  };
+  }, [page, search, status, startDate, endDate]);
 
   useEffect(() => {
     fetchInquiries();
@@ -69,23 +312,24 @@ export const Inquiries = () => {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, [page, status, startDate, endDate]);
+  }, [fetchInquiries]);
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = useCallback((e) => {
     e.preventDefault();
     setPage(1);
-    fetchInquiries();
-  };
+    setSearch(localSearch);
+  }, [localSearch]);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
+    setLocalSearch('');
     setSearch('');
     setStatus('');
     setStartDate('');
     setEndDate('');
     setPage(1);
-  };
+  }, []);
 
-  const handleRowClick = async (inquiryId) => {
+  const handleRowClick = useCallback(async (inquiryId) => {
     try {
       const response = await api.get(`/admin/inquiries/${inquiryId}`);
       setSelectedInquiry(response.data);
@@ -93,9 +337,13 @@ export const Inquiries = () => {
       console.error('Error fetching inquiry details:', err);
       toast.error('Failed to load inquiry details.');
     }
-  };
+  }, []);
 
-  const handleStatusChange = async (inquiryId, newStatus) => {
+  const handleCloseDetailModal = useCallback(() => {
+    setSelectedInquiry(null);
+  }, []);
+
+  const handleStatusChange = useCallback(async (inquiryId, newStatus) => {
     try {
       const response = await api.patch(`/admin/inquiries/${inquiryId}/status`, {
         status: newStatus
@@ -106,16 +354,19 @@ export const Inquiries = () => {
       
       setInquiries(prev => prev.map(inq => inq.id === inquiryId ? { ...inq, status: newStatus } : inq));
       
-      if (selectedInquiry && selectedInquiry.id === inquiryId) {
-        setSelectedInquiry(updatedInquiry);
-      }
+      setSelectedInquiry((currentSelected) => {
+        if (currentSelected && currentSelected.id === inquiryId) {
+          return updatedInquiry;
+        }
+        return currentSelected;
+      });
     } catch (err) {
       console.error('Error changing inquiry status:', err);
       toast.error(err.response?.data?.message || 'Failed to update status.');
     }
-  };
+  }, []);
 
-  const handlePrintWaybill = (inquiry) => {
+  const handlePrintWaybill = useCallback((inquiry) => {
     if (!inquiry) return;
     
     const printWindow = window.open('', '_blank');
@@ -265,9 +516,9 @@ export const Inquiries = () => {
 
     printWindow.document.write(waybillHTML);
     printWindow.document.close();
-  };
+  }, []);
 
-  const handleDownloadWaybill = (inquiry) => {
+  const handleDownloadWaybill = useCallback((inquiry) => {
     if (!inquiry) return;
     
     const itemsRows = inquiry.items.map(item => `
@@ -411,15 +662,15 @@ export const Inquiries = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
     toast.success("Waybill document downloaded successfully.");
-  };
+  }, []);
 
-  const formatCurrency = (value) => {
+  const formatCurrency = useCallback((value) => {
     return new Intl.NumberFormat('en-PH', {
       style: 'currency',
       currency: 'PHP',
       minimumFractionDigits: 0
     }).format(value);
-  };
+  }, []);
 
   return (
     <div className="space-y-6 font-sans">
@@ -441,8 +692,8 @@ export const Inquiries = () => {
             <input
               type="text"
               placeholder="Search by Reference, Customer Name, Email, or Phone..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               className="w-full pl-11 pr-4 py-2.5 bg-black/40 border border-brand-gold/20 focus:border-brand-gold rounded-sm text-brand-cream placeholder-brand-cream/30 focus:outline-none focus:ring-1 focus:ring-brand-gold text-sm"
             />
           </div>
@@ -472,7 +723,7 @@ export const Inquiries = () => {
             >
               <Filter className="w-3.5 h-3.5" /> Filter
             </button>
-            {(search || status || startDate || endDate) && (
+            {(localSearch || status || startDate || endDate) && (
               <button
                 type="button"
                 onClick={handleClearFilters}
@@ -542,57 +793,15 @@ export const Inquiries = () => {
                     </td>
                   </tr>
                 ) : (
-                  inquiries.map((inquiry) => {
-                    let statusStyle = 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
-                    if (inquiry.status === 'contacted') statusStyle = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-                    if (inquiry.status === 'confirmed') statusStyle = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-                    if (inquiry.status === 'fulfilled') statusStyle = 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
-                    if (inquiry.status === 'cancelled') statusStyle = 'text-rose-500 bg-rose-500/10 border-rose-500/20';
-
-                    return (
-                      <tr 
-                        key={inquiry.id} 
-                        className="hover:bg-white/[0.01] transition duration-150 cursor-pointer"
-                        onClick={() => handleRowClick(inquiry.id)}
-                      >
-                        <td className="py-4 px-6 font-mono font-semibold text-brand-gold select-all">{inquiry.reference_code}</td>
-                        <td className="py-4 px-6">
-                          <div className="font-medium text-brand-cream">{inquiry.customer_name}</div>
-                          <div className="text-xs text-brand-cream/50 mt-0.5">{inquiry.customer_phone}</div>
-                        </td>
-                        <td className="py-4 px-6 text-brand-cream/60 text-xs">
-                          {new Date(inquiry.created_at).toLocaleString(undefined, {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </td>
-                        <td className="py-4 px-6 text-brand-cream/90 font-medium">
-                          {formatCurrency(inquiry.total_estimated_price)}
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider border ${statusStyle}`}>
-                            {inquiry.status}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-right" onClick={(e) => e.stopPropagation()}>
-                          <select
-                            value={inquiry.status}
-                            onChange={(e) => handleStatusChange(inquiry.id, e.target.value)}
-                            className="bg-black/40 border border-white/[0.08] hover:border-brand-gold text-brand-cream text-xs rounded-sm p-1.5 focus:outline-none"
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="contacted">Contacted</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="fulfilled">Fulfilled</option>
-                            <option value="cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                      </tr>
-                    );
-                  })
+                  inquiries.map((inquiry) => (
+                    <InquiryRow
+                      key={inquiry.id}
+                      inquiry={inquiry}
+                      onRowClick={handleRowClick}
+                      onStatusChange={handleStatusChange}
+                      formatCurrency={formatCurrency}
+                    />
+                  ))
                 )}
               </tbody>
             </table>
@@ -626,186 +835,15 @@ export const Inquiries = () => {
         </div>
       )}
 
-      <AnimatePresence>
-        {selectedInquiry && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="bg-brand-emerald-dark border border-brand-gold/30 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative p-8 text-brand-cream font-sans"
-            >
-              <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent"></div>
-
-              <button 
-                onClick={() => setSelectedInquiry(null)}
-                className="absolute top-6 right-6 p-2 text-brand-cream/60 hover:text-brand-gold transition cursor-pointer"
-              >
-                <X className="w-6 h-6" />
-              </button>
-
-              <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/[0.08] pb-6 mb-6 gap-4 pr-10 md:pr-12">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-xl font-bold tracking-wider text-brand-gold">{selectedInquiry.reference_code}</span>
-                    <span className="text-xs text-brand-cream/40 uppercase">Inquiry Receipt</span>
-                  </div>
-                  <p className="text-xs text-brand-cream/60 mt-1">
-                    Submitted on {new Date(selectedInquiry.created_at).toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-xs font-semibold uppercase text-brand-gold tracking-wide">Status Workflow:</label>
-                  <select
-                    value={selectedInquiry.status}
-                    onChange={(e) => handleStatusChange(selectedInquiry.id, e.target.value)}
-                    className="bg-black/60 border border-brand-gold/30 text-brand-gold text-xs font-bold uppercase tracking-wider rounded-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-brand-gold"
-                  >
-                    <option value="pending">Pending Review</option>
-                    <option value="contacted">Customer Contacted</option>
-                    <option value="confirmed">Order Confirmed</option>
-                    <option value="fulfilled">Inquiry Fulfilled</option>
-                    <option value="cancelled">Inquiry Cancelled</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
-                    <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
-                      <User className="w-4.5 h-4.5 text-brand-gold" /> Customer Profile
-                    </h3>
-                    <div className="space-y-3 text-sm text-brand-cream/80">
-                      <div className="flex gap-3">
-                        <span className="font-medium text-brand-cream min-w-[70px]">Name:</span>
-                        <span>{selectedInquiry.customer_name}</span>
-                      </div>
-                      <div className="flex gap-3 items-center">
-                        <span className="font-medium text-brand-cream min-w-[70px] flex items-center gap-1">
-                          <Mail className="w-3.5 h-3.5 text-brand-gold/60" /> Email:
-                        </span>
-                        <a href={`mailto:${selectedInquiry.customer_email}`} className="text-brand-gold hover:underline font-medium">
-                          {selectedInquiry.customer_email}
-                        </a>
-                      </div>
-                      <div className="flex gap-3 items-center">
-                        <span className="font-medium text-brand-cream min-w-[70px] flex items-center gap-1">
-                          <Phone className="w-3.5 h-3.5 text-brand-gold/60" /> Phone:
-                        </span>
-                        <a href={`tel:${selectedInquiry.customer_phone}`} className="text-brand-gold hover:underline">
-                          {selectedInquiry.customer_phone}
-                        </a>
-                      </div>
-                      <div className="flex gap-3 items-start">
-                        <span className="font-medium text-brand-cream min-w-[70px] flex items-center gap-1 pt-0.5">
-                          <MapPin className="w-3.5 h-3.5 text-brand-gold/60" /> Address:
-                        </span>
-                        <div>
-                          <div>{selectedInquiry.delivery_address}</div>
-                          <div className="text-xs text-brand-cream/50 mt-0.5">{selectedInquiry.city}, {selectedInquiry.province}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-3">
-                    <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
-                      <FileText className="w-4.5 h-4.5 text-brand-gold" /> Special Instructions
-                    </h3>
-                    <p className="text-sm text-brand-cream/80 whitespace-pre-line leading-relaxed italic">
-                      {selectedInquiry.additional_notes || 'No special requests or instructions provided by client.'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
-                    <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
-                      <ShoppingBag className="w-4.5 h-4.5 text-brand-gold" /> Decant Selection Details
-                    </h3>
-                    
-                    <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-                      {selectedInquiry.items.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center py-2 border-b border-white/[0.03] text-sm last:border-b-0">
-                          <div>
-                            <div className="font-medium text-brand-cream">{item.product_name}</div>
-                            <div className="text-xs text-brand-cream/50 mt-0.5">{item.product_brand} • Size: {item.volume_size}</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-semibold text-brand-gold">{formatCurrency(item.unit_price * item.quantity)}</div>
-                            <div className="text-xs text-brand-cream/40 mt-0.5">{formatCurrency(item.unit_price)} × {item.quantity}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="border-t border-white/[0.06] pt-4 space-y-2 text-sm text-brand-cream/70">
-                      <div className="flex justify-between items-center">
-                        <span>Decant Subtotal:</span>
-                        <span className="text-brand-cream font-medium">{formatCurrency(selectedInquiry.total_estimated_price)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span>Courier Shipping:</span>
-                        <span className="text-brand-cream font-medium">
-                          {formatCurrency(selectedInquiry.shipping_fee || 0)} 
-                          <span className="text-[10px] text-brand-gold ml-1.5 font-bold uppercase tracking-wider">({selectedInquiry.delivery_type || 'Standard'})</span>
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-white/[0.04] text-base font-bold">
-                        <span className="text-brand-cream font-serif">Collectible Grand Total:</span>
-                        <span className="text-brand-gold text-lg">
-                          {formatCurrency(Number(selectedInquiry.total_estimated_price) + Number(selectedInquiry.shipping_fee || 0))}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/[0.02] border border-brand-gold/20 rounded-xl p-5 space-y-4 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                      <FileText className="w-20 h-20 text-brand-gold" />
-                    </div>
-
-                    <h3 className="font-serif text-base font-semibold text-brand-cream flex items-center gap-2 border-b border-white/[0.04] pb-2">
-                      <FileText className="w-4.5 h-4.5 text-brand-gold" /> Courier Delivery Waybill
-                    </h3>
-                    
-                    <div className="space-y-1.5 text-xs text-brand-cream/70 leading-relaxed">
-                      <p>💳 Payment Settlement: <strong className="text-brand-gold uppercase">
-                        {selectedInquiry.payment_method === 'cod' ? 'Cash On Delivery (COD)' :
-                         selectedInquiry.payment_method === 'gcash' ? 'GCash e-Wallet' :
-                         selectedInquiry.payment_method === 'maya' ? 'Maya e-Wallet' :
-                         selectedInquiry.payment_method === 'rcbc' ? 'Online Banking (RCBC)' :
-                         selectedInquiry.payment_method === 'bank_transfer' ? 'Online Banking (RCBC)' :
-                         selectedInquiry.payment_method || 'Cash On Delivery'}
-                      </strong></p>
-                      {selectedInquiry.estimated_delivery_days && (
-                        <p>🚚 Transit Estimate: <strong className="text-brand-gold">{selectedInquiry.estimated_delivery_days}</strong></p>
-                      )}
-                    </div>
-
-                    <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <button
-                        onClick={() => handlePrintWaybill(selectedInquiry)}
-                        className="py-3 bg-gradient-to-r from-brand-gold-dark to-brand-gold text-brand-emerald-dark font-black hover:brightness-110 text-xs tracking-[0.2em] uppercase rounded-sm transition-all shadow-[0_4px_15px_rgba(212,175,55,0.15)] cursor-pointer flex items-center justify-center gap-2"
-                      >
-                        <FileText className="w-4 h-4 stroke-[3]" /> Print Waybill
-                      </button>
-                      <button
-                        onClick={() => handleDownloadWaybill(selectedInquiry)}
-                        className="py-3 bg-white/[0.02] border border-brand-gold/25 hover:bg-brand-gold/10 text-brand-gold font-bold text-xs tracking-[0.2em] uppercase rounded-sm transition-all cursor-pointer flex items-center justify-center gap-2"
-                      >
-                        <Download className="w-4 h-4 stroke-[2]" /> Download Label
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* Inquiry Detail Modal */}
+      <InquiryDetailModal
+        inquiry={selectedInquiry}
+        onClose={handleCloseDetailModal}
+        onStatusChange={handleStatusChange}
+        formatCurrency={formatCurrency}
+        onPrintWaybill={handlePrintWaybill}
+        onDownloadWaybill={handleDownloadWaybill}
+      />
     </div>
   );
 };
