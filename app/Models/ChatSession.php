@@ -16,6 +16,7 @@ class ChatSession extends Model
         'guest_email',
         'user_id',
         'is_escalated',
+        'is_closed',
         'last_message_at',
     ];
 
@@ -23,6 +24,7 @@ class ChatSession extends Model
     {
         return [
             'is_escalated'    => 'boolean',
+            'is_closed'       => 'boolean',
             'last_message_at' => 'datetime',
             'created_at'      => 'datetime',
             'updated_at'      => 'datetime',

@@ -285,6 +285,30 @@ export function LiveChat() {
     }
   };
 
+  // ─── Close a session ─────────────────────────────────────────────────────────
+  const handleCloseSession = async () => {
+    if (!activeId) return;
+    if (!window.confirm('Are you sure you want to close this conversation? The customer will no longer be able to message.')) {
+      return;
+    }
+    setSending(true);
+    try {
+      const res = await api.post(`/admin/chat/sessions/${activeId}/close`);
+      setSessions(prev => prev.map(s => s.id === activeId ? { ...s, is_closed: true } : s));
+      setActiveSession(res.data.session);
+      if (res.data.message) {
+        setMessages(prev => {
+          if (prev.some(m => m.id === res.data.message.id)) return prev;
+          return [...prev, res.data.message];
+        });
+      }
+    } catch {
+      //
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
@@ -346,7 +370,11 @@ export function LiveChat() {
                         {hasUnread && (
                           <span className="w-2 h-2 rounded-full bg-brand-gold animate-pulse" />
                         )}
-                        {session.is_escalated && (
+                        {session.is_closed ? (
+                          <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-950/60 text-red-400 border border-red-900/40">
+                            Closed
+                          </span>
+                        ) : session.is_escalated && (
                           <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-800/60 text-emerald-400 border border-emerald-700/40">
                             Live
                           </span>
@@ -377,17 +405,33 @@ export function LiveChat() {
                   <p className="font-semibold text-brand-cream text-sm">{activeSession.display_name}</p>
                   <p className="text-[11px] text-brand-cream/40">{activeSession.display_email}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  {activeSession.is_escalated ? (
-                    <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-emerald-900/50 text-emerald-400 border border-emerald-700/40 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                      Connected to Seller
+                <div className="flex items-center gap-3">
+                  {activeSession.is_closed ? (
+                    <span className="text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full bg-red-950/50 text-red-400 border border-red-900/40 flex items-center gap-1">
+                      Closed
                     </span>
                   ) : (
-                    <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-white/5 text-brand-cream/40 border border-white/10 flex items-center gap-1">
-                      <Bot size={10} />
-                      AI Handling
-                    </span>
+                    <>
+                      {activeSession.is_escalated ? (
+                        <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-emerald-900/50 text-emerald-400 border border-emerald-700/40 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                          Connected to Seller
+                        </span>
+                      ) : (
+                        <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-white/5 text-brand-cream/40 border border-white/10 flex items-center gap-1">
+                          <Bot size={10} />
+                          AI Handling
+                        </span>
+                      )}
+                      
+                      <button
+                        onClick={handleCloseSession}
+                        disabled={sending}
+                        className="text-[10px] uppercase tracking-widest px-3 py-1 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                      >
+                        Close Chat
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -423,40 +467,46 @@ export function LiveChat() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Reply Input */}
-              <div
-                className="px-4 py-3 shrink-0 flex items-end gap-2"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
-              >
-                <textarea
-                  ref={replyRef}
-                  id="admin-chat-reply-input"
-                  value={replyText}
-                  onChange={e => setReplyText(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Type your reply…"
-                  rows={2}
-                  disabled={sending}
-                  className="flex-1 bg-white/5 border border-white/10 focus:border-brand-gold/35 rounded-xl px-3 py-2.5 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition resize-none max-h-32 disabled:opacity-60"
-                  style={{ userSelect: 'text', WebkitUserSelect: 'text', scrollbarWidth: 'none' }}
-                />
-                <motion.button
-                  id="admin-chat-send-btn"
-                  whileHover={{ scale: 1.06 }}
-                  whileTap={{ scale: 0.92 }}
-                  onClick={handleReply}
-                  disabled={!replyText.trim() || sending}
-                  className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                  style={{ background: 'linear-gradient(135deg, #d4af37, #b38728)' }}
-                  aria-label="Send reply"
+              {/* Reply Input or Closed Banner */}
+              {activeSession.is_closed ? (
+                <div className="px-4 py-6 shrink-0 text-center bg-red-950/10 border-t border-white/[0.04] text-xs text-brand-cream/40 uppercase tracking-wider">
+                  🔒 This conversation is closed.
+                </div>
+              ) : (
+                <div
+                  className="px-4 py-3 shrink-0 flex items-end gap-2"
+                  style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
                 >
-                  {sending ? (
-                    <Loader size={16} className="text-brand-emerald-dark animate-spin" />
-                  ) : (
-                    <Send size={16} className="text-brand-emerald-dark" />
-                  )}
-                </motion.button>
-              </div>
+                  <textarea
+                    ref={replyRef}
+                    id="admin-chat-reply-input"
+                    value={replyText}
+                    onChange={e => setReplyText(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type your reply…"
+                    rows={2}
+                    disabled={sending}
+                    className="flex-1 bg-white/5 border border-white/10 focus:border-brand-gold/35 rounded-xl px-3 py-2.5 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition resize-none max-h-32 disabled:opacity-60"
+                    style={{ userSelect: 'text', WebkitUserSelect: 'text', scrollbarWidth: 'none' }}
+                  />
+                  <motion.button
+                    id="admin-chat-send-btn"
+                    whileHover={{ scale: 1.06 }}
+                    whileTap={{ scale: 0.92 }}
+                    onClick={handleReply}
+                    disabled={!replyText.trim() || sending}
+                    className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{ background: 'linear-gradient(135deg, #d4af37, #b38728)' }}
+                    aria-label="Send reply"
+                  >
+                    {sending ? (
+                      <Loader size={16} className="text-brand-emerald-dark animate-spin" />
+                    ) : (
+                      <Send size={16} className="text-brand-emerald-dark" />
+                    )}
+                  </motion.button>
+                </div>
+              )}
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-8">

@@ -40,6 +40,7 @@ export default function ContactChatBubble() {
   const [inputText, setInputText]     = useState('');
   const [hasUnread, setHasUnread]     = useState(false);
   const [echoReady, setEchoReady]     = useState(false);
+  const [isClosed, setIsClosed]       = useState(false);
 
   const messagesEndRef = useRef(null);
   const inputRef       = useRef(null);
@@ -167,6 +168,7 @@ export default function ContactChatBubble() {
         });
         
         setIsEscalated(res.data.session?.is_escalated ?? false);
+        setIsClosed(res.data.session?.is_closed ?? false);
       } catch (err) {
         if (err.response?.status === 404) {
           localStorage.removeItem(SESSION_KEY);
@@ -184,6 +186,7 @@ export default function ContactChatBubble() {
       const res = await api.get(`/chat/sessions/${sid}/messages`);
       setMessages(res.data.messages || []);
       setIsEscalated(res.data.session?.is_escalated ?? false);
+      setIsClosed(res.data.session?.is_closed ?? false);
     } catch {
       // Session might have expired — reset
       localStorage.removeItem(SESSION_KEY);
@@ -223,6 +226,7 @@ export default function ContactChatBubble() {
       const { session, welcome_message } = res.data;
       localStorage.setItem(SESSION_KEY, session.id);
       setSessionId(session.id);
+      setIsClosed(false);
       setMessages([welcome_message]);
       setPhase('chat');
     } catch (err) {
@@ -230,6 +234,15 @@ export default function ContactChatBubble() {
     } finally {
       setSending(false);
     }
+  };
+
+  const handleStartNewChat = () => {
+    localStorage.removeItem(SESSION_KEY);
+    setSessionId(null);
+    setPhase('form');
+    setMessages([]);
+    setIsClosed(false);
+    setIsEscalated(false);
   };
 
   // ─── Send a message ──────────────────────────────────────────────────────────
@@ -511,63 +524,79 @@ export default function ContactChatBubble() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Talk to Seller button */}
-                {!isEscalated && (
-                  <div className="px-4 pb-2 shrink-0">
+                {isClosed ? (
+                  <div className="px-4 py-4 shrink-0 flex flex-col gap-3 text-center border-t border-brand-gold/10 bg-black/10">
+                    <p className="text-xs text-brand-cream/50 uppercase tracking-wider">
+                      🔒 This conversation has been closed by the seller.
+                    </p>
                     <button
-                      id="chat-talk-to-seller-btn"
-                      onClick={handleEscalate}
-                      className="w-full py-2 text-xs uppercase tracking-widest text-brand-gold border border-brand-gold/25 rounded-lg hover:bg-brand-gold/10 transition cursor-pointer flex items-center justify-center gap-2"
+                      onClick={handleStartNewChat}
+                      className="w-full py-2.5 rounded-lg text-xs font-semibold uppercase tracking-widest cursor-pointer flex items-center justify-center gap-2 border border-brand-gold/30 hover:bg-brand-gold/10 text-brand-gold transition"
                     >
-                      <Headphones size={13} />
-                      Talk to Seller
+                      Start New Chat
                     </button>
                   </div>
-                )}
-
-                {isEscalated && (
-                  <div className="px-4 pb-2 shrink-0">
-                    <div className="w-full py-2 text-xs uppercase tracking-widest text-emerald-400 border border-emerald-700/40 rounded-lg flex items-center justify-center gap-2 bg-emerald-900/20">
-                      <Headphones size={13} />
-                      Connected to Seller
-                    </div>
-                  </div>
-                )}
-
-                {/* Input bar */}
-                <div
-                  className="px-3 pb-3 pt-2 shrink-0 flex items-end gap-2"
-                  style={{ borderTop: '1px solid rgba(212,175,55,0.1)' }}
-                >
-                  <textarea
-                    ref={inputRef}
-                    id="chat-message-input"
-                    value={inputText}
-                    onChange={e => setInputText(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Type a message..."
-                    rows={1}
-                    disabled={sending}
-                    className="flex-1 bg-white/5 border border-white/10 focus:border-brand-gold/35 rounded-xl px-3 py-2 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition resize-none max-h-24 disabled:opacity-60"
-                    style={{ userSelect: 'text', WebkitUserSelect: 'text', scrollbarWidth: 'none' }}
-                  />
-                  <motion.button
-                    id="chat-send-btn"
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={handleSend}
-                    disabled={!inputText.trim() || sending}
-                    className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ background: 'linear-gradient(135deg, #d4af37, #b38728)' }}
-                    aria-label="Send message"
-                  >
-                    {sending ? (
-                      <Loader size={15} className="text-brand-emerald-dark animate-spin" />
-                    ) : (
-                      <Send size={15} className="text-brand-emerald-dark" />
+                ) : (
+                  <>
+                    {/* Talk to Seller button */}
+                    {!isEscalated && (
+                      <div className="px-4 pb-2 shrink-0">
+                        <button
+                          id="chat-talk-to-seller-btn"
+                          onClick={handleEscalate}
+                          className="w-full py-2 text-xs uppercase tracking-widest text-brand-gold border border-brand-gold/25 rounded-lg hover:bg-brand-gold/10 transition cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          <Headphones size={13} />
+                          Talk to Seller
+                        </button>
+                      </div>
                     )}
-                  </motion.button>
-                </div>
+
+                    {isEscalated && (
+                      <div className="px-4 pb-2 shrink-0">
+                        <div className="w-full py-2 text-xs uppercase tracking-widest text-emerald-400 border border-emerald-700/40 rounded-lg flex items-center justify-center gap-2 bg-emerald-900/20">
+                          <Headphones size={13} />
+                          Connected to Seller
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Input bar */}
+                    <div
+                      className="px-3 pb-3 pt-2 shrink-0 flex items-end gap-2"
+                      style={{ borderTop: '1px solid rgba(212,175,55,0.1)' }}
+                    >
+                      <textarea
+                        ref={inputRef}
+                        id="chat-message-input"
+                        value={inputText}
+                        onChange={e => setInputText(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Type a message..."
+                        rows={1}
+                        disabled={sending}
+                        className="flex-1 bg-white/5 border border-white/10 focus:border-brand-gold/35 rounded-xl px-3 py-2 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition resize-none max-h-24 disabled:opacity-60"
+                        style={{ userSelect: 'text', WebkitUserSelect: 'text', scrollbarWidth: 'none' }}
+                      />
+                      <motion.button
+                        id="chat-send-btn"
+                        whileHover={{ scale: 1.08 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handleSend}
+                        disabled={!inputText.trim() || sending}
+                        className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                        style={{ background: 'linear-gradient(135deg, #d4af37, #b38728)' }}
+                        aria-label="Send message"
+                      >
+                        {sending ? (
+                          <Loader size={15} className="text-brand-emerald-dark animate-spin" />
+                        ) : (
+                          <Send size={15} className="text-brand-emerald-dark" />
+                        )}
+                      </motion.button>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </motion.div>

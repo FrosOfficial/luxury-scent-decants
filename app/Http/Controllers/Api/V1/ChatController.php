@@ -177,6 +177,10 @@ class ChatController extends Controller
             return response()->json(['message' => 'Chat session not found.'], 404);
         }
 
+        if ($session->is_closed) {
+            return response()->json(['message' => 'This conversation has been closed.'], 403);
+        }
+
         $validated = $request->validate([
             'message' => 'required|string|max:2000',
         ]);
@@ -230,6 +234,10 @@ class ChatController extends Controller
 
         if (! $session) {
             return response()->json(['message' => 'Chat session not found.'], 404);
+        }
+
+        if ($session->is_closed) {
+            return response()->json(['message' => 'Cannot escalate a closed conversation.'], 403);
         }
 
         $session->update(['is_escalated' => true]);

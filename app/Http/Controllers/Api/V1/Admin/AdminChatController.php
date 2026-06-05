@@ -30,6 +30,7 @@ class AdminChatController extends Controller
                     'display_name'    => $session->display_name,
                     'display_email'   => $session->display_email,
                     'is_escalated'    => $session->is_escalated,
+                    'is_closed'       => $session->is_closed,
                     'last_message_at' => $session->last_message_at?->toIso8601String(),
                     'created_at'      => $session->created_at->toIso8601String(),
                     'last_message'    => $session->messages->first()?->message,
@@ -56,6 +57,7 @@ class AdminChatController extends Controller
                 'display_name'  => $session->display_name,
                 'display_email' => $session->display_email,
                 'is_escalated'  => $session->is_escalated,
+                'is_closed'     => $session->is_closed,
                 'created_at'    => $session->created_at->toIso8601String(),
             ],
             'messages' => $session->messages->map(fn ($m) => [
@@ -78,6 +80,10 @@ class AdminChatController extends Controller
             return response()->json(['message' => 'Session not found.'], 404);
         }
 
+        if ($session->is_closed) {
+            return response()->json(['message' => 'Cannot reply to a closed session.'], 403);
+        }
+
         $validated = $request->validate([
             'message' => 'required|string|max:2000',
         ]);
@@ -94,5 +100,41 @@ class AdminChatController extends Controller
         broadcast(new MessageSent($msg, $sessionId));
 
         return response()->json(['message' => $msg]);
+    }
+
+    /**
+     * Close a chat session.
+     */
+    public function close(string $sessionId): JsonResponse
+    {
+        $session = ChatSession::find($sessionId);
+
+        if (! $session) {
+            return response()->json(['message' => 'Session not found.'], 404);
+        }
+
+        $session->update(['is_closed' => true]);
+
+        // Send a system message that the chat is closed
+        $msg = ChatMessage::create([
+            'id'              => Str::uuid(),
+            'chat_session_id' => $sessionId,
+            'sender'          => ChatMessage::SENDER_SYSTEM,
+            'message'         => '🔒 This conversation has been closed by the seller.',
+        ]);
+
+        broadcast(new MessageSent($msg, $sessionId));
+
+        return response()->json([
+            'session' => [
+                'id'            => $session->id,
+                'display_name'  => $session->display_name,
+                'display_email' => $session->display_email,
+                'is_escalated'  => $session->is_escalated,
+                'is_closed'     => $session->is_closed,
+                'created_at'    => $session->created_at->toIso8601String(),
+            ],
+            'message' => $msg
+        ]);
     }
 }
