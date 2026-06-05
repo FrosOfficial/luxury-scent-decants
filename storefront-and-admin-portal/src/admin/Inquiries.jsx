@@ -32,7 +32,7 @@ const InquiryRow = React.memo(({ inquiry, onRowClick, onStatusChange, formatCurr
   return (
     <tr 
       className="hover:bg-white/[0.01] transition duration-150 cursor-pointer"
-      onClick={() => onRowClick(inquiry.id)}
+      onClick={() => onRowClick(inquiry)}
     >
       <td className="py-4 px-6 font-mono font-semibold text-brand-gold select-all">{inquiry.reference_code}</td>
       <td className="py-4 px-6">
@@ -179,7 +179,11 @@ const InquiryDetailModal = React.memo(({ inquiry, onClose, onStatusChange, forma
                 </h3>
                 
                 <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-                  {inquiry.items.map((item) => (
+                  {inquiry._isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <div className="w-8 h-8 border-2 border-brand-gold border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  ) : inquiry.items?.map((item) => (
                     <div key={item.id} className="flex justify-between items-center py-2 border-b border-white/[0.03] text-sm last:border-b-0">
                       <div>
                         <div className="font-medium text-brand-cream">{item.product_name}</div>
@@ -329,13 +333,15 @@ export const Inquiries = () => {
     setPage(1);
   }, []);
 
-  const handleRowClick = useCallback(async (inquiryId) => {
+  const handleRowClick = useCallback(async (inquiry) => {
     try {
-      const response = await api.get(`/admin/inquiries/${inquiryId}`);
+      setSelectedInquiry({ ...inquiry, items: [], _isLoading: true });
+      const response = await api.get(`/admin/inquiries/${inquiry.id}`);
       setSelectedInquiry(response.data);
     } catch (err) {
       console.error('Error fetching inquiry details:', err);
       toast.error('Failed to load inquiry details.');
+      setSelectedInquiry(null);
     }
   }, []);
 
