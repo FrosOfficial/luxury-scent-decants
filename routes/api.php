@@ -25,6 +25,18 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
     Route::get('products/{id}', [ProductController::class, 'show']);
     Route::get('brands', [FilterController::class, 'brands']);
     Route::get('filters', [FilterController::class, 'index']);
+    Route::get('temp-migrate', function () {
+        try {
+            $output = '';
+            \Illuminate\Support\Facades\Artisan::call('migrate:rollback', ['--step' => 1, '--force' => true]);
+            $output .= \Illuminate\Support\Facades\Artisan::output() . "\n";
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            $output .= \Illuminate\Support\Facades\Artisan::output();
+            return response()->json(['status' => 'success', 'output' => $output]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    });
 
     // ─── Customer Routes (Authenticated/Optional) ────────────────────────────
     Route::middleware('auth.supabase:optional')->group(function () {
