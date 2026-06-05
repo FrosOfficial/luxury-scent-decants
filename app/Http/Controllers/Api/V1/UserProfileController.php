@@ -43,6 +43,36 @@ class UserProfileController extends Controller
             'facebook_profile' => 'nullable|string|max:255',
         ]);
 
+        $badWords = [
+            'fuck', 'shit', 'asshole', 'bitch', 'bastard', 'cunt', 'cock', 'whore', 'slut', 
+            'troll', 'fake', 'spam', 'test', 'dummy', 'asdf', 'qwerty',
+            'putangina', 'putang ina', 'gago', 'tarantado', 'tanga', 'ulol', 'bobo', 'hayop', 'tae'
+        ];
+
+        $errors = [];
+
+        $nameLower = strtolower($validated['full_name'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($nameLower, $word)) {
+                $errors['full_name'] = ['Prohibited or invalid name detected. Please use a valid name.'];
+                break;
+            }
+        }
+
+        $addressLower = strtolower($validated['delivery_address'] ?? '');
+        if ($addressLower) {
+            foreach ($badWords as $word) {
+                if (str_contains($addressLower, $word)) {
+                    $errors['delivery_address'] = ['Prohibited language detected in address.'];
+                    break;
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
+
         $user->update($validated);
 
         return response()->json([

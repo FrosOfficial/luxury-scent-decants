@@ -122,7 +122,14 @@ export default function UserProfile() {
       toast.success('Profile updated successfully!');
     } catch (error) {
       console.error('Failed to update profile:', error);
-      toast.error(error.response?.data?.message || 'Failed to update profile');
+      if (error.response?.data?.errors) {
+        const validationErrors = error.response.data.errors;
+        Object.values(validationErrors).forEach((messages) => {
+          messages.forEach((msg) => toast.error(msg));
+        });
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to update profile');
+      }
     } finally {
       setUpdating(false);
     }

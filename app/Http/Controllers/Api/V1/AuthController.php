@@ -59,6 +59,50 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ]);
 
+        $badWords = [
+            'fuck', 'shit', 'asshole', 'bitch', 'bastard', 'cunt', 'cock', 'whore', 'slut', 
+            'troll', 'fake', 'spam', 'test', 'dummy', 'asdf', 'qwerty',
+            'putangina', 'putang ina', 'gago', 'tarantado', 'tanga', 'ulol', 'bobo', 'hayop', 'tae'
+        ];
+
+        $trollDomains = [
+            'mailinator.com', 'yopmail.com', '10minutemail.com', 'tempmail.com', 
+            'trashmail.com', 'guerrillamail.com', 'sharklasers.com', 'getairmail.com', 
+            'dispostable.com', 'burnmailer.com'
+        ];
+
+        $errors = [];
+
+        // Check name
+        $nameLower = strtolower($validated['name'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($nameLower, $word)) {
+                $errors['name'] = ['Prohibited or invalid name detected. Please use a valid name.'];
+                break;
+            }
+        }
+
+        // Check email
+        $emailLower = strtolower($validated['email'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($emailLower, $word)) {
+                $errors['email'] = ['Prohibited or invalid email address detected.'];
+                break;
+            }
+        }
+        if (empty($errors['email'])) {
+            foreach ($trollDomains as $domain) {
+                if (str_ends_with($emailLower, '@' . $domain) || str_contains($emailLower, '@' . $domain)) {
+                    $errors['email'] = ['Prohibited or temporary email provider detected. Please use a valid email address.'];
+                    break;
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
+
         $adminEmail = config('supabase.admin_email') ?: 'admin@luxuryscentdecants.com';
         $role = (strtolower($validated['email']) === strtolower($adminEmail)) ? 'admin' : 'customer';
 
