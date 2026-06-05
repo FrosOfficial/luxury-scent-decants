@@ -63,9 +63,14 @@ class ChatController extends Controller
 
     public function startSession(Request $request): JsonResponse
     {
+        if (Auth::check()) {
+            $request->merge(['user_id' => Auth::id()]);
+        }
+
         $validated = $request->validate([
             'guest_name'  => 'required_without:user_id|string|max:100',
             'guest_email' => 'required_without:user_id|email|max:255',
+            'user_id'     => 'nullable',
         ]);
 
         $userId = Auth::id();

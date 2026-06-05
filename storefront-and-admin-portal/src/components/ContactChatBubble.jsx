@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, ChevronDown, User, Bot, Headphones, Loader } from 'lucide-react';
 import api from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 
 // ─── Simple markdown-like renderer for bold (**text**) ───────────────────────
 function RenderMessage({ text }) {
@@ -27,6 +28,7 @@ function RenderMessage({ text }) {
 const SESSION_KEY = 'lsd_chat_session_id';
 
 export default function ContactChatBubble() {
+  const { isAuthenticated, localUser } = useAuth();
   const [isOpen, setIsOpen]           = useState(false);
   const [phase, setPhase]             = useState('form'); // 'form' | 'chat'
   const [messages, setMessages]       = useState([]);
@@ -157,25 +159,31 @@ export default function ContactChatBubble() {
 
   // ─── Start a new chat session ────────────────────────────────────────────────
   const handleStartChat = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setFormError('');
 
-    if (!formData.name.trim() || !formData.email.trim()) {
+    if (!isAuthenticated && (!formData.name.trim() || !formData.email.trim())) {
       setFormError('Please enter both your name and email to continue.');
       return;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setFormError('Please enter a valid email address.');
-      return;
+    if (!isAuthenticated) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setFormError('Please enter a valid email address.');
+        return;
+      }
     }
 
     setSending(true);
     try {
-      const res = await api.post('/chat/sessions', {
-        guest_name:  formData.name.trim(),
-        guest_email: formData.email.trim(),
-      });
+      const payload = isAuthenticated
+        ? {}
+        : {
+            guest_name:  formData.name.trim(),
+            guest_email: formData.email.trim(),
+          };
+
+      const res = await api.post('/chat/sessions', payload);
 
       const { session, welcome_message } = res.data;
       localStorage.setItem(SESSION_KEY, session.id);
@@ -368,53 +376,72 @@ export default function ContactChatBubble() {
                   </div>
                   <h3 className="font-serif text-lg text-brand-cream mb-1">Chat with Us</h3>
                   <p className="text-xs text-brand-cream/50 leading-relaxed">
-                    Enter your details to start chatting. Our AI will try to answer instantly, or connect you with our seller.
+                    {isAuthenticated 
+                      ? `Hello ${localUser?.full_name || 'there'}! Click start to begin chatting with our assistant or seller.`
+                      : 'Enter your details to start chatting. Our AI will try to answer instantly, or connect you with our seller.'}
                   </p>
                 </div>
 
-                <form onSubmit={handleStartChat} className="w-full flex flex-col gap-3">
-                  <div>
-                    <label className="text-[10px] uppercase tracking-widest text-brand-gold mb-1 block">Your Name</label>
-                    <input
-                      type="text"
-                      id="chat-guest-name"
-                      value={formData.name}
-                      onChange={e => setFormData(d => ({ ...d, name: e.target.value }))}
-                      placeholder="e.g. Juan dela Cruz"
-                      className="w-full bg-white/5 border border-white/10 focus:border-brand-gold/40 rounded-lg px-3 py-2.5 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition"
-                      style={{ userSelect: 'text', WebkitUserSelect: 'text' }}
-                    />
+                {isAuthenticated ? (
+                  <div className="w-full flex flex-col gap-3">
+                    <motion.button
+                      onClick={() => handleStartChat()}
+                      disabled={sending}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      id="chat-start-btn"
+                      className="w-full py-3 rounded-xl font-bold text-sm uppercase tracking-widest cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
+                      style={{ background: 'linear-gradient(135deg, #d4af37, #f5e6a0, #b38728)', color: '#011611' }}
+                    >
+                      {sending ? <Loader size={16} className="animate-spin" /> : <MessageCircle size={16} />}
+                      {sending ? 'Starting...' : 'Start Chat'}
+                    </motion.button>
                   </div>
-                  <div>
-                    <label className="text-[10px] uppercase tracking-widest text-brand-gold mb-1 block">Email Address</label>
-                    <input
-                      type="email"
-                      id="chat-guest-email"
-                      value={formData.email}
-                      onChange={e => setFormData(d => ({ ...d, email: e.target.value }))}
-                      placeholder="e.g. juan@email.com"
-                      className="w-full bg-white/5 border border-white/10 focus:border-brand-gold/40 rounded-lg px-3 py-2.5 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition"
-                      style={{ userSelect: 'text', WebkitUserSelect: 'text' }}
-                    />
-                  </div>
+                ) : (
+                  <form onSubmit={handleStartChat} className="w-full flex flex-col gap-3">
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-brand-gold mb-1 block">Your Name</label>
+                      <input
+                        type="text"
+                        id="chat-guest-name"
+                        value={formData.name}
+                        onChange={e => setFormData(d => ({ ...d, name: e.target.value }))}
+                        placeholder="e.g. Juan dela Cruz"
+                        className="w-full bg-white/5 border border-white/10 focus:border-brand-gold/40 rounded-lg px-3 py-2.5 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition"
+                        style={{ userSelect: 'text', WebkitUserSelect: 'text' }}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-brand-gold mb-1 block">Email Address</label>
+                      <input
+                        type="email"
+                        id="chat-guest-email"
+                        value={formData.email}
+                        onChange={e => setFormData(d => ({ ...d, email: e.target.value }))}
+                        placeholder="e.g. juan@email.com"
+                        className="w-full bg-white/5 border border-white/10 focus:border-brand-gold/40 rounded-lg px-3 py-2.5 text-sm text-brand-cream placeholder-brand-cream/25 outline-none transition"
+                        style={{ userSelect: 'text', WebkitUserSelect: 'text' }}
+                      />
+                    </div>
 
-                  {formError && (
-                    <p className="text-red-400 text-xs">{formError}</p>
-                  )}
+                    {formError && (
+                      <p className="text-red-400 text-xs">{formError}</p>
+                    )}
 
-                  <motion.button
-                    type="submit"
-                    disabled={sending}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    id="chat-start-btn"
-                    className="w-full py-3 rounded-xl font-bold text-sm uppercase tracking-widest cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
-                    style={{ background: 'linear-gradient(135deg, #d4af37, #f5e6a0, #b38728)', color: '#011611' }}
-                  >
-                    {sending ? <Loader size={16} className="animate-spin" /> : <MessageCircle size={16} />}
-                    {sending ? 'Starting...' : 'Start Chat'}
-                  </motion.button>
-                </form>
+                    <motion.button
+                      type="submit"
+                      disabled={sending}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      id="chat-start-btn"
+                      className="w-full py-3 rounded-xl font-bold text-sm uppercase tracking-widest cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
+                      style={{ background: 'linear-gradient(135deg, #d4af37, #f5e6a0, #b38728)', color: '#011611' }}
+                    >
+                      {sending ? <Loader size={16} className="animate-spin" /> : <MessageCircle size={16} />}
+                      {sending ? 'Starting...' : 'Start Chat'}
+                    </motion.button>
+                  </form>
+                )}
               </div>
             )}
 
