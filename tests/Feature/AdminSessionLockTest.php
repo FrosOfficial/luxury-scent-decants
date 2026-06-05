@@ -166,4 +166,29 @@ class AdminSessionLockTest extends TestCase
         $admin->refresh();
         $this->assertEquals('session-B', $admin->current_session_id);
     }
+
+    /**
+     * Test admin login endpoint blocks concurrent attempts if session is active.
+     */
+    public function test_admin_login_endpoint_blocks_concurrent_attempts(): void
+    {
+        $admin = User::create([
+            'email' => $this->adminEmail,
+            'full_name' => 'Admin User',
+            'role' => 'admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+            'current_session_id' => 'session-A',
+            'last_active_at' => time(),
+        ]);
+
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => $this->adminEmail,
+            'password' => 'password123',
+        ]);
+
+        $response->assertStatus(409);
+        $response->assertJson([
+            'message' => 'This account is being used by another admin.'
+        ]);
+    }
 }

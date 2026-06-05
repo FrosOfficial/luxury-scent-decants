@@ -96,6 +96,18 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Handle concurrent admin session lock during login
+        if ($user->role === 'admin') {
+            $activeSessionId = $user->current_session_id;
+            $lastActiveAt = $user->last_active_at ?? 0;
+
+            if ($activeSessionId && (time() - $lastActiveAt < 600)) {
+                return response()->json([
+                    'message' => 'This account is being used by another admin.'
+                ], 409);
+            }
+        }
+
         // Generate supabase_auth_id if not present
         if (!$user->supabase_auth_id) {
             $user->update([
