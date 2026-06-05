@@ -208,6 +208,37 @@ export function LiveChat() {
     return () => channelRef.current?.stopListening('.message.sent');
   }, [activeId]);
 
+  // ─── Auto-polling fallback for conversations list and active messages ────────
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      // Refresh sessions list silently
+      await loadSessions(true);
+      
+      // If there is an active session, refresh its messages silently too
+      if (activeId) {
+        try {
+          const res = await api.get(`/admin/chat/sessions/${activeId}`);
+          setMessages(prev => {
+            const incoming = res.data.messages || [];
+            const tempMessages = prev.filter(m => String(m.id).startsWith('temp-'));
+            const nonTempPrev = prev.filter(m => !String(m.id).startsWith('temp-'));
+            
+            const hasChanged = incoming.length !== nonTempPrev.length || 
+                              incoming.some((m, idx) => nonTempPrev[idx]?.id !== m.id);
+                              
+            if (hasChanged) {
+              return [...incoming, ...tempMessages];
+            }
+            return prev;
+          });
+          setActiveSession(res.data.session);
+        } catch {}
+      }
+    }, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [activeId, loadSessions]);
+
   // ─── Load messages when a session is selected ────────────────────────────────
   const openSession = async (session) => {
     setActiveId(session.id);
