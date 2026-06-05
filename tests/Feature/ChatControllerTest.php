@@ -62,4 +62,19 @@ class ChatControllerTest extends TestCase
 
         $response->assertStatus(201);
     }
+
+    public function test_send_message_blocks_profanity(): void
+    {
+        $session = ChatSession::create([
+            'guest_name' => 'John Doe',
+            'guest_email' => 'john@example.com',
+        ]);
+
+        $response = $this->postJson("/api/v1/chat/sessions/{$session->id}/messages", [
+            'message' => 'this is putangina bad word',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['message']);
+    }
 }

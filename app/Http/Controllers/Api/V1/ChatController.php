@@ -185,6 +185,21 @@ class ChatController extends Controller
             'message' => 'required|string|max:2000',
         ]);
 
+        $badWords = [
+            'fuck', 'shit', 'asshole', 'bitch', 'bastard', 'cunt', 'cock', 'whore', 'slut', 
+            'troll', 'fake', 'spam', 'test', 'dummy', 'asdf', 'qwerty',
+            'putangina', 'putang ina', 'gago', 'tarantado', 'tanga', 'ulol', 'bobo', 'hayop', 'tae'
+        ];
+
+        $msgLower = strtolower($validated['message']);
+        foreach ($badWords as $word) {
+            if (str_contains($msgLower, $word)) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'message' => ['Prohibited language detected. Please keep messages clean.']
+                ]);
+            }
+        }
+
         // Save user's message
         $userMsg = ChatMessage::create([
             'id'              => Str::uuid(),

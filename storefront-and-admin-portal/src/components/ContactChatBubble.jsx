@@ -273,8 +273,10 @@ export default function ContactChatBubble() {
       });
 
       if (res.data.escalated) setIsEscalated(true);
-    } catch {
+    } catch (err) {
       setMessages(prev => prev.filter(m => m.id !== tempId));
+      const errMsg = err.response?.data?.errors?.message?.[0] || 'Failed to send message.';
+      alert(errMsg);
     } finally {
       setSending(false);
       inputRef.current?.focus();
