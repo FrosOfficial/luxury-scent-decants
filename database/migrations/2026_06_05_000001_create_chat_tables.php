@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('guest_name')->nullable();
             $table->string('guest_email')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->boolean('is_escalated')->default(false);
             $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
