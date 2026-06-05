@@ -70,6 +70,10 @@ class ChatController extends Controller
 
         $userId = Auth::id();
 
+        if (!$userId) {
+            $this->validateGuestCensorship($validated);
+        }
+
         $session = ChatSession::create([
             'id'          => Str::uuid(),
             'guest_name'  => $userId ? null : ($validated['guest_name'] ?? null),
@@ -90,6 +94,56 @@ class ChatController extends Controller
             'session'         => $session,
             'welcome_message' => $welcomeMsg,
         ], 201);
+    }
+
+    /**
+     * Validate chat guest details against common bad words and troll credentials.
+     */
+    private function validateGuestCensorship(array $data): void
+    {
+        $badWords = [
+            'fuck', 'shit', 'asshole', 'bitch', 'bastard', 'cunt', 'cock', 'whore', 'slut', 
+            'troll', 'fake', 'spam', 'test', 'dummy', 'asdf', 'qwerty',
+            'putangina', 'putang ina', 'gago', 'tarantado', 'tanga', 'ulol', 'bobo', 'hayop', 'tae'
+        ];
+
+        $trollDomains = [
+            'mailinator.com', 'yopmail.com', '10minutemail.com', 'tempmail.com', 
+            'trashmail.com', 'guerrillamail.com', 'sharklasers.com', 'getairmail.com', 
+            'dispostable.com', 'burnmailer.com'
+        ];
+
+        $errors = [];
+
+        // 1. Check guest_name
+        $nameLower = strtolower($data['guest_name'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($nameLower, $word)) {
+                $errors['guest_name'] = ['Prohibited or invalid name detected. Please use a valid name.'];
+                break;
+            }
+        }
+
+        // 2. Check guest_email
+        $emailLower = strtolower($data['guest_email'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($emailLower, $word)) {
+                $errors['guest_email'] = ['Prohibited or invalid email address detected.'];
+                break;
+            }
+        }
+        if (empty($errors['guest_email'])) {
+            foreach ($trollDomains as $domain) {
+                if (str_ends_with($emailLower, '@' . $domain) || str_contains($emailLower, '@' . $domain)) {
+                    $errors['guest_email'] = ['Prohibited or temporary email provider detected. Please use a valid email address.'];
+                    break;
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
     }
 
     // ─── Get Messages for a Session ──────────────────────────────────────────

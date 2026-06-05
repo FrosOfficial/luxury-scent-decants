@@ -44,6 +44,10 @@ class InquiryController extends Controller
 
         $userId = Auth::id(); // Will be null if guest (unauthenticated optional flow)
 
+        if (!$userId) {
+            $this->validateGuestCensorship($validated);
+        }
+
         $inquiry = $this->inquiryService->createInquiry($validated, $userId);
 
         return response()->json([
@@ -51,6 +55,67 @@ class InquiryController extends Controller
             'reference_code' => $inquiry->reference_code,
             'inquiry'        => $inquiry->load('items'),
         ], 201);
+    }
+
+    /**
+     * Validate input against common bad words and troll credentials.
+     */
+    private function validateGuestCensorship(array $data): void
+    {
+        $badWords = [
+            'fuck', 'shit', 'asshole', 'bitch', 'bastard', 'cunt', 'cock', 'whore', 'slut', 
+            'troll', 'fake', 'spam', 'test', 'dummy', 'asdf', 'qwerty',
+            'putangina', 'putang ina', 'gago', 'tarantado', 'tanga', 'ulol', 'bobo', 'hayop', 'tae'
+        ];
+
+        $trollDomains = [
+            'mailinator.com', 'yopmail.com', '10minutemail.com', 'tempmail.com', 
+            'trashmail.com', 'guerrillamail.com', 'sharklasers.com', 'getairmail.com', 
+            'dispostable.com', 'burnmailer.com'
+        ];
+
+        $errors = [];
+
+        // 1. Check customer_name
+        $nameLower = strtolower($data['customer_name'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($nameLower, $word)) {
+                $errors['customer_name'] = ['Prohibited or invalid name detected. Please use a valid name.'];
+                break;
+            }
+        }
+
+        // 2. Check customer_email
+        $emailLower = strtolower($data['customer_email'] ?? '');
+        foreach ($badWords as $word) {
+            if (str_contains($emailLower, $word)) {
+                $errors['customer_email'] = ['Prohibited or invalid email address detected.'];
+                break;
+            }
+        }
+        if (empty($errors['customer_email'])) {
+            foreach ($trollDomains as $domain) {
+                if (str_ends_with($emailLower, '@' . $domain) || str_contains($emailLower, '@' . $domain)) {
+                    $errors['customer_email'] = ['Prohibited or temporary email provider detected. Please use a valid email address.'];
+                    break;
+                }
+            }
+        }
+
+        // 3. Check additional_notes
+        $notesLower = strtolower($data['additional_notes'] ?? '');
+        if ($notesLower) {
+            foreach ($badWords as $word) {
+                if (str_contains($notesLower, $word)) {
+                    $errors['additional_notes'] = ['Prohibited language detected in additional notes.'];
+                    break;
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
     }
 
     /**

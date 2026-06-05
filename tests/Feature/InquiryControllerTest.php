@@ -182,4 +182,63 @@ class InquiryControllerTest extends TestCase
             'customer_name' => 'Juan Customer',
         ]);
     }
+
+    /**
+     * Test that guest inquiries are blocked when containing bad words or troll emails.
+     */
+    public function test_guest_inquiry_censorship_blocks_profanity(): void
+    {
+        $product = Product::create([
+            'name' => 'Aventus',
+            'brand' => 'Creed',
+            'scent_profile' => 'Woody',
+            'demographic' => 'Masculine',
+            'is_active' => true,
+        ]);
+
+        $volume = $product->volumes()->create([
+            'size' => '5ml',
+            'price' => 1340,
+            'is_available' => true,
+        ]);
+
+        $badData = [
+            'customer_name'           => 'Troll User',
+            'customer_email'          => 'normal@example.com',
+            'customer_phone'          => '+63 917 123 4567',
+            'delivery_address'        => '123 Main St',
+            'city'                    => 'Makati City',
+            'province'                => 'Metro Manila',
+            'payment_method'          => 'cod',
+            'shipping_fee'            => 100,
+            'delivery_type'           => 'standard',
+            'estimated_delivery_days' => '3-5 days',
+            'items'                   => [
+                [
+                    'product_id'        => $product->id,
+                    'volume_pricing_id' => $volume->id,
+                    'quantity'          => 1,
+                ]
+            ]
+        ];
+
+        // 1. Block bad name
+        $response = $this->postJson('/api/v1/inquiries', $badData);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['customer_name']);
+
+        // 2. Block bad email domain
+        $badData['customer_name'] = 'Good User';
+        $badData['customer_email'] = 'test@mailinator.com';
+        $response = $this->postJson('/api/v1/inquiries', $badData);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['customer_email']);
+
+        // 3. Block bad notes
+        $badData['customer_email'] = 'good@example.com';
+        $badData['additional_notes'] = 'This is putangina notes';
+        $response = $this->postJson('/api/v1/inquiries', $badData);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['additional_notes']);
+    }
 }
