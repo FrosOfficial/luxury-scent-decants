@@ -9,13 +9,14 @@ import Footer from './components/Footer';
 import AdminLayout from './admin/AdminLayout';
 import { useAuth } from './contexts/AuthContext';
 
-const ProductShowcase = lazy(() => import('./components/ProductShowcase'));
+const ProductShowcase    = lazy(() => import('./components/ProductShowcase'));
 const AuthenticityProcess = lazy(() => import('./components/AuthenticityProcess'));
-const FAQ = lazy(() => import('./components/FAQ'));
-const UserProfile = lazy(() => import('./components/UserProfile'));
-const InquiryForm = lazy(() => import('./components/InquiryForm'));
-const AuthModal = lazy(() => import('./components/AuthModal'));
-const InquiryBag = lazy(() => import('./components/InquiryBag'));
+const FAQ                = lazy(() => import('./components/FAQ'));
+const UserProfile        = lazy(() => import('./components/UserProfile'));
+const InquiryForm        = lazy(() => import('./components/InquiryForm'));
+const AuthModal          = lazy(() => import('./components/AuthModal'));
+const InquiryBag         = lazy(() => import('./components/InquiryBag'));
+const ContactChatBubble  = lazy(() => import('./components/ContactChatBubble'));
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -158,6 +159,8 @@ function App() {
                     navigate('checkout');
                   }}
                 />
+                {/* Floating chat bubble — visible on all storefront pages */}
+                <ContactChatBubble />
               </Suspense>
             </div>
           )}

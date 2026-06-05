@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Dashboard } from './Dashboard';
 import { Inquiries } from './Inquiries';
 import { Catalog } from './Catalog';
+import { LiveChat } from './LiveChat';
+import api from '../lib/api';
 import { 
   LayoutDashboard, 
   ClipboardList, 
@@ -11,14 +13,35 @@ import {
   User as UserIcon,
   Menu,
   X,
-  Home
+  Home,
+  MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminLayout({ onExitStorefront }) {
   const { localUser, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab]               = useState('dashboard');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [unreadChats, setUnreadChats]           = useState(0);
+
+  // Poll for escalated/new chat sessions every 30s to show a badge count
+  useEffect(() => {
+    const checkUnread = async () => {
+      try {
+        const res = await api.get('/admin/chat/sessions');
+        const escalated = (res.data.data || []).filter(s => s.is_escalated).length;
+        setUnreadChats(escalated);
+      } catch {}
+    };
+    checkUnread();
+    const id = setInterval(checkUnread, 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Reset badge when admin opens the chat tab
+  useEffect(() => {
+    if (activeTab === 'livechat') setUnreadChats(0);
+  }, [activeTab]);
 
   const handleLogout = async () => {
     await logout();
@@ -33,6 +56,8 @@ export default function AdminLayout({ onExitStorefront }) {
         return <Inquiries />;
       case 'catalog':
         return <Catalog />;
+      case 'livechat':
+        return <LiveChat />;
       default:
         return <Dashboard onNavigate={(tab) => setActiveTab(tab)} />;
     }
@@ -42,6 +67,7 @@ export default function AdminLayout({ onExitStorefront }) {
     { id: 'dashboard', label: 'Overview Metrics', icon: LayoutDashboard },
     { id: 'inquiries', label: 'Order Inquiries', icon: ClipboardList },
     { id: 'catalog', label: 'Decant Catalog', icon: Sparkles },
+    { id: 'livechat', label: 'Live Chat', icon: MessageCircle, badge: unreadChats },
   ];
 
   return (
@@ -102,7 +128,12 @@ export default function AdminLayout({ onExitStorefront }) {
                 }`}
               >
                 <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-brand-emerald-dark' : 'text-brand-gold group-hover:scale-105 transition-transform'}`} />
-                <span>{item.label}</span>
+                <span className="flex-1">{item.label}</span>
+                {item.badge > 0 && (
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${isActive ? 'bg-brand-emerald-dark/30 text-brand-emerald-dark' : 'bg-brand-gold text-brand-emerald-dark'}`}>
+                    {item.badge}
+                  </span>
+                )}
                 {isActive && (
                   <motion.div 
                     layoutId="activeGlow" 
@@ -194,7 +225,12 @@ export default function AdminLayout({ onExitStorefront }) {
                       }`}
                     >
                       <Icon className="w-4.5 h-4.5" />
-                      <span>{item.label}</span>
+                      <span className="flex-1">{item.label}</span>
+                      {item.badge > 0 && (
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${isActive ? 'bg-brand-emerald-dark/30 text-brand-emerald-dark' : 'bg-brand-gold text-brand-emerald-dark'}`}>
+                          {item.badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}

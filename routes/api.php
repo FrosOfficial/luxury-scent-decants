@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ChatController;
 use App\Http\Controllers\Api\V1\FilterController;
 use App\Http\Controllers\Api\V1\InquiryController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\UserProfileController;
+use App\Http\Controllers\Api\V1\Admin\AdminChatController;
 use App\Http\Controllers\Api\V1\Admin\AdminInquiryController;
 use App\Http\Controllers\Api\V1\Admin\AdminProductController;
 use App\Http\Controllers\Api\V1\Admin\AdminVolumePricingController;
@@ -27,6 +29,12 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
     // ─── Customer Routes (Authenticated/Optional) ────────────────────────────
     Route::middleware('auth.supabase:optional')->group(function () {
         Route::post('inquiries', [InquiryController::class, 'store']);
+
+        // Live Chat — open to guests and authenticated users
+        Route::post('chat/sessions', [ChatController::class, 'startSession']);
+        Route::get('chat/sessions/{sessionId}/messages', [ChatController::class, 'getMessages']);
+        Route::post('chat/sessions/{sessionId}/messages', [ChatController::class, 'sendMessage']);
+        Route::post('chat/sessions/{sessionId}/escalate', [ChatController::class, 'escalateSession']);
     });
 
     Route::middleware('auth.supabase:required')->group(function () {
@@ -61,5 +69,10 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
 
         // Dashboard Stats
         Route::get('stats', [AdminStatsController::class, 'index']);
+
+        // Live Chat Admin
+        Route::get('chat/sessions', [AdminChatController::class, 'index']);
+        Route::get('chat/sessions/{sessionId}', [AdminChatController::class, 'show']);
+        Route::post('chat/sessions/{sessionId}/reply', [AdminChatController::class, 'reply']);
     });
 });
