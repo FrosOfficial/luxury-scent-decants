@@ -25,28 +25,6 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
     Route::get('products/{id}', [ProductController::class, 'show']);
     Route::get('brands', [FilterController::class, 'brands']);
     Route::get('filters', [FilterController::class, 'index']);
-    Route::get('temp-seed', function (\Illuminate\Http\Request $request) {
-        try {
-            $output = '';
-            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'AdminUserSeeder', '--force' => true]);
-            $output .= \Illuminate\Support\Facades\Artisan::output() . "\n";
-            
-            $email = $request->query('email');
-            $password = $request->query('password');
-            if ($email && $password) {
-                $user = \App\Models\User::where('email', $email)->first();
-                if ($user) {
-                    $user->update(['password' => \Illuminate\Support\Facades\Hash::make($password)]);
-                    $output .= "Updated password for: {$email}\n";
-                } else {
-                    $output .= "User not found: {$email}\n";
-                }
-            }
-            return response()->json(['status' => 'success', 'output' => $output]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
-        }
-    });
 
     // ─── Customer Routes (Authenticated/Optional) ────────────────────────────
     Route::middleware('auth.supabase:optional')->group(function () {
