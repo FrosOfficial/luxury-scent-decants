@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Scent details for the 3 highlight bottles in the hero
 const LV_BOTTLES = [
@@ -220,18 +221,43 @@ export default function Hero({ onNavigate }) {
               </motion.div>
             </AnimatePresence>
 
-            {/* Dot selectors at the bottom of the bottle */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            {/* Left/Right Navigation Arrows */}
+            <button 
+              onClick={() => goTo((idx - 1 + LV_BOTTLES.length) % LV_BOTTLES.length)}
+              className="absolute left-0 sm:-left-4 md:-left-12 top-1/2 -translate-y-1/2 p-2 sm:p-3 text-brand-cream/30 hover:text-brand-gold hover:bg-brand-gold/10 rounded-full transition-all duration-300 z-20"
+              aria-label="Previous Fragrance"
+            >
+              <ChevronLeft size={36} strokeWidth={1.5} />
+            </button>
+            
+            <button 
+              onClick={() => goTo((idx + 1) % LV_BOTTLES.length)}
+              className="absolute right-0 sm:-right-4 md:-right-12 top-1/2 -translate-y-1/2 p-2 sm:p-3 text-brand-cream/30 hover:text-brand-gold hover:bg-brand-gold/10 rounded-full transition-all duration-300 z-20"
+              aria-label="Next Fragrance"
+            >
+              <ChevronRight size={36} strokeWidth={1.5} />
+            </button>
+
+            {/* Redesigned bottom selectors */}
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
               {LV_BOTTLES.map((b, i) => (
                 <button key={b.name} onClick={() => goTo(i)} aria-label={b.name}
-                  className="transition-all duration-300 rounded-full"
-                  style={{
-                    width:      i === idx ? '22px' : '7px',
-                    height:     '7px',
-                    background: i === idx ? '#d4af37' : 'rgba(253,251,247,0.28)',
-                    boxShadow:  i === idx ? '0 0 8px rgba(212,175,55,0.55)' : 'none',
-                  }}
-                />
+                  className="group relative flex items-center justify-center p-2 cursor-pointer"
+                >
+                  <div 
+                    className="transition-all duration-500 rounded-full"
+                    style={{
+                      width:      i === idx ? '36px' : '10px',
+                      height:     '10px',
+                      background: i === idx ? '#d4af37' : 'rgba(253,251,247,0.2)',
+                      boxShadow:  i === idx ? '0 0 12px rgba(212,175,55,0.6)' : 'none',
+                    }}
+                  />
+                  {/* Tooltip on hover */}
+                  <div className="absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] uppercase tracking-widest text-brand-gold whitespace-nowrap bg-black/80 px-3 py-1.5 rounded border border-brand-gold/30 backdrop-blur-md pointer-events-none">
+                    {b.name}
+                  </div>
+                </button>
               ))}
             </div>
           </div>
