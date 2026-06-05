@@ -69,13 +69,13 @@ export default function Hero({ onNavigate }) {
   const bottle  = LV_BOTTLES[idx];
   const volumes = bottle.volumes;
 
-  // Runs auto carousel every 5 seconds but pauses when user hovers
+  // Runs auto carousel every 3 seconds but pauses when user hovers
   useEffect(() => {
     if (paused) return;
     timer.current = setInterval(() => {
       setDir(1);
       setIdx(i => (i + 1) % LV_BOTTLES.length);
-    }, 5000);
+    }, 3000);
     return () => { if (timer.current) clearInterval(timer.current); };
   }, [paused, idx]);
 
