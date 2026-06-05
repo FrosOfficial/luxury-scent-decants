@@ -8,22 +8,29 @@ export const InquiryBagProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const { localUser, loading } = useAuth();
 
-  // Load from localStorage on mount
+  // Load from localStorage when auth state or user changes
   useEffect(() => {
-    const savedBag = localStorage.getItem('lsd_inquiry_bag');
+    if (loading) return;
+    const key = localUser ? `lsd_inquiry_bag_${localUser.id}` : 'lsd_inquiry_bag_guest';
+    const savedBag = localStorage.getItem(key);
     if (savedBag) {
       try {
         setItems(JSON.parse(savedBag));
       } catch (error) {
         console.error('Failed to parse saved inquiry bag:', error);
+        setItems([]);
       }
+    } else {
+      setItems([]);
     }
-  }, []);
+  }, [localUser, loading]);
 
   // Save to localStorage when items change
   const saveItems = (newItems) => {
     setItems(newItems);
-    localStorage.setItem('lsd_inquiry_bag', JSON.stringify(newItems));
+    if (loading) return;
+    const key = localUser ? `lsd_inquiry_bag_${localUser.id}` : 'lsd_inquiry_bag_guest';
+    localStorage.setItem(key, JSON.stringify(newItems));
   };
 
   const addToBag = (product, volumePricing, quantity = 1) => {
