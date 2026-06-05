@@ -57,7 +57,7 @@ export default function ContactChatBubble() {
     if (isOpen) setHasUnread(false);
   }, [isOpen, phase]);
 
-  // ─── Init Laravel Echo (Reverb) ─────────────────────────────────────────────
+  // ─── Init Laravel Echo (Pusher / Reverb Fallback) ──────────────────────────
   useEffect(() => {
     const initEcho = async () => {
       try {
@@ -65,16 +65,26 @@ export default function ContactChatBubble() {
         const { default: Pusher } = await import('pusher-js');
         window.Pusher = Pusher;
 
-        echoRef.current = new Echo({
-          broadcaster:  'reverb',
-          key:          import.meta.env.VITE_REVERB_APP_KEY,
-          wsHost:       import.meta.env.VITE_REVERB_HOST || 'localhost',
-          wsPort:       parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
-          wssPort:      parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
-          forceTLS:     (import.meta.env.VITE_REVERB_SCHEME || 'http') === 'https',
-          enabledTransports: ['ws', 'wss'],
-          disableStats: true,
-        });
+        const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
+        const config = pusherKey
+          ? {
+              broadcaster: 'pusher',
+              key: pusherKey,
+              cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'mt1',
+              forceTLS: true,
+            }
+          : {
+              broadcaster:  'reverb',
+              key:          import.meta.env.VITE_REVERB_APP_KEY,
+              wsHost:       import.meta.env.VITE_REVERB_HOST || 'localhost',
+              wsPort:       parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
+              wssPort:      parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
+              forceTLS:     (import.meta.env.VITE_REVERB_SCHEME || 'http') === 'https',
+              enabledTransports: ['ws', 'wss'],
+              disableStats: true,
+            };
+
+        echoRef.current = new Echo(config);
 
         setEchoReady(true);
       } catch (err) {

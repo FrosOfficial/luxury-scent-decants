@@ -65,15 +65,19 @@ class InquiryControllerTest extends TestCase
         ]);
 
         $inquiryData = [
-            'customer_name'    => 'Juan Dela Cruz',
-            'customer_email'   => 'juan@example.com',
-            'customer_phone'   => '+63 917 123 4567',
-            'delivery_address' => '123 Main St',
-            'city'             => 'Makati City',
-            'province'         => 'Metro Manila',
-            'facebook_profile' => 'fb.com/juandelacruz',
-            'additional_notes' => 'Ship fast please!',
-            'items'            => [
+            'customer_name'           => 'Juan Dela Cruz',
+            'customer_email'          => 'juan@example.com',
+            'customer_phone'          => '+63 917 123 4567',
+            'delivery_address'        => '123 Main St',
+            'city'                    => 'Makati City',
+            'province'                => 'Metro Manila',
+            'facebook_profile'        => 'fb.com/juandelacruz',
+            'additional_notes'        => 'Ship fast please!',
+            'payment_method'          => 'cod',
+            'shipping_fee'            => 100,
+            'delivery_type'           => 'standard',
+            'estimated_delivery_days' => '3-5 days',
+            'items'                   => [
                 [
                     'product_id'        => $product->id,
                     'volume_pricing_id' => $volume->id,
@@ -88,8 +92,6 @@ class InquiryControllerTest extends TestCase
         $response->assertJsonStructure([
             'message',
             'reference_code',
-            'messenger_message',
-            'messenger_url',
             'inquiry'
         ]);
 
@@ -137,14 +139,18 @@ class InquiryControllerTest extends TestCase
         $token = $this->generateTestToken($sub, 'customer@example.com', 'Juan Customer');
 
         $inquiryData = [
-            'customer_name'    => 'Juan Customer',
-            'customer_email'   => 'customer@example.com',
-            'customer_phone'   => '+63 917 123 4567',
-            'delivery_address' => '456 Oak St',
-            'city'             => 'Quezon City',
-            'province'         => 'Metro Manila',
-            'facebook_profile' => 'fb.com/juancustomer',
-            'items'            => [
+            'customer_name'           => 'Juan Customer',
+            'customer_email'          => 'customer@example.com',
+            'customer_phone'          => '+63 917 123 4567',
+            'delivery_address'        => '456 Oak St',
+            'city'                    => 'Quezon City',
+            'province'                => 'Metro Manila',
+            'facebook_profile'        => 'fb.com/juancustomer',
+            'payment_method'          => 'gcash',
+            'shipping_fee'            => 150,
+            'delivery_type'           => 'express',
+            'estimated_delivery_days' => '1-2 days',
+            'items'                   => [
                 [
                     'product_id'        => $product->id,
                     'volume_pricing_id' => $volume->id,

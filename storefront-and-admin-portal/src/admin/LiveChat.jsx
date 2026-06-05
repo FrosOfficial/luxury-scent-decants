@@ -94,7 +94,7 @@ export function LiveChat() {
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
-  // ─── Init Echo for admin private channel ────────────────────────────────────
+  // ─── Init Echo for admin private channel (Pusher / Reverb Fallback) ────────
   useEffect(() => {
     const initEcho = async () => {
       try {
@@ -103,24 +103,38 @@ export function LiveChat() {
         window.Pusher = Pusher;
 
         const token = localStorage.getItem('lsd_auth_token');
+        const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
+        const config = pusherKey
+          ? {
+              broadcaster: 'pusher',
+              key: pusherKey,
+              cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'mt1',
+              forceTLS: true,
+              authEndpoint: `${import.meta.env.VITE_API_BASE_URL?.replace('/v1', '')}/broadcasting/auth`,
+              auth: {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            }
+          : {
+              broadcaster:  'reverb',
+              key:          import.meta.env.VITE_REVERB_APP_KEY,
+              wsHost:       import.meta.env.VITE_REVERB_HOST || 'localhost',
+              wsPort:       parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
+              wssPort:      parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
+              forceTLS:     (import.meta.env.VITE_REVERB_SCHEME || 'http') === 'https',
+              enabledTransports: ['ws', 'wss'],
+              disableStats: true,
+              authEndpoint: `${import.meta.env.VITE_API_BASE_URL?.replace('/v1', '')}/broadcasting/auth`,
+              auth: {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            };
 
-        echoRef.current = new Echo({
-          broadcaster:  'reverb',
-          key:          import.meta.env.VITE_REVERB_APP_KEY,
-          wsHost:       import.meta.env.VITE_REVERB_HOST || 'localhost',
-          wsPort:       parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
-          wssPort:      parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
-          forceTLS:     (import.meta.env.VITE_REVERB_SCHEME || 'http') === 'https',
-          enabledTransports: ['ws', 'wss'],
-          disableStats: true,
-          // For private channels, Reverb needs Laravel's broadcast auth endpoint
-          authEndpoint: `${import.meta.env.VITE_API_BASE_URL?.replace('/v1', '')}/broadcasting/auth`,
-          auth: {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        });
+        echoRef.current = new Echo(config);
 
         // Subscribe to admin-chats private channel for new message notifications
         sessionsChannelRef.current = echoRef.current.private('admin-chats');
