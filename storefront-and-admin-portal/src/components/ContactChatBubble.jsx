@@ -144,6 +144,41 @@ export default function ContactChatBubble() {
     }
   }, []);
 
+  // ─── Auto-polling fallback for active chat messages ─────────────────────────
+  useEffect(() => {
+    if (!sessionId || phase !== 'chat') return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.get(`/chat/sessions/${sessionId}/messages`);
+        
+        setMessages(prev => {
+          const incoming = res.data.messages || [];
+          const tempMessages = prev.filter(m => String(m.id).startsWith('temp-'));
+          const nonTempPrev = prev.filter(m => !String(m.id).startsWith('temp-'));
+          
+          const hasChanged = incoming.length !== nonTempPrev.length || 
+                            incoming.some((m, idx) => nonTempPrev[idx]?.id !== m.id);
+                            
+          if (hasChanged) {
+            return [...incoming, ...tempMessages];
+          }
+          return prev;
+        });
+        
+        setIsEscalated(res.data.session?.is_escalated ?? false);
+      } catch (err) {
+        if (err.response?.status === 404) {
+          localStorage.removeItem(SESSION_KEY);
+          setSessionId(null);
+          setPhase('form');
+        }
+      }
+    }, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [sessionId, phase]);
+
   const loadMessages = async (sid) => {
     try {
       const res = await api.get(`/chat/sessions/${sid}/messages`);

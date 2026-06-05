@@ -407,7 +407,7 @@ export function LiveChat() {
                     >
                       <div className="flex items-center gap-1 text-[10px] text-brand-cream/30 uppercase tracking-wider">
                         {cfg.icon}
-                        <span>{cfg.label}</span>
+                        <span>{msg.sender === 'user' ? (activeSession?.display_name || 'Guest') : cfg.label}</span>
                         <span className="text-brand-cream/20">·</span>
                         <span>{formatRelativeTime(msg.created_at)}</span>
                       </div>
