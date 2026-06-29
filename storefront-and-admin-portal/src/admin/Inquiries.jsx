@@ -37,7 +37,16 @@ const InquiryRow = React.memo(({ inquiry, onRowClick, onStatusChange, formatCurr
       <td className="py-4 px-6 font-mono font-semibold text-brand-gold select-all">{inquiry.reference_code}</td>
       <td className="py-4 px-6">
         <div className="font-medium text-brand-cream">{inquiry.customer_name}</div>
-        <div className="text-xs text-brand-cream/50 mt-0.5">{inquiry.customer_phone}</div>
+        <div className="flex flex-wrap items-center gap-2 mt-1">
+          <span className="text-xs text-brand-cream/50">{inquiry.customer_phone}</span>
+          <span className={`text-[9px] font-bold uppercase px-1.5 py-0.2 rounded border ${
+            inquiry.payment_status === 'paid' 
+              ? 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' 
+              : 'text-brand-gold border-brand-gold/20 bg-brand-gold/5'
+          }`}>
+            {inquiry.payment_status ? inquiry.payment_status.replace('_', ' ') : 'pending'}
+          </span>
+        </div>
       </td>
       <td className="py-4 px-6 text-brand-cream/60 text-xs">
         {new Date(inquiry.created_at).toLocaleString(undefined, {
@@ -75,7 +84,7 @@ const InquiryRow = React.memo(({ inquiry, onRowClick, onStatusChange, formatCurr
 InquiryRow.displayName = 'InquiryRow';
 
 // Memoized Standalone Inquiry Details Modal / Drawer to isolate re-render scope
-const InquiryDetailModal = React.memo(({ inquiry, onClose, onStatusChange, formatCurrency, onPrintWaybill, onDownloadWaybill }) => {
+const InquiryDetailModal = React.memo(({ inquiry, onClose, onStatusChange, onPaymentStatusChange, formatCurrency, onPrintWaybill, onDownloadWaybill }) => {
   if (!inquiry) return null;
 
   return (
@@ -232,10 +241,22 @@ const InquiryDetailModal = React.memo(({ inquiry, onClose, onStatusChange, forma
                     {inquiry.payment_method === 'cod' ? 'Cash On Delivery (COD)' :
                      inquiry.payment_method === 'gcash' ? 'GCash e-Wallet' :
                      inquiry.payment_method === 'maya' ? 'Maya e-Wallet' :
-                     inquiry.payment_method === 'rcbc' ? 'Online Banking (RCBC)' :
-                     inquiry.payment_method === 'bank_transfer' ? 'Online Banking (RCBC)' :
                      inquiry.payment_method || 'Cash On Delivery'}
                   </strong></p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span>💰 Payment Status:</span>
+                    <select
+                      value={inquiry.payment_status || 'pending'}
+                      onChange={(e) => onPaymentStatusChange(inquiry.id, e.target.value)}
+                      className="bg-black/60 border border-brand-gold/30 text-brand-gold text-xs font-bold uppercase tracking-wider rounded-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-brand-gold cursor-pointer"
+                    >
+                      <option value="pending" className="text-brand-cream bg-brand-emerald-dark">Pending</option>
+                      <option value="pending_payment" className="text-brand-gold bg-brand-emerald-dark">Pending Payment</option>
+                      <option value="paid" className="text-emerald-400 bg-brand-emerald-dark">Paid</option>
+                      <option value="expired" className="text-rose-400 bg-brand-emerald-dark">Expired</option>
+                      <option value="failed" className="text-rose-500 bg-brand-emerald-dark">Failed</option>
+                    </select>
+                  </div>
                   {inquiry.estimated_delivery_days && (
                     <p>🚚 Transit Estimate: <strong className="text-brand-gold">{inquiry.estimated_delivery_days}</strong></p>
                   )}
@@ -369,6 +390,29 @@ export const Inquiries = () => {
     } catch (err) {
       console.error('Error changing inquiry status:', err);
       toast.error(err.response?.data?.message || 'Failed to update status.');
+    }
+  }, []);
+
+  const handlePaymentStatusChange = useCallback(async (inquiryId, newPaymentStatus) => {
+    try {
+      const response = await api.patch(`/admin/inquiries/${inquiryId}/payment-status`, {
+        status: newPaymentStatus
+      });
+      
+      const updatedInquiry = response.data.inquiry;
+      toast.success(`Payment status updated to ${newPaymentStatus.toUpperCase()}`);
+      
+      setInquiries(prev => prev.map(inq => inq.id === inquiryId ? { ...inq, payment_status: newPaymentStatus } : inq));
+      
+      setSelectedInquiry((currentSelected) => {
+        if (currentSelected && currentSelected.id === inquiryId) {
+          return updatedInquiry;
+        }
+        return currentSelected;
+      });
+    } catch (err) {
+      console.error('Error changing payment status:', err);
+      toast.error(err.response?.data?.message || 'Failed to update payment status.');
     }
   }, []);
 
@@ -846,6 +890,7 @@ export const Inquiries = () => {
         inquiry={selectedInquiry}
         onClose={handleCloseDetailModal}
         onStatusChange={handleStatusChange}
+        onPaymentStatusChange={handlePaymentStatusChange}
         formatCurrency={formatCurrency}
         onPrintWaybill={handlePrintWaybill}
         onDownloadWaybill={handleDownloadWaybill}

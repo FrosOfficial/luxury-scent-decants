@@ -30,8 +30,8 @@ class ChatController extends Controller
             'answer'   => "You're getting a **premium travel-size decant** (e.g., 2ml, 5ml, 10ml) from the original authentic bottle — NOT the full retail bottle. It's the perfect way to test a luxury scent before investing in the full price. All our fragrances are 100% authentic and sourced directly 🏆.",
         ],
         [
-            'keywords' => ['order', 'checkout', 'payment', 'gcash', 'cod', 'cash', 'maya', 'bank', 'rcbc'],
-            'answer'   => "To order, add your chosen decants to your inquiry bag and head to checkout. We accept **Cash on Delivery (COD), GCash, Maya, and RCBC Online Banking**. A premium digital invoice is generated instantly after checkout 📜.",
+            'keywords' => ['order', 'checkout', 'payment', 'gcash', 'cod', 'cash', 'maya'],
+            'answer'   => "To order, add your chosen decants to your inquiry bag and head to checkout. We accept **Cash on Delivery (COD), GCash, and Maya**. A premium digital invoice is generated instantly after checkout 📜.",
         ],
         [
             'keywords' => ['price', 'cost', 'how much', 'ml', 'volume', 'size'],
@@ -74,15 +74,33 @@ class ChatController extends Controller
         ]);
 
         $userId = Auth::id();
+        $guestId = null;
 
         if (!$userId) {
             $this->validateGuestCensorship($validated);
+
+            $fullNameStr = $validated['guest_name'];
+            $nameParts = explode(' ', trim($fullNameStr));
+            $lastName = count($nameParts) > 1 ? array_pop($nameParts) : '';
+            $firstName = implode(' ', $nameParts);
+            $middleInitial = null;
+            if (empty($firstName)) {
+                $firstName = $lastName;
+                $lastName = '';
+            }
+
+            $guest = \App\Models\Guest::create([
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'middle_initial' => $middleInitial,
+                'guest_email' => $validated['guest_email'],
+            ]);
+            $guestId = $guest->id;
         }
 
         $session = ChatSession::create([
             'id'          => Str::uuid(),
-            'guest_name'  => $userId ? null : ($validated['guest_name'] ?? null),
-            'guest_email' => $userId ? null : ($validated['guest_email'] ?? null),
+            'guest_id'    => $guestId,
             'user_id'     => $userId,
             'is_escalated' => false,
         ]);

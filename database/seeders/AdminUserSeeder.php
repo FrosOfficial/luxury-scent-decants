@@ -22,13 +22,30 @@ class AdminUserSeeder extends Seeder
             return;
         }
         
+        $firstName = 'Admin';
+        $lastName = 'User';
+        $middleInitial = null;
+        $uuid = (string) Str::uuid();
+
         User::updateOrCreate(
             ['email' => $adminEmail],
             [
-                'full_name' => 'Admin User',
-                'role' => 'admin',
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'middle_initial' => $middleInitial,
                 'password' => Hash::make($adminPassword),
-                'supabase_auth_id' => (string) Str::uuid(), // Pre-generate a UUID for admin local sync compatibility
+                'supabase_auth_id' => $uuid,
+            ]
+        );
+
+        \App\Models\Admin::updateOrCreate(
+            ['email' => $adminEmail],
+            [
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'middle_initial' => $middleInitial,
+                'password' => Hash::make($adminPassword),
+                'supabase_auth_id' => $uuid,
             ]
         );
     }

@@ -16,7 +16,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'supabase_auth_id',
-        'full_name',
+        'first_name',
+        'last_name',
+        'middle_initial',
         'email',
         'password',
         'phone',
@@ -24,9 +26,16 @@ class User extends Authenticatable
         'city',
         'province',
         'facebook_profile',
-        'role',
         'current_session_id',
         'last_active_at',
+        'verification_code',
+        'verification_expires_at',
+        'email_verified_at',
+    ];
+
+    protected $appends = [
+        'full_name',
+        'role',
     ];
 
     /**
@@ -49,9 +58,20 @@ class User extends Authenticatable
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
+    public function getFullNameAttribute(): ?string
+    {
+        $mi = $this->middle_initial ? ' ' . $this->middle_initial . '.' : '';
+        return "{$this->first_name}{$mi} {$this->last_name}";
+    }
+
+    public function getRoleAttribute(): string
+    {
+        return $this->isAdmin() ? 'admin' : 'customer';
+    }
+
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return \App\Models\Admin::where('email', $this->email)->exists();
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────

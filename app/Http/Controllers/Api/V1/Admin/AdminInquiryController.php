@@ -14,7 +14,7 @@ class AdminInquiryController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Inquiry::query()->with(['items', 'user']);
+        $query = Inquiry::query()->with(['items', 'user', 'guest', 'payment', 'shipment', 'receipt']);
 
         // Filter by Status
         if ($request->filled('status')) {
@@ -37,6 +37,11 @@ class AdminInquiryController extends Controller
         $inquiries = $query->orderBy('created_at', 'DESC')
             ->paginate($request->input('per_page', 15));
 
+        $inquiryService = app(\App\Services\InquiryService::class);
+        foreach ($inquiries->items() as $inquiry) {
+            $inquiryService->refreshPaymentStatus($inquiry);
+        }
+
         return response()->json($inquiries);
     }
 
@@ -45,11 +50,13 @@ class AdminInquiryController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        $inquiry = Inquiry::with(['items', 'user'])->find($id);
+        $inquiry = Inquiry::with(['items', 'user', 'guest', 'payment', 'shipment', 'receipt'])->find($id);
 
         if (!$inquiry) {
             return response()->json(['message' => 'Inquiry not found.'], 404);
         }
+
+        app(\App\Services\InquiryService::class)->refreshPaymentStatus($inquiry);
 
         return response()->json($inquiry);
     }
@@ -69,13 +76,58 @@ class AdminInquiryController extends Controller
             'status' => 'required|string|in:' . implode(',', Inquiry::STATUSES),
         ]);
 
-        $inquiry->update([
-            'status' => $validated['status'],
-        ]);
+        $updateData = ['status' => $validated['status']];
+        if ($validated['status'] === 'cancelled') {
+            $inquiry->payment()->update([
+                'status' => 'expired',
+            ]);
+        } elseif ($validated['status'] === 'fulfilled') {
+            if ($inquiry->payment_method === 'cod') {
+                $inquiry->payment()->update([
+                    'status' => 'paid',
+                ]);
+            }
+        }
+
+        $inquiry->update($updateData);
+
+        if ($validated['status'] === 'confirmed') {
+            $inquiryService = app(\App\Services\InquiryService::class);
+            $inquiryService->sendReceiptEmail($inquiry);
+        }
 
         return response()->json([
             'message' => 'Inquiry status updated successfully.',
-            'inquiry' => $inquiry->load(['items', 'user']),
+            'inquiry' => $inquiry->load(['items', 'user', 'guest', 'payment', 'shipment', 'receipt']),
+        ]);
+    }
+
+    /**
+     * Update the payment status of the specified inquiry.
+     */
+    public function updatePaymentStatus(Request $request, string $id): JsonResponse
+    {
+        $inquiry = Inquiry::find($id);
+
+        if (!$inquiry) {
+            return response()->json(['message' => 'Inquiry not found.'], 404);
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|string|in:pending,paid,expired,failed,pending_payment',
+        ]);
+
+        $inquiry->payment()->update([
+            'status' => $validated['status'],
+        ]);
+
+        // Send updated receipt to customer showing the new payment status
+        $inquiryService = app(\App\Services\InquiryService::class);
+        $inquiryService->sendReceiptEmail($inquiry);
+
+        return response()->json([
+            'message' => 'Payment status updated successfully.',
+            'inquiry' => $inquiry->load(['items', 'user', 'guest', 'payment', 'shipment', 'receipt']),
         ]);
     }
 }

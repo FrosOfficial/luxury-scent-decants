@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\Admin;
 use Firebase\JWT\JWT;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -52,8 +53,15 @@ class AdminSessionLockTest extends TestCase
     {
         $admin = User::create([
             'email' => $this->adminEmail,
-            'full_name' => 'Admin User',
-            'role' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+        ]);
+
+        Admin::create([
+            'email' => $this->adminEmail,
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'supabase_auth_id' => $admin->supabase_auth_id,
         ]);
 
         $token = $this->generateTestToken($admin->id, $this->adminEmail, 'session-A');
@@ -77,8 +85,15 @@ class AdminSessionLockTest extends TestCase
     {
         $admin = User::create([
             'email' => $this->adminEmail,
-            'full_name' => 'Admin User',
-            'role' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+        ]);
+
+        Admin::create([
+            'email' => $this->adminEmail,
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'supabase_auth_id' => $admin->supabase_auth_id,
         ]);
 
         // Device A logs in with session-A
@@ -104,8 +119,15 @@ class AdminSessionLockTest extends TestCase
     {
         $admin = User::create([
             'email' => $this->adminEmail,
-            'full_name' => 'Admin User',
-            'role' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+        ]);
+
+        Admin::create([
+            'email' => $this->adminEmail,
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'supabase_auth_id' => $admin->supabase_auth_id,
         ]);
 
         // Device A logs in with session-A
@@ -137,8 +159,15 @@ class AdminSessionLockTest extends TestCase
     {
         $admin = User::create([
             'email' => $this->adminEmail,
-            'full_name' => 'Admin User',
-            'role' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+        ]);
+
+        Admin::create([
+            'email' => $this->adminEmail,
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'supabase_auth_id' => $admin->supabase_auth_id,
         ]);
 
         // Device A logs in with session-A
@@ -174,11 +203,19 @@ class AdminSessionLockTest extends TestCase
     {
         $admin = User::create([
             'email' => $this->adminEmail,
-            'full_name' => 'Admin User',
-            'role' => 'admin',
+            'first_name' => 'Admin',
+            'last_name' => 'User',
             'password' => \Illuminate\Support\Facades\Hash::make('password123'),
             'current_session_id' => 'session-A',
             'last_active_at' => time(),
+        ]);
+
+        Admin::create([
+            'email' => $this->adminEmail,
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'supabase_auth_id' => $admin->supabase_auth_id,
+            'password' => \Illuminate\Support\Facades\Hash::make('password123'),
         ]);
 
         $response = $this->postJson('/api/v1/auth/login', [

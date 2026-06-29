@@ -88,10 +88,13 @@ class AdminChatController extends Controller
             'message' => 'required|string|max:2000',
         ]);
 
+        $admin = \App\Models\Admin::where('email', \Illuminate\Support\Facades\Auth::user()->email)->first();
+
         $msg = ChatMessage::create([
             'id'              => Str::uuid(),
             'chat_session_id' => $sessionId,
             'sender'          => ChatMessage::SENDER_ADMIN,
+            'admin_id'        => $admin ? $admin->id : null,
             'message'         => $validated['message'],
         ]);
 

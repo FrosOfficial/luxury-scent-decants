@@ -103,22 +103,50 @@ class SupabaseAuthMiddleware
 
                 // If this is the admin email, associate it or create as admin, otherwise customer
                 $adminEmail = config('supabase.admin_email') ?: 'admin@luxuryscentdecants.com';
-                $role = (strtolower($email) === strtolower($adminEmail)) ? 'admin' : 'customer';
+                $isAdmin = (strtolower($email) === strtolower($adminEmail));
 
                 // Look up by email first, to see if they were pre-seeded (like the admin)
                 $user = User::where('email', $email)->first();
 
+                $fullNameStr = $fullName ?? explode('@', $email)[0];
+                $nameParts = explode(' ', trim($fullNameStr));
+                $lastName = count($nameParts) > 1 ? array_pop($nameParts) : '';
+                $firstName = implode(' ', $nameParts);
+                $middleInitial = null;
+                if (empty($firstName)) {
+                    $firstName = $lastName;
+                    $lastName = '';
+                }
+
                 if ($user) {
-                    // Update their supabase_auth_id
-                    $user->update(['supabase_auth_id' => $supabaseAuthId]);
+                    // Update their supabase_auth_id and name details if missing
+                    $user->update([
+                        'supabase_auth_id' => $supabaseAuthId,
+                        'first_name' => $user->first_name ?: $firstName,
+                        'last_name' => $user->last_name ?: $lastName,
+                        'middle_initial' => $user->middle_initial ?: $middleInitial,
+                    ]);
                 } else {
                     // Create new user
                     $user = User::create([
                         'supabase_auth_id' => $supabaseAuthId,
-                        'full_name' => $fullName ?? explode('@', $email)[0],
+                        'first_name' => $firstName,
+                        'last_name' => $lastName,
+                        'middle_initial' => $middleInitial,
                         'email' => $email,
-                        'role' => $role,
                     ]);
+                }
+
+                if ($isAdmin) {
+                    \App\Models\Admin::updateOrCreate(
+                        ['email' => $email],
+                        [
+                            'supabase_auth_id' => $supabaseAuthId,
+                            'first_name' => $user->first_name ?: $firstName,
+                            'last_name' => $user->last_name ?: $lastName,
+                            'middle_initial' => $user->middle_initial ?: $middleInitial,
+                        ]
+                    );
                 }
             }
 
@@ -127,7 +155,7 @@ class SupabaseAuthMiddleware
             $request->setUserResolver(fn () => $user);
 
             // Handle concurrent admin session lock
-            if ($user->role === 'admin' && !$request->is('*/me/logout')) {
+            if ($user->isAdmin() && !$request->is('*/me/logout')) {
                 $sessionId = $decoded->sid ?? md5($token);
                 $activeSessionId = $user->current_session_id;
                 $lastActiveAt = $user->last_active_at ?? 0;

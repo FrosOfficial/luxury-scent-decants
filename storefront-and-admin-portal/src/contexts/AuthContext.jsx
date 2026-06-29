@@ -42,17 +42,49 @@ export const AuthProvider = ({ children }) => {
     await fetchLocalProfile();
   };
 
-  // Register: POST /auth/register → get token → save to localStorage → fetch profile
-  const register = async (fullName, email, password, passwordConfirmation) => {
+  // Register: POST /auth/register
+  const register = async (firstName, lastName, middleInitial, email, password, passwordConfirmation) => {
     const response = await api.post('/auth/register', {
-      name: fullName,
+      first_name: firstName,
+      last_name: lastName,
+      middle_initial: middleInitial,
       email,
       password,
       password_confirmation: passwordConfirmation,
     });
+    return response.data;
+  };
+
+  // Verify Email: POST /auth/verify-email
+  const verifyEmail = async (email, code) => {
+    const response = await api.post('/auth/verify-email', { email, code });
     const { token } = response.data;
     localStorage.setItem('lsd_auth_token', token);
     await fetchLocalProfile();
+    return response.data;
+  };
+
+  // Resend Verification Code: POST /auth/resend-verification
+  const resendVerification = async (email) => {
+    const response = await api.post('/auth/resend-verification', { email });
+    return response.data;
+  };
+
+  // Forgot Password: POST /auth/forgot-password
+  const forgotPassword = async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  };
+
+  // Reset Password: POST /auth/reset-password
+  const resetPassword = async (email, code, password, passwordConfirmation) => {
+    const response = await api.post('/auth/reset-password', {
+      email,
+      code,
+      password,
+      password_confirmation: passwordConfirmation,
+    });
+    return response.data;
   };
 
   // Logout: tell Laravel to invalidate the token, then clear local state
@@ -75,6 +107,10 @@ export const AuthProvider = ({ children }) => {
     isAdmin: localUser?.role === 'admin',
     login,
     register,
+    verifyEmail,
+    resendVerification,
+    forgotPassword,
+    resetPassword,
     logout,
     fetchLocalProfile,
   };

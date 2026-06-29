@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, ShoppingBag, Save, Loader2, Calendar, Tag, ExternalLink, Check, Truck, CreditCard, Printer, X } from 'lucide-react';
+import { User, ShoppingBag, Save, Loader2, Calendar, Tag, ExternalLink, Check, Truck, CreditCard, Printer, X, Eye, EyeOff, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
@@ -12,12 +12,27 @@ export default function UserProfile() {
   const [activeTab, setActiveTab] = useState('profile');
 
   // Profile Form States
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [middleInitial, setMiddleInitial] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
   const [updating, setUpdating] = useState(false);
+
+  // Password States
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordConfirmation, setNewPasswordConfirmation] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showNewPasswordConfirmation, setShowNewPasswordConfirmation] = useState(false);
+
+  // Email verification for password change
+  const [verificationCode, setVerificationCode] = useState('');
+  const [showCodeField, setShowCodeField] = useState(false);
+  const [sendingCode, setSendingCode] = useState(false);
 
   // Cascading Address States
   const [regionCode, setRegionCode] = useState('');
@@ -32,10 +47,21 @@ export default function UserProfile() {
   const [loadingInquiries, setLoadingInquiries] = useState(false);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
 
+  // Handle URL query parameters for active tab
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab && ['profile', 'password', 'inquiries'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, []);
+
   // Load profile values on mount/update
   useEffect(() => {
     if (localUser) {
-      setName(localUser.full_name || '');
+      setFirstName(localUser.first_name || '');
+      setLastName(localUser.last_name || '');
+      setMiddleInitial(localUser.middle_initial || '');
       setPhone(localUser.phone || '');
       
       const userProv = localUser.province || '';
@@ -87,6 +113,14 @@ export default function UserProfile() {
     setAddress(parts.join(', '));
   }, [streetAddress, barangay, postalCode]);
 
+  // Hide verification field if new password field is cleared
+  useEffect(() => {
+    if (!newPassword) {
+      setShowCodeField(false);
+      setVerificationCode('');
+    }
+  }, [newPassword]);
+
   // Load inquiries history
   useEffect(() => {
     if (activeTab === 'inquiries') {
@@ -109,16 +143,48 @@ export default function UserProfile() {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+
+    // Check if password change requires sending/verifying the 6-digit code
+    if (newPassword && !showCodeField) {
+      setUpdating(true);
+      try {
+        await api.post('/me/send-password-code');
+        setShowCodeField(true);
+        toast.success('A 6-digit verification code has been sent to your email to verify this password change.');
+      } catch (error) {
+        toast.error(error.response?.data?.message || 'Failed to send verification code. Please try again.');
+      } finally {
+        setUpdating(false);
+      }
+      return;
+    }
+
+    if (newPassword && showCodeField && verificationCode.length !== 6) {
+      toast.error('Please enter the 6-digit verification code sent to your email.');
+      return;
+    }
+
     setUpdating(true);
     try {
       await api.put('/me', {
-        full_name: name,
+        first_name: firstName,
+        last_name: lastName,
+        middle_initial: middleInitial,
         phone,
         delivery_address: address,
         city,
         province,
+        current_password: currentPassword || undefined,
+        new_password: newPassword || undefined,
+        new_password_confirmation: newPasswordConfirmation || undefined,
+        verification_code: verificationCode || undefined,
       });
       await fetchLocalProfile();
+      setCurrentPassword('');
+      setNewPassword('');
+      setNewPasswordConfirmation('');
+      setVerificationCode('');
+      setShowCodeField(false);
       toast.success('Profile updated successfully!');
     } catch (error) {
       console.error('Failed to update profile:', error);
@@ -221,8 +287,6 @@ export default function UserProfile() {
                   ${inquiry.payment_method === 'cod' ? 'CASH ON DELIVERY (COD)' :
                     inquiry.payment_method === 'gcash' ? 'GCASH E-WALLET' :
                     inquiry.payment_method === 'maya' ? 'MAYA E-WALLET' :
-                    inquiry.payment_method === 'rcbc' ? 'ONLINE BANKING (RCBC)' :
-                    inquiry.payment_method === 'bank_transfer' ? 'ONLINE BANKING (RCBC)' :
                     inquiry.payment_method.toUpperCase()}
                 </strong></span>
               </div>
@@ -318,6 +382,17 @@ export default function UserProfile() {
             <span>Profile Settings</span>
           </button>
           <button
+            onClick={() => setActiveTab('password')}
+            className={`w-full px-4 py-3.5 rounded-xl border text-xs font-bold tracking-widest uppercase transition-all duration-300 flex items-center gap-3 ${
+              activeTab === 'password'
+                ? 'bg-brand-gold text-brand-emerald-dark border-brand-gold shadow-[0_4px_15px_rgba(212,175,55,0.2)]'
+                : 'bg-brand-emerald-dark/40 border-brand-gold/10 text-brand-cream/70 hover:bg-brand-emerald-dark/80 hover:text-brand-cream'
+            }`}
+          >
+            <Lock size={15} />
+            <span>Change Password</span>
+          </button>
+          <button
             onClick={() => setActiveTab('inquiries')}
             className={`w-full px-4 py-3.5 rounded-xl border text-xs font-bold tracking-widest uppercase transition-all duration-300 flex items-center gap-3 ${
               activeTab === 'inquiries'
@@ -347,22 +422,53 @@ export default function UserProfile() {
                     <span>Personal Profile Details</span>
                   </h3>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Full Name */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* First Name */}
                     <div>
                       <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                        Full Name
+                        First Name
                       </label>
                       <input
                         type="text"
                         required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Juan Dela Cruz"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Juan"
                         className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
                       />
                     </div>
 
+                    {/* Last Name */}
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Dela Cruz"
+                        className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                      />
+                    </div>
+
+                    {/* Middle Initial */}
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                        Middle Initial
+                      </label>
+                      <input
+                        type="text"
+                        value={middleInitial}
+                        onChange={(e) => setMiddleInitial(e.target.value.slice(0, 10))}
+                        placeholder="D"
+                        className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
                     {/* Email (Readonly) */}
                     <div>
                       <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
@@ -515,6 +621,147 @@ export default function UserProfile() {
                   >
                     {updating ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                     <span>Save Changes</span>
+                  </button>
+                </form>
+              </motion.div>
+            ) : activeTab === 'password' ? (
+              <motion.div
+                key="password-tab"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-6 md:p-8 rounded-2xl border border-brand-gold/15 bg-brand-emerald-dark/40 backdrop-blur-md"
+              >
+                <form onSubmit={handleUpdateProfile} className="space-y-6">
+                  <h3 className="font-serif text-lg text-brand-cream tracking-wide border-b border-brand-gold/10 pb-3 flex items-center gap-2">
+                    <Lock size={18} className="text-brand-gold" />
+                    <span>Change Password</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    {/* Current Password */}
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                        Current Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showCurrentPassword ? "text" : "password"}
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full pl-4 pr-10 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-cream/40 hover:text-brand-cream/80 transition-colors focus:outline-none"
+                        >
+                          {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* New Password */}
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showNewPassword ? "text" : "password"}
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full pl-4 pr-10 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-cream/40 hover:text-brand-cream/80 transition-colors focus:outline-none"
+                        >
+                          {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Confirm New Password */}
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                        Confirm New Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showNewPasswordConfirmation ? "text" : "password"}
+                          value={newPasswordConfirmation}
+                          onChange={(e) => setNewPasswordConfirmation(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full pl-4 pr-10 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPasswordConfirmation(!showNewPasswordConfirmation)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-cream/40 hover:text-brand-cream/80 transition-colors focus:outline-none"
+                        >
+                          {showNewPasswordConfirmation ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {showCodeField && (
+                    <div className="pt-4 border-t border-brand-gold/10 space-y-4">
+                      <div className="p-3 bg-brand-gold/10 border border-brand-gold/20 rounded-xl text-xs text-brand-cream/80 flex flex-col gap-1">
+                        <span className="font-bold text-brand-gold">Verification Required:</span>
+                        We sent a 6-digit verification code to your email to authorize this password change.
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                          6-Digit Verification Code
+                        </label>
+                        <div className="flex gap-3">
+                          <input
+                            type="text"
+                            required
+                            maxLength={6}
+                            value={verificationCode}
+                            onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                            placeholder="e.g. 123456"
+                            className="flex-1 pl-4 pr-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans text-center tracking-[0.3em] font-bold text-base"
+                          />
+                          <button
+                            type="button"
+                            disabled={sendingCode}
+                            onClick={async () => {
+                              setSendingCode(true);
+                              try {
+                                await api.post('/me/send-password-code');
+                                toast.success('Code resent to your email!');
+                              } catch (error) {
+                                toast.error('Failed to resend code.');
+                              } finally {
+                                setSendingCode(false);
+                              }
+                            }}
+                            className="px-4 py-2 border border-brand-gold/25 hover:border-brand-gold/50 text-brand-gold hover:text-brand-gold/80 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors disabled:opacity-50"
+                          >
+                            Resend
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Save Button */}
+                  <button
+                    type="submit"
+                    disabled={updating}
+                    className="px-6 py-3.5 bg-brand-gold text-brand-emerald-dark font-black rounded-xl text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(212,175,55,0.2)] disabled:opacity-50"
+                  >
+                    {updating ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                    <span>Update Password</span>
                   </button>
                 </form>
               </motion.div>
@@ -673,9 +920,13 @@ export default function UserProfile() {
                                   {selectedInquiry.payment_method === 'cod' ? 'COD' :
                                    selectedInquiry.payment_method === 'gcash' ? 'GCash' :
                                    selectedInquiry.payment_method === 'maya' ? 'Maya' :
-                                   selectedInquiry.payment_method === 'rcbc' ? 'RCBC Online' :
-                                   selectedInquiry.payment_method === 'bank_transfer' ? 'RCBC Online' :
                                    selectedInquiry.payment_method || 'COD'}
+                                </span>
+                              </div>
+                              <div className="pt-1.5 border-t border-white/[0.04] flex justify-between">
+                                <span>Payment Status:</span>
+                                <span className={`font-bold uppercase ${selectedInquiry.payment_status === 'paid' ? 'text-emerald-400' : 'text-brand-gold'}`}>
+                                  {selectedInquiry.payment_status ? selectedInquiry.payment_status.replace('_', ' ') : 'pending'}
                                 </span>
                               </div>
                             </div>

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\ChatSession;
+use App\Models\Guest;
 use Firebase\JWT\JWT;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -46,7 +47,7 @@ class ChatControllerTest extends TestCase
 
         $response->assertStatus(201);
         $response->assertJsonStructure([
-            'session' => ['id', 'guest_name', 'guest_email', 'user_id'],
+            'session' => ['id', 'guest_id', 'user_id', 'guest_name', 'guest_email'],
             'welcome_message',
         ]);
     }
@@ -65,9 +66,14 @@ class ChatControllerTest extends TestCase
 
     public function test_send_message_blocks_profanity(): void
     {
-        $session = ChatSession::create([
-            'guest_name' => 'John Doe',
+        $guest = Guest::create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
             'guest_email' => 'john@example.com',
+        ]);
+
+        $session = ChatSession::create([
+            'guest_id' => $guest->id,
         ]);
 
         $response = $this->postJson("/api/v1/chat/sessions/{$session->id}/messages", [

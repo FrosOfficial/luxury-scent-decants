@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Send, Bot, Headphones, User, Loader, RefreshCw, Inbox } from 'lucide-react';
+import { MessageCircle, Send, Bot, Headphones, User, Loader, RefreshCw, Inbox, AlertTriangle } from 'lucide-react';
 import api from '../lib/api';
 
 // ─── Simple markdown bold renderer ───────────────────────────────────────────
@@ -65,6 +65,7 @@ export function LiveChat() {
   const [loading, setLoading]       = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [unreadMap, setUnreadMap]   = useState({});
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
   const messagesEndRef = useRef(null);
   const replyRef       = useRef(null);
@@ -286,11 +287,8 @@ export function LiveChat() {
   };
 
   // ─── Close a session ─────────────────────────────────────────────────────────
-  const handleCloseSession = async () => {
+  const confirmCloseSession = async () => {
     if (!activeId) return;
-    if (!window.confirm('Are you sure you want to close this conversation? The customer will no longer be able to message.')) {
-      return;
-    }
     setSending(true);
     try {
       const res = await api.post(`/admin/chat/sessions/${activeId}/close`);
@@ -425,7 +423,7 @@ export function LiveChat() {
                       )}
                       
                       <button
-                        onClick={handleCloseSession}
+                        onClick={() => setShowCloseConfirm(true)}
                         disabled={sending}
                         className="text-[10px] uppercase tracking-widest px-3 py-1 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition cursor-pointer"
                       >
@@ -521,6 +519,57 @@ export function LiveChat() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {showCloseConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: 'spring', duration: 0.3 }}
+              className="bg-gradient-to-b from-[#021c13] to-[#011611] border border-brand-gold/20 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-5 relative overflow-hidden"
+            >
+              <div className="absolute -top-10 -right-10 w-24 h-24 bg-brand-gold/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full border border-red-500/25 bg-red-500/5 flex items-center justify-center text-red-400 mb-4 animate-pulse">
+                  <AlertTriangle size={20} />
+                </div>
+                <h3 className="font-serif text-lg text-brand-cream tracking-wide">
+                  Close Conversation?
+                </h3>
+                <p className="text-xs text-brand-cream/60 mt-2 leading-relaxed">
+                  Are you sure you want to close this conversation? The customer will no longer be able to message.
+                </p>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowCloseConfirm(false)}
+                  className="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-brand-cream/80 hover:text-brand-cream rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setShowCloseConfirm(false);
+                    confirmCloseSession();
+                  }}
+                  className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_4px_15px_rgba(220,38,38,0.2)] hover:shadow-[0_4px_20px_rgba(220,38,38,0.4)] cursor-pointer"
+                >
+                  Yes, Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

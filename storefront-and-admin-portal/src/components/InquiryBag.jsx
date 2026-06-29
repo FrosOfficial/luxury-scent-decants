@@ -152,7 +152,7 @@ export default function InquiryBag({ isOpen, onClose, onProceedToForm }) {
                     </div>
 
                     <p className="text-[10px] text-brand-cream/40 leading-relaxed text-center">
-                      * Settle your invoice via Cash On Delivery (COD), GCash, Maya, or RCBC Online Banking to secure your decants.
+                      * Settle your invoice via Cash On Delivery (COD), GCash, or Maya to secure your decants.
                     </p>
 
                     <button

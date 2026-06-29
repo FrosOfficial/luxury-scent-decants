@@ -31,7 +31,7 @@ class SeederTest extends TestCase
         $this->assertNotEmpty($firstProduct->notes, 'Seeded products should have scent notes');
 
         // Assert admin user was seeded
-        $admin = User::where('role', 'admin')->first();
+        $admin = \App\Models\Admin::where('email', 'admin@luxuryscentdecants.com')->first();
         $this->assertNotNull($admin, 'Admin user should be seeded in the database');
         $this->assertEquals('admin@luxuryscentdecants.com', $admin->email);
     }

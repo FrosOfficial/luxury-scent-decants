@@ -60,6 +60,11 @@ class AdminProductController extends Controller
             'accords.*.percentage'     => 'required|integer|min:1|max:100',
         ]);
 
+        $admin = \App\Models\Admin::where('email', \Illuminate\Support\Facades\Auth::user()->email)->first();
+        if ($admin) {
+            $validated['admin_id'] = $admin->id;
+        }
+
         $product = Product::create($validated);
 
         if ($request->has('accords')) {

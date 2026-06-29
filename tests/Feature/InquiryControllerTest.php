@@ -65,13 +65,14 @@ class InquiryControllerTest extends TestCase
         ]);
 
         $inquiryData = [
-            'customer_name'           => 'Juan Dela Cruz',
+            'customer_first_name'     => 'Juan',
+            'customer_last_name'      => 'Dela Cruz',
+            'customer_middle_initial' => '',
             'customer_email'          => 'juan@example.com',
             'customer_phone'          => '+63 917 123 4567',
             'delivery_address'        => '123 Main St',
             'city'                    => 'Makati City',
             'province'                => 'Metro Manila',
-            'facebook_profile'        => 'fb.com/juandelacruz',
             'additional_notes'        => 'Ship fast please!',
             'payment_method'          => 'cod',
             'shipping_fee'            => 100,
@@ -100,19 +101,51 @@ class InquiryControllerTest extends TestCase
             'total_estimated_price' => "2680.00",
         ]);
 
-        // Assert that inquiry was stored in DB
+        // Assert that guest details were stored in guests table
+        $this->assertDatabaseHas('guests', [
+            'first_name'  => 'Juan',
+            'last_name'   => 'Dela Cruz',
+            'guest_email' => 'juan@example.com',
+            'guest_phone' => '+63 917 123 4567',
+        ]);
+
+        $guest = \App\Models\Guest::where('guest_email', 'juan@example.com')->first();
+
+        // Assert that inquiry was stored in DB and links to guest
         $this->assertDatabaseHas('inquiries', [
-            'customer_name' => 'Juan Dela Cruz',
-            'total_estimated_price' => 2680,
+            'guest_id' => $guest->id,
+            'user_id'  => null,
+        ]);
+
+        // Assert shipment is created
+        $this->assertDatabaseHas('shipments', [
+            'recipient_first_name' => 'Juan',
+            'recipient_last_name'  => 'Dela Cruz',
+            'recipient_email'      => 'juan@example.com',
+            'recipient_phone'      => '+63 917 123 4567',
+            'delivery_address'     => '123 Main St',
+        ]);
+
+        // Assert payment is created
+        $this->assertDatabaseHas('payments', [
+            'method' => 'cod',
+            'status' => 'pending',
+        ]);
+
+        // Assert receipt is created
+        $this->assertDatabaseHas('receipts', [
+            'subtotal'     => 2680.00,
+            'shipping_fee' => 100.00,
+            'total_amount' => 2780.00,
         ]);
 
         // Assert items snapshot
         $this->assertDatabaseHas('inquiry_items', [
-            'product_name' => 'Aventus',
+            'product_name'  => 'Aventus',
             'product_brand' => 'Creed',
-            'volume_size'  => '5ml',
-            'unit_price'   => 1340,
-            'quantity'     => 2,
+            'volume_size'   => '5ml',
+            'unit_price'    => 1340,
+            'quantity'      => 2,
         ]);
     }
 
@@ -139,13 +172,14 @@ class InquiryControllerTest extends TestCase
         $token = $this->generateTestToken($sub, 'customer@example.com', 'Juan Customer');
 
         $inquiryData = [
-            'customer_name'           => 'Juan Customer',
+            'customer_first_name'     => 'Juan',
+            'customer_last_name'      => 'Customer',
+            'customer_middle_initial' => '',
             'customer_email'          => 'customer@example.com',
             'customer_phone'          => '+63 917 123 4567',
             'delivery_address'        => '456 Oak St',
             'city'                    => 'Quezon City',
             'province'                => 'Metro Manila',
-            'facebook_profile'        => 'fb.com/juancustomer',
             'payment_method'          => 'gcash',
             'shipping_fee'            => 150,
             'delivery_type'           => 'express',
@@ -166,20 +200,20 @@ class InquiryControllerTest extends TestCase
 
         $response->assertStatus(201);
 
-        // Check if user was synced/created
+        // Check if user was synced/created with split names
         $this->assertDatabaseHas('users', [
             'supabase_auth_id' => $sub,
             'email'            => 'customer@example.com',
-            'full_name'        => 'Juan Customer',
-            'role'             => 'customer',
+            'first_name'       => 'Juan',
+            'last_name'        => 'Customer',
         ]);
 
         $user = User::where('supabase_auth_id', $sub)->first();
 
         // Check if inquiry points to this user
         $this->assertDatabaseHas('inquiries', [
-            'user_id'       => $user->id,
-            'customer_name' => 'Juan Customer',
+            'user_id'  => $user->id,
+            'guest_id' => null,
         ]);
     }
 
@@ -203,7 +237,9 @@ class InquiryControllerTest extends TestCase
         ]);
 
         $badData = [
-            'customer_name'           => 'Troll User',
+            'customer_first_name'     => 'Troll',
+            'customer_last_name'      => 'User',
+            'customer_middle_initial' => '',
             'customer_email'          => 'normal@example.com',
             'customer_phone'          => '+63 917 123 4567',
             'delivery_address'        => '123 Main St',
@@ -222,13 +258,14 @@ class InquiryControllerTest extends TestCase
             ]
         ];
 
-        // 1. Block bad name
+        // 1. Block bad name (troll is a bad word in names)
         $response = $this->postJson('/api/v1/inquiries', $badData);
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['customer_name']);
+        $response->assertJsonValidationErrors(['customer_first_name']);
 
         // 2. Block bad email domain
-        $badData['customer_name'] = 'Good User';
+        $badData['customer_first_name'] = 'Good';
+        $badData['customer_last_name'] = 'User';
         $badData['customer_email'] = 'test@mailinator.com';
         $response = $this->postJson('/api/v1/inquiries', $badData);
         $response->assertStatus(422);

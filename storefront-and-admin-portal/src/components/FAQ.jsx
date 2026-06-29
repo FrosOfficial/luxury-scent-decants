@@ -24,7 +24,7 @@ const faqData = [
   {
     id: 4,
     question: "How do I complete my order?",
-    answer: "Once you fill out your delivery and address details on our storefront, select your preferred payment method (Cash on Delivery, E-wallet, or RCBC Online Banking) and finalize the checkout. A premium printable digital invoice receipt will be generated instantly for your records, and our courier will ship the perfume parcel directly to your doorstep!",
+    answer: "Once you fill out your delivery and address details on our storefront, select your preferred payment method (Cash on Delivery or E-wallet) and finalize the checkout. A premium printable digital invoice receipt will be generated instantly for your records, and our courier will ship the perfume parcel directly to your doorstep!",
     icon: Compass
   }
 ];

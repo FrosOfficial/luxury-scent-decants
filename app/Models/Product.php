@@ -25,6 +25,7 @@ class Product extends Model
         'rating',
         'rating_count',
         'is_active',
+        'admin_id',
     ];
 
     /**
@@ -74,6 +75,11 @@ class Product extends Model
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────
+
+    public function admin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
+    }
 
     public function volumes(): HasMany
     {

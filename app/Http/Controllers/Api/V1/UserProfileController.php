@@ -35,12 +35,16 @@ class UserProfileController extends Controller
         }
 
         $validated = $request->validate([
-            'full_name'        => 'required|string|max:255',
+            'first_name'       => 'required|string|max:255',
+            'last_name'        => 'required|string|max:255',
+            'middle_initial'   => 'nullable|string|max:10',
             'phone'            => 'nullable|string|max:30',
             'delivery_address' => 'nullable|string|max:255',
             'city'             => 'nullable|string|max:100',
             'province'         => 'nullable|string|max:100',
-            'facebook_profile' => 'nullable|string|max:255',
+            'current_password' => 'nullable|string',
+            'new_password'     => 'nullable|string|min:6|confirmed',
+            'verification_code'=> 'nullable|string|size:6',
         ]);
 
         $badWords = [
@@ -51,10 +55,10 @@ class UserProfileController extends Controller
 
         $errors = [];
 
-        $nameLower = strtolower($validated['full_name'] ?? '');
+        $nameLower = strtolower(($validated['first_name'] ?? '') . ' ' . ($validated['last_name'] ?? ''));
         foreach ($badWords as $word) {
             if (str_contains($nameLower, $word)) {
-                $errors['full_name'] = ['Prohibited or invalid name detected. Please use a valid name.'];
+                $errors['first_name'] = ['Prohibited or invalid name detected. Please use a valid name.'];
                 break;
             }
         }
@@ -69,11 +73,49 @@ class UserProfileController extends Controller
             }
         }
 
+        if ($request->filled('new_password')) {
+            if (!$request->filled('current_password')) {
+                $errors['current_password'] = ['The current password field is required to change password.'];
+            } elseif (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+                $errors['current_password'] = ['The current password you entered is incorrect.'];
+            }
+
+            if (!$request->filled('verification_code')) {
+                $errors['verification_code'] = ['A verification code is required to change your password.'];
+            } else {
+                if ($user->verification_code !== $request->verification_code) {
+                    $errors['verification_code'] = ['The verification code you entered is invalid.'];
+                } elseif (now()->greaterThan($user->verification_expires_at)) {
+                    $errors['verification_code'] = ['The verification code has expired. Please request a new one.'];
+                }
+            }
+        }
+
         if (!empty($errors)) {
             throw \Illuminate\Validation\ValidationException::withMessages($errors);
         }
 
-        $user->update($validated);
+        // Exclude password inputs from default fill
+        $profileData = collect($validated)->except(['current_password', 'new_password', 'new_password_confirmation', 'verification_code'])->toArray();
+        $user->fill($profileData);
+
+        if ($request->filled('new_password')) {
+            $user->password = \Illuminate\Support\Facades\Hash::make($request->new_password);
+            
+            // Clear verification code after successful password update
+            $user->verification_code = null;
+            $user->verification_expires_at = null;
+
+            // Sync password to Admin model if admin user
+            if ($user->isAdmin()) {
+                $admin = \App\Models\Admin::where('email', $user->email)->first();
+                if ($admin) {
+                    $admin->update(['password' => $user->password]);
+                }
+            }
+        }
+
+        $user->save();
 
         return response()->json([
             'message' => 'Profile updated successfully.',
@@ -81,11 +123,49 @@ class UserProfileController extends Controller
         ]);
     }
 
+    /**
+     * Send verification code for changing password.
+     */
+    public function sendPasswordChangeCode(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $code = strval(rand(100000, 999999));
+        $expiresAt = now()->addMinutes(15);
+
+        $user->update([
+            'verification_code' => $code,
+            'verification_expires_at' => $expiresAt,
+        ]);
+
+        \Illuminate\Support\Facades\Log::info("Password change code for logged-in user {$user->email}: {$code}");
+
+        try {
+            \Illuminate\Support\Facades\Mail::raw(
+                "Your Luxury Scent Decants verification code to change your password is: {$code}. It will expire in 15 minutes.",
+                function ($message) use ($user) {
+                    $message->to($user->email)
+                            ->subject('Verify Password Change Request');
+                }
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send password change email: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'message' => 'A verification code has been sent to your email address.'
+        ]);
+    }
+
     public function logout(): JsonResponse
     {
         $user = Auth::user();
 
-        if ($user && $user->role === 'admin') {
+        if ($user && $user->isAdmin()) {
             $user->update([
                 'current_session_id' => null,
                 'last_active_at' => null,

@@ -18,6 +18,10 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
     // ─── Authentication Routes ───────────────────────────────────────────────
     Route::post('auth/register', [AuthController::class, 'register']);
     Route::post('auth/login', [AuthController::class, 'login']);
+    Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
+    Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
+    Route::post('auth/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('auth/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth.supabase:required');
 
     // ─── Public Routes (No Auth) ─────────────────────────────────────────────
@@ -25,6 +29,7 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
     Route::get('products/{id}', [ProductController::class, 'show']);
     Route::get('brands', [FilterController::class, 'brands']);
     Route::get('filters', [FilterController::class, 'index']);
+    Route::post('webhooks/xendit', [InquiryController::class, 'xenditWebhook']);
     Route::get('temp-migrate', function () {
         try {
             \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
@@ -34,6 +39,8 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     });
+
+    Route::get('payments/callback', [InquiryController::class, 'paymentCallback']);
 
     // ─── Customer Routes (Authenticated/Optional) ────────────────────────────
     Route::middleware('auth.supabase:optional')->group(function () {
@@ -49,6 +56,7 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
     Route::middleware('auth.supabase:required')->group(function () {
         Route::get('me', [UserProfileController::class, 'show']);
         Route::put('me', [UserProfileController::class, 'update']);
+        Route::post('me/send-password-code', [UserProfileController::class, 'sendPasswordChangeCode']);
         Route::post('me/logout', [UserProfileController::class, 'logout']);
         
         Route::get('inquiries', [InquiryController::class, 'index']);
@@ -61,6 +69,7 @@ Route::prefix('v1')->middleware('throttle:100,1')->group(function () {
         Route::get('inquiries', [AdminInquiryController::class, 'index']);
         Route::get('inquiries/{id}', [AdminInquiryController::class, 'show']);
         Route::patch('inquiries/{id}/status', [AdminInquiryController::class, 'updateStatus']);
+        Route::patch('inquiries/{id}/payment-status', [AdminInquiryController::class, 'updatePaymentStatus']);
 
         // Catalog Management
         Route::get('products', [AdminProductController::class, 'index']);

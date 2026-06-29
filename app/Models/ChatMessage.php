@@ -17,6 +17,7 @@ class ChatMessage extends Model
     protected $fillable = [
         'chat_session_id',
         'sender',
+        'admin_id',
         'message',
     ];
 
@@ -33,5 +34,10 @@ class ChatMessage extends Model
     public function session(): BelongsTo
     {
         return $this->belongsTo(ChatSession::class, 'chat_session_id');
+    }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
     }
 }

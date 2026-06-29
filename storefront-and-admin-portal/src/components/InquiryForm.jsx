@@ -12,7 +12,9 @@ export default function InquiryForm({ onBack, onClose }) {
   const { localUser, isAuthenticated } = useAuth();
 
   // Form Fields
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [middleInitial, setMiddleInitial] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -41,7 +43,9 @@ export default function InquiryForm({ onBack, onClose }) {
   // Pre-fill fields if user is authenticated and has profile data
   useEffect(() => {
     if (localUser) {
-      setName(localUser.full_name || '');
+      setFirstName(localUser.first_name || '');
+      setLastName(localUser.last_name || '');
+      setMiddleInitial(localUser.middle_initial || '');
       setEmail(localUser.email || '');
       setPhone(localUser.phone || '');
       
@@ -142,7 +146,9 @@ export default function InquiryForm({ onBack, onClose }) {
 
     try {
       const response = await submitInquiry({
-        customer_name: name,
+        customer_first_name: firstName,
+        customer_last_name: lastName,
+        customer_middle_initial: middleInitial,
         customer_email: email,
         customer_phone: phone,
         delivery_address: address,
@@ -155,8 +161,15 @@ export default function InquiryForm({ onBack, onClose }) {
         estimated_delivery_days: estimatedDeliveryDays,
       });
 
-      setResult(response.inquiry);
-      toast.success('Order placed successfully!');
+      if (response.xendit_invoice_url) {
+        toast.loading('Redirecting to secure payment page...');
+        setTimeout(() => {
+          window.location.href = response.xendit_invoice_url;
+        }, 1500);
+      } else {
+        setResult(response.inquiry);
+        toast.success('Order placed successfully!');
+      }
     } catch (error) {
       console.error('Order Checkout Error:', error);
       toast.error(error.response?.data?.message || 'Failed to check out order. Please try again.');
@@ -236,9 +249,13 @@ export default function InquiryForm({ onBack, onClose }) {
                     {result.payment_method === 'cod' ? 'Cash On Delivery (COD)' : 
                      result.payment_method === 'gcash' ? 'GCash e-Wallet' : 
                      result.payment_method === 'maya' ? 'Maya e-Wallet' : 
-                     result.payment_method === 'rcbc' ? 'Online Banking (RCBC)' : 
-                     result.payment_method === 'bank_transfer' ? 'Online Banking (RCBC)' : 
                      result.payment_method}
+                  </span>
+                </div>
+                <div className="pt-1.5 border-t border-white/[0.04] print:border-black/5 flex justify-between text-xs">
+                  <span>Payment Status:</span>
+                  <span className={`font-bold uppercase ${result.payment_status === 'paid' ? 'text-emerald-400' : 'text-brand-gold'}`}>
+                    {result.payment_status ? result.payment_status.replace('_', ' ') : 'Pending'}
                   </span>
                 </div>
               </div>
@@ -257,9 +274,7 @@ export default function InquiryForm({ onBack, onClose }) {
               {result.payment_method === 'maya' && (
                 <p>Please send Maya transfer of <strong className="text-brand-gold font-bold print:text-black">{formatCurrency(grandTotal)}</strong> to account number <strong className="text-brand-gold font-mono font-bold select-all print:text-black">0917-123-4567</strong> (Name: Luxury Scent Decants). Present reference screenshot on verification.</p>
               )}
-              {(result.payment_method === 'bank_transfer' || result.payment_method === 'rcbc') && (
-                <p>Please send RCBC Online Banking transfer of <strong className="text-brand-gold font-bold print:text-black">{formatCurrency(grandTotal)}</strong> to RCBC Account <strong className="text-brand-gold font-mono font-bold select-all print:text-black">1234-5678-9012</strong> (Account Name: Luxury Scent Decants). Upload your payment receipt screenshot or present it upon verification.</p>
-              )}
+
             </div>
           )}
 
@@ -365,22 +380,53 @@ export default function InquiryForm({ onBack, onClose }) {
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Full Name */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* First Name */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
-                  Full Name
+                  First Name
                 </label>
                 <input
                   type="text"
                   required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Juan Dela Cruz"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Juan"
                   className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
                 />
               </div>
 
+              {/* Last Name */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Dela Cruz"
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                />
+              </div>
+
+              {/* Middle Initial */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
+                  Middle Initial
+                </label>
+                <input
+                  type="text"
+                  value={middleInitial}
+                  onChange={(e) => setMiddleInitial(e.target.value.slice(0, 10))}
+                  placeholder="D"
+                  className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Email Address */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
@@ -395,9 +441,7 @@ export default function InquiryForm({ onBack, onClose }) {
                   className="w-full px-4 py-3 bg-brand-emerald-dark border border-brand-gold/15 rounded-xl text-brand-cream text-sm placeholder:text-brand-cream/25 focus:outline-none focus:border-brand-gold/50 transition-colors font-sans"
                 />
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-4">
               {/* Contact Phone */}
               <div>
                 <label className="block text-[10px] font-bold tracking-widest text-brand-cream/50 uppercase mb-1.5 pl-1">
@@ -525,7 +569,7 @@ export default function InquiryForm({ onBack, onClose }) {
                 <CreditCard size={14} /> Settlement Payment Method
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Cash on Delivery */}
                 <label className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all duration-300 relative select-none ${
                   paymentMethod === 'cod' 
@@ -603,27 +647,7 @@ export default function InquiryForm({ onBack, onClose }) {
                   )}
                 </div>
 
-                {/* Online Banking (RCBC) */}
-                <label className={`p-4 rounded-xl border flex flex-col justify-between cursor-pointer transition-all duration-300 relative select-none ${
-                  paymentMethod === 'rcbc' 
-                    ? 'border-brand-gold bg-brand-gold/5 shadow-[0_0_15px_rgba(212,175,55,0.15)]' 
-                    : 'border-white/10 bg-black/20 hover:border-brand-gold/30'
-                }`}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-bold text-xs uppercase tracking-wider text-brand-cream">Online Banking (RCBC)</p>
-                      <p className="text-[10px] text-brand-cream/40 mt-1">Wire transfer via RCBC account</p>
-                    </div>
-                    <input
-                      type="radio"
-                      name="payment_method"
-                      value="rcbc"
-                      checked={paymentMethod === 'rcbc'}
-                      onChange={() => setPaymentMethod('rcbc')}
-                      className="w-4 h-4 accent-brand-gold cursor-pointer"
-                    />
-                  </div>
-                </label>
+
               </div>
 
               {/* Dynamic instruction details depending on selection */}
@@ -637,9 +661,7 @@ export default function InquiryForm({ onBack, onClose }) {
                 {paymentMethod === 'maya' && (
                   <p>🔹 <strong className="text-brand-gold">Maya Info:</strong> You will receive our e-Wallet Maya details in the next confirmation receipt screen.</p>
                 )}
-                {(paymentMethod === 'bank_transfer' || paymentMethod === 'rcbc') && (
-                  <p>🔹 <strong className="text-brand-gold">RCBC Info:</strong> Settle the invoice via RCBC online bank transfer credentials provided in your digital invoice receipt.</p>
-                )}
+
               </div>
             </div>
 

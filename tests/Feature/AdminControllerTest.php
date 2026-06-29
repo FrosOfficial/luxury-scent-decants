@@ -173,9 +173,49 @@ class AdminControllerTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonFragment(['name' => 'New Premium Fragrance']);
 
+        $admin = \App\Models\Admin::where('email', $this->adminEmail)->first();
+        $this->assertNotNull($admin);
+
         $this->assertDatabaseHas('products', [
             'name' => 'New Premium Fragrance',
             'brand' => 'Scent Master',
+            'admin_id' => $admin->id,
+        ]);
+    }
+
+    /**
+     * Test admin can reply to chat message and links their admin_id.
+     */
+    public function test_admin_can_reply_to_chat_message_and_links_admin_id(): void
+    {
+        $token = $this->generateTestToken('admin-uuid-123', $this->adminEmail, 'Admin User');
+
+        // Create a guest session
+        $guest = \App\Models\Guest::create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'guest_email' => 'john@example.com',
+        ]);
+        $session = \App\Models\ChatSession::create([
+            'guest_id' => $guest->id,
+        ]);
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer {$token}"
+        ])->postJson("/api/v1/admin/chat/sessions/{$session->id}/reply", [
+            'message' => 'Hello from Admin!',
+        ]);
+
+        $response->assertStatus(200);
+
+        $admin = \App\Models\Admin::where('email', $this->adminEmail)->first();
+        $this->assertNotNull($admin);
+
+        $this->assertDatabaseHas('chat_messages', [
+            'chat_session_id' => $session->id,
+            'sender'          => 'admin',
+            'admin_id'        => $admin->id,
+            'message'         => 'Hello from Admin!',
         ]);
     }
 }

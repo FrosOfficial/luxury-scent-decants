@@ -36,12 +36,34 @@ class UserProfileControllerTest extends TestCase
         return JWT::encode($payload, $this->jwtSecret, 'HS256');
     }
 
+    public function test_user_can_view_authenticated_user_profile(): void
+    {
+        $user = User::create([
+            'email' => 'juan@gmail.com',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
+        ]);
+
+        $token = $this->generateTestToken($user->id, $user->email, 'Juan Dela Cruz');
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer {$token}"
+        ])->getJson('/api/v1/me');
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'email' => 'juan@gmail.com',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
+        ]);
+    }
+
     public function test_user_can_update_profile_with_valid_details(): void
     {
         $user = User::create([
             'email' => 'juan@gmail.com',
-            'full_name' => 'Juan Dela Cruz',
-            'role' => 'customer',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
         ]);
 
         $token = $this->generateTestToken($user->id, $user->email, 'Juan Dela Cruz');
@@ -49,7 +71,9 @@ class UserProfileControllerTest extends TestCase
         $response = $this->withHeaders([
             'Authorization' => "Bearer {$token}"
         ])->putJson('/api/v1/me', [
-            'full_name' => 'Juan Updated',
+            'first_name' => 'Juan',
+            'last_name' => 'Updated',
+            'middle_initial' => 'D',
             'phone' => '09171234567',
             'delivery_address' => 'Unit 4B Gold Crest Condo, Barangay Bel-Air, 1209',
             'city' => 'Makati',
@@ -58,7 +82,7 @@ class UserProfileControllerTest extends TestCase
 
         $response->assertStatus(200);
         $user->refresh();
-        $this->assertEquals('Juan Updated', $user->full_name);
+        $this->assertEquals('Juan D. Updated', $user->full_name);
         $this->assertEquals('09171234567', $user->phone);
     }
 
@@ -66,8 +90,8 @@ class UserProfileControllerTest extends TestCase
     {
         $user = User::create([
             'email' => 'juan@gmail.com',
-            'full_name' => 'Juan Dela Cruz',
-            'role' => 'customer',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
         ]);
 
         $token = $this->generateTestToken($user->id, $user->email, 'Juan Dela Cruz');
@@ -75,7 +99,8 @@ class UserProfileControllerTest extends TestCase
         $response = $this->withHeaders([
             'Authorization' => "Bearer {$token}"
         ])->putJson('/api/v1/me', [
-            'full_name' => 'Juan Putangina',
+            'first_name' => 'Juan',
+            'last_name' => 'Putangina',
             'phone' => '09171234567',
             'delivery_address' => 'Unit 4B Gold Crest Condo, Barangay Bel-Air, 1209',
             'city' => 'Makati',
@@ -83,15 +108,15 @@ class UserProfileControllerTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['full_name']);
+        $response->assertJsonValidationErrors(['first_name']);
     }
 
     public function test_profile_update_blocks_profanity_in_address(): void
     {
         $user = User::create([
             'email' => 'juan@gmail.com',
-            'full_name' => 'Juan Dela Cruz',
-            'role' => 'customer',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
         ]);
 
         $token = $this->generateTestToken($user->id, $user->email, 'Juan Dela Cruz');
@@ -99,7 +124,8 @@ class UserProfileControllerTest extends TestCase
         $response = $this->withHeaders([
             'Authorization' => "Bearer {$token}"
         ])->putJson('/api/v1/me', [
-            'full_name' => 'Juan Dela Cruz',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
             'phone' => '09171234567',
             'delivery_address' => 'Unit 4B fuck Condo, Barangay Bel-Air, 1209',
             'city' => 'Makati',
@@ -113,20 +139,24 @@ class UserProfileControllerTest extends TestCase
     public function test_registration_blocks_profanity_in_name(): void
     {
         $response = $this->postJson('/api/v1/auth/register', [
-            'name' => 'Juan Putangina',
+            'first_name' => 'Juan',
+            'last_name' => 'Putangina',
+            'middle_initial' => '',
             'email' => 'juan.test@gmail.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response->assertJsonValidationErrors(['first_name']);
     }
 
     public function test_registration_blocks_troll_emails(): void
     {
         $response = $this->postJson('/api/v1/auth/register', [
-            'name' => 'Juan Dela Cruz',
+            'first_name' => 'Juan',
+            'last_name' => 'Dela Cruz',
+            'middle_initial' => '',
             'email' => 'troll@yopmail.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
